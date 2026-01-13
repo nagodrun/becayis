@@ -61,14 +61,29 @@ const Dashboard = () => {
   };
 
   const handleDeleteListing = async (listingId) => {
-    if (!window.confirm('İlanı silmek istediğinizden emin misiniz?')) return;
+    const listing = myListings.find(l => l.id === listingId);
+    setSelectedListing(listing);
+    setDeletionDialogOpen(true);
+  };
+
+  const handleSubmitDeletionRequest = async () => {
+    if (!deletionReason.trim()) {
+      toast.error('Lütfen silme sebebini belirtin');
+      return;
+    }
 
     try {
-      await api.delete(`/listings/${listingId}`);
-      toast.success('İlan silindi');
+      await api.post(`/listings/${selectedListing.id}/request-deletion`, {
+        listing_id: selectedListing.id,
+        reason: deletionReason
+      });
+      toast.success('Silme isteği gönderildi. Admin onayı bekleniyor.');
+      setDeletionDialogOpen(false);
+      setDeletionReason('');
+      setSelectedListing(null);
       fetchDashboardData();
     } catch (error) {
-      toast.error('İlan silinemedi');
+      toast.error(error.response?.data?.detail || 'İstek gönderilemedi');
     }
   };
 
