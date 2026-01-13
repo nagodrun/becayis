@@ -117,22 +117,11 @@ const Register = () => {
           <>
             <div className="text-center mb-8">
               <ShieldCheck className="w-12 h-12 text-slate-900 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold" style={{ fontFamily: 'Manrope' }}>Kimlik Doğrulama</h2>
-              <p className="text-slate-600 mt-2">Sicil numaranız ve kurumsal e-postanızı girin</p>
+              <h2 className="text-2xl font-bold" style={{ fontFamily: 'Manrope' }}>Kayıt Ol</h2>
+              <p className="text-slate-600 mt-2">Kurumsal e-postanızı girin</p>
             </div>
 
             <form onSubmit={handleStep1} className="space-y-4">
-              <div>
-                <Label htmlFor="registry_number">Sicil No</Label>
-                <Input
-                  id="registry_number"
-                  value={step1Data.registry_number}
-                  onChange={(e) => setStep1Data({ ...step1Data, registry_number: e.target.value })}
-                  required
-                  data-testid="register-registry-input"
-                />
-              </div>
-
               <div>
                 <Label htmlFor="email">Kurumsal E-posta</Label>
                 <Input
