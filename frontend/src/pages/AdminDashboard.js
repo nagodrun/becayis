@@ -270,6 +270,78 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
 
+          <TabsContent value="deletions">
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
+                Silme İstekleri ({deletionRequests.length})
+              </h2>
+              {deletionRequests.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                  <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <p>Henüz silme isteği yok</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {deletionRequests.map((request) => (
+                    <div key={request.id} className="border rounded-lg p-4" data-testid="admin-deletion-request">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="font-semibold">{request.user_profile?.display_name}</div>
+                            <Badge variant={
+                              request.status === 'pending' ? 'default' : 
+                              request.status === 'approved' ? 'outline' : 
+                              'destructive'
+                            }>
+                              {request.status === 'pending' ? 'Bekliyor' : 
+                               request.status === 'approved' ? 'Onaylandı' : 
+                               'Reddedildi'}
+                            </Badge>
+                          </div>
+                          
+                          {request.listing && (
+                            <div className="text-sm text-slate-600 mb-2">
+                              <strong>İlan:</strong> {request.listing.institution} - {request.listing.role}
+                              <br />
+                              {request.listing.current_province}/{request.listing.current_district} → {request.listing.desired_province}/{request.listing.desired_district}
+                            </div>
+                          )}
+                          
+                          <div className="text-sm text-slate-700 bg-slate-50 p-3 rounded mt-2">
+                            <strong>Silme Sebebi:</strong> {request.reason}
+                          </div>
+                          
+                          <div className="text-xs text-slate-400 mt-2">{formatDate(request.created_at)}</div>
+                        </div>
+                        
+                        {request.status === 'pending' && (
+                          <div className="flex gap-2 ml-4">
+                            <Button
+                              size="sm"
+                              className="bg-emerald-500 hover:bg-emerald-600"
+                              onClick={() => handleApproveDeletion(request.id)}
+                              data-testid={`approve-deletion-${request.id}`}
+                            >
+                              Onayla
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleRejectDeletion(request.id)}
+                              data-testid={`reject-deletion-${request.id}`}
+                            >
+                              Reddet
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </TabsContent>
+
           <TabsContent value="reports">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Raporlar ({reports.length})</h2>
