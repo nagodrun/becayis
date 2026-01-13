@@ -115,6 +115,23 @@ const Dashboard = () => {
           <p className="text-slate-600">Hoş geldiniz, {user?.profile?.display_name || user?.email}</p>
         </div>
 
+        {/* Single Account Warning */}
+        <Card className="p-6 mb-8 bg-amber-50 border-amber-200">
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <Bell className="w-6 h-6 text-amber-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-amber-900 mb-1">Önemli Uyarı: Tek Hesap Politikası</h3>
+              <p className="text-sm text-amber-800">
+                Platformumuzda her kullanıcı <strong>sadece bir hesap</strong> oluşturabilir. 
+                Birden fazla hesap tespit edilmesi durumunda <strong>tüm hesaplarınız engellenecektir</strong>. 
+                Lütfen tek hesap kuralına uyunuz.
+              </p>
+            </div>
+          </div>
+        </Card>
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="p-6">
