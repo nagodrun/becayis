@@ -52,6 +52,24 @@ const Profile = () => {
     }
   };
 
+  const fetchInstitutions = async () => {
+    try {
+      const response = await api.get('/utility/institutions');
+      setInstitutions(response.data);
+    } catch (error) {
+      console.error('Failed to fetch institutions:', error);
+    }
+  };
+
+  const fetchPositions = async () => {
+    try {
+      const response = await api.get('/utility/positions');
+      setPositions(response.data);
+    } catch (error) {
+      console.error('Failed to fetch positions:', error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
