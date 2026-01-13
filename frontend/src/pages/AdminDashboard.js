@@ -169,10 +169,10 @@ const AdminDashboard = () => {
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Toplam Konuşma</p>
-                <p className="text-3xl font-bold mt-1">{stats.total_conversations}</p>
+                <p className="text-sm text-slate-500">Bekleyen Silme İsteği</p>
+                <p className="text-3xl font-bold mt-1">{stats.pending_deletions}</p>
               </div>
-              <MessageSquare className="w-10 h-10 text-emerald-600" />
+              <AlertTriangle className="w-10 h-10 text-red-600" />
             </div>
           </Card>
 
@@ -182,7 +182,7 @@ const AdminDashboard = () => {
                 <p className="text-sm text-slate-500">Kabul Edilen Davetler</p>
                 <p className="text-3xl font-bold mt-1">{stats.accepted_invitations}/{stats.total_invitations}</p>
               </div>
-              <Shield className="w-10 h-10 text-red-600" />
+              <Shield className="w-10 h-10 text-emerald-600" />
             </div>
           </Card>
         </div>
