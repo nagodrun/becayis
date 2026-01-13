@@ -14,6 +14,7 @@ import { Badge } from './ui/badge';
 
 export const Navbar = () => {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [unreadCount, setUnreadCount] = React.useState(0);
@@ -21,16 +22,24 @@ export const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <nav className="bg-card border-b border-border sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="text-2xl font-extrabold text-slate-900" style={{ fontFamily: 'Manrope' }}>
+            <div className="text-2xl font-extrabold text-foreground" style={{ fontFamily: 'Manrope' }}>
               Becayiş
             </div>
           </Link>
 
           <div className="flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              data-testid="theme-toggle"
+            >
+              {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+            </Button>
             {user ? (
               <>
                 <Link to="/dashboard" data-testid="nav-dashboard-link">
