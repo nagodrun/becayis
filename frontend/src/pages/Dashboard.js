@@ -492,74 +492,92 @@ const Dashboard = () => {
             <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Manrope' }}>Profil Ayarları</h2>
             <Card className="p-6">
               <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Kişisel Bilgiler</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {editingProfile ? (
+                  <>
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Görünen Ad
-                      </label>
-                      <div className="p-3 bg-slate-50 rounded-md text-slate-600">
-                        {user?.profile?.display_name || 'Belirtilmemiş'}
-                      </div>
+                      <Label htmlFor="display_name">Görünen Ad</Label>
+                      <Input
+                        id="display_name"
+                        value={profileData.display_name}
+                        onChange={(e) => setProfileData({ ...profileData, display_name: e.target.value })}
+                      />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">
-                        E-posta
-                      </label>
-                      <div className="p-3 bg-slate-50 rounded-md text-slate-600">
-                        {user?.email}
-                      </div>
+                      <Label htmlFor="bio">Hakkında</Label>
+                      <Textarea
+                        id="bio"
+                        value={profileData.bio}
+                        onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
+                        rows={3}
+                      />
                     </div>
+                    <div className="flex gap-2">
+                      <Button onClick={handleUpdateProfile}>Kaydet</Button>
+                      <Button variant="outline" onClick={() => setEditingProfile(false)}>İptal</Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Kurum
-                      </label>
-                      <div className="p-3 bg-slate-50 rounded-md text-slate-600">
-                        {user?.profile?.institution || 'Belirtilmemiş'}
+                      <h3 className="text-lg font-semibold mb-4">Kişisel Bilgiler</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700 mb-2">Görünen Ad</label>
+                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                            {user?.profile?.display_name || 'Belirtilmemiş'}
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700 mb-2">E-posta</label>
+                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">{user?.email}</div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700 mb-2">Kurum</label>
+                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                            {user?.profile?.institution || 'Belirtilmemiş'}
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700 mb-2">Pozisyon</label>
+                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                            {user?.profile?.role || 'Belirtilmemiş'}
+                          </div>
+                        </div>
                       </div>
+                      {user?.profile?.bio && (
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium text-slate-700 mb-2">Hakkında</label>
+                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">{user.profile.bio}</div>
+                        </div>
+                      )}
                     </div>
+                    
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Pozisyon
-                      </label>
-                      <div className="p-3 bg-slate-50 rounded-md text-slate-600">
-                        {user?.profile?.position || 'Belirtilmemiş'}
+                      <h3 className="text-lg font-semibold mb-4">Hesap Bilgileri</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700 mb-2">Üyelik Tarihi</label>
+                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                            {user?.created_at ? formatDate(user.created_at) : 'Bilinmiyor'}
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700 mb-2">Hesap Durumu</label>
+                          <div className="p-3 bg-slate-50 rounded-md">
+                            <Badge className="bg-emerald-500">Aktif</Badge>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Hesap Bilgileri</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Üyelik Tarihi
-                      </label>
-                      <div className="p-3 bg-slate-50 rounded-md text-slate-600">
-                        {user?.created_at ? formatDate(user.created_at) : 'Bilinmiyor'}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Hesap Durumu
-                      </label>
-                      <div className="p-3 bg-slate-50 rounded-md">
-                        <Badge className="bg-emerald-500">Aktif</Badge>
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="pt-4 border-t">
-                  <p className="text-sm text-slate-500 mb-4">
-                    Profil bilgilerinizi güncellemek için lütfen destek ekibi ile iletişime geçin.
-                  </p>
-                  <Button variant="outline" className="w-full md:w-auto">
-                    Destek Ekibi ile İletişim
-                  </Button>
-                </div>
+                    <div className="pt-4 border-t flex gap-2">
+                      <Button onClick={() => setEditingProfile(true)}>Profili Düzenle</Button>
+                      <Link to="/profile">
+                        <Button variant="outline">Detaylı Düzenleme</Button>
+                      </Link>
+                    </div>
+                  </>
+                )}
               </div>
             </Card>
           </TabsContent>
