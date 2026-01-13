@@ -130,81 +130,119 @@ const CreateEditListing = () => {
             <p className="text-slate-600 mt-2">Yer değişimi için ilan bilgilerinizi girin</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <Label htmlFor="title">İlan Başlığı</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="örn: İstanbul'dan Ankara'ya yer değişimi"
-                required
-                data-testid="listing-title-input"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Temel Bilgiler */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-slate-900">Temel Bilgiler</h3>
+              <p className="text-sm text-slate-500">İlanınızın başlığı ve açıklaması</p>
+              
               <div>
-                <Label htmlFor="institution">Kurum</Label>
+                <Label htmlFor="title">İlan Başlığı *</Label>
                 <Input
-                  id="institution"
-                  value={formData.institution}
-                  onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
-                  placeholder="örn: Milli Eğitim Bakanlığı"
+                  id="title"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="Örn: Ankara Adliyesi - İstanbul Adliyesi Becayiş"
                   required
-                  data-testid="listing-institution-input"
+                  data-testid="listing-title-input"
                 />
               </div>
 
               <div>
-                <Label htmlFor="role">Pozisyon/Görev</Label>
-                <Input
-                  id="role"
-                  value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                  placeholder="örn: Öğretmen"
-                  required
-                  data-testid="listing-role-input"
+                <Label htmlFor="notes">Açıklama</Label>
+                <Textarea
+                  id="notes"
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  rows={4}
+                  placeholder="İlan hakkında detaylı bilgi..."
+                  data-testid="listing-notes-input"
                 />
               </div>
             </div>
 
-            <div>
-              <h3 className="font-semibold text-lg mb-4">Şu Anki Konumunuz</h3>
+            {/* Sunulan Pozisyon */}
+            <div className="space-y-4 bg-slate-50 p-6 rounded-lg border border-slate-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900">Sunulan Pozisyon</h3>
+                  <p className="text-sm text-slate-500">Şu anda bulunduğunuz ve sunduğunuz pozisyon bilgileri</p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    <Link to="/profile" className="underline">Profil sayfasından düzenleyebilirsiniz</Link>
+                  </p>
+                </div>
+              </div>
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="current_province">İl</Label>
-                  <Select value={formData.current_province || undefined} onValueChange={(val) => setFormData({ ...formData, current_province: val })}>
-                    <SelectTrigger data-testid="listing-current-province">
-                      <SelectValue placeholder="İl seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {provinces.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  <Label>Kurum *</Label>
+                  <Input
+                    value={profileData.institution}
+                    disabled
+                    className="bg-white"
+                  />
                 </div>
 
                 <div>
-                  <Label htmlFor="current_district">İlçe</Label>
+                  <Label>Pozisyon *</Label>
                   <Input
-                    id="current_district"
-                    value={formData.current_district}
-                    onChange={(e) => setFormData({ ...formData, current_district: e.target.value })}
-                    required
-                    data-testid="listing-current-district-input"
+                    value={profileData.role}
+                    disabled
+                    className="bg-white"
+                  />
+                </div>
+
+                <div>
+                  <Label>Şehir *</Label>
+                  <Input
+                    value={profileData.current_province}
+                    disabled
+                    className="bg-white"
+                  />
+                </div>
+
+                <div>
+                  <Label>İlçe</Label>
+                  <Input
+                    value={profileData.current_district}
+                    disabled
+                    className="bg-white"
                   />
                 </div>
               </div>
             </div>
 
-            <div>
-              <h3 className="font-semibold text-lg mb-4">Hedef Konumunuz</h3>
+            {/* İstenen Pozisyon */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-slate-900">İstenen Pozisyon</h3>
+              <p className="text-sm text-slate-500">Becayiş yapmak istediğiniz pozisyon bilgileri</p>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 mt-0.5">
+                    <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-amber-900">
+                      <strong>Kurum:</strong> {profileData.institution}
+                    </p>
+                    <p className="text-xs text-amber-800 mt-1">Becayiş sadece aynı kurum içinde yapılabilir</p>
+                    <p className="text-sm font-medium text-amber-900 mt-2">
+                      <strong>Pozisyon:</strong> {profileData.role}
+                    </p>
+                    <p className="text-xs text-amber-800 mt-1">Becayiş sadece aynı pozisyon için yapılabilir</p>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="desired_province">İl</Label>
+                  <Label htmlFor="desired_province">Şehir *</Label>
                   <Select value={formData.desired_province || undefined} onValueChange={(val) => setFormData({ ...formData, desired_province: val })}>
                     <SelectTrigger data-testid="listing-desired-province">
-                      <SelectValue placeholder="İl seçin" />
+                      <SelectValue placeholder="Şehir seçin" />
                     </SelectTrigger>
                     <SelectContent>
                       {provinces.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
@@ -218,26 +256,14 @@ const CreateEditListing = () => {
                     id="desired_district"
                     value={formData.desired_district}
                     onChange={(e) => setFormData({ ...formData, desired_district: e.target.value })}
-                    required
+                    placeholder="İlçe seçin (isteğe bağlı)"
                     data-testid="listing-desired-district-input"
                   />
                 </div>
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="notes">Notlar (Opsiyonel)</Label>
-              <Textarea
-                id="notes"
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                rows={4}
-                placeholder="Ek bilgi veya tercihlerinizi buraya ekleyebilirsiniz..."
-                data-testid="listing-notes-input"
-              />
-            </div>
-
-            <div className="flex gap-4">
+            <div className="flex gap-4 pt-4">
               <Button
                 type="button"
                 variant="outline"
@@ -253,7 +279,7 @@ const CreateEditListing = () => {
                 disabled={loading}
                 data-testid="listing-submit-button"
               >
-                {loading ? 'Kaydediliyor...' : isEdit ? 'İlanı Güncelle' : 'İlanı Yayınla'}
+                {loading ? 'Kaydediliyor...' : isEdit ? 'İlanı Güncelle' : 'İlan Oluştur'}
               </Button>
             </div>
           </form>
