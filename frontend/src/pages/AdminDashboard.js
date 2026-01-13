@@ -15,6 +15,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [listings, setListings] = useState([]);
   const [reports, setReports] = useState([]);
+  const [deletionRequests, setDeletionRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
