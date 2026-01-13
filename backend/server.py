@@ -153,6 +153,10 @@ class UpdateProfile(BaseModel):
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
 
+class RequestListingDeletion(BaseModel):
+    listing_id: str
+    reason: str
+
 # ============= AUTH ENDPOINTS =============
 @api_router.post("/auth/register/step1")
 async def register_step1(data: RegisterStep1):
