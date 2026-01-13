@@ -58,6 +58,7 @@ const CreateEditListing = () => {
     try {
       const response = await api.get(`/listings/${id}`);
       setFormData({
+        title: response.data.title || '',
         institution: response.data.institution,
         role: response.data.role,
         current_province: response.data.current_province,
