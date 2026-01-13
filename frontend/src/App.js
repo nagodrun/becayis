@@ -1,1 +1,118 @@
-import React from 'react';\nimport { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';\nimport { Toaster } from './components/ui/sonner';\nimport { AuthProvider, useAuth } from './contexts/AuthContext';\nimport { Navbar } from './components/Navbar';\nimport { Footer } from './components/Footer';\n\n// Pages\nimport Home from './pages/Home';\nimport Login from './pages/Login';\nimport Register from './pages/Register';\nimport Dashboard from './pages/Dashboard';\nimport CompleteProfile from './pages/CompleteProfile';\nimport CreateEditListing from './pages/CreateEditListing';\nimport ChatPage from './pages/ChatPage';\n\nconst ProtectedRoute = ({ children }) => {\n  const { user, loading } = useAuth();\n\n  if (loading) {\n    return (\n      <div className=\"min-h-screen flex items-center justify-center\">\n        <div className=\"text-slate-500\">Yükleniyor...</div>\n      </div>\n    );\n  }\n\n  if (!user) {\n    return <Navigate to=\"/login\" replace />;\n  }\n\n  return children;\n};\n\nconst AppContent = () => {\n  return (\n    <div className=\"flex flex-col min-h-screen\">\n      <Navbar />\n      <main className=\"flex-1\">\n        <Routes>\n          <Route path=\"/\" element={<Home />} />\n          <Route path=\"/login\" element={<Login />} />\n          <Route path=\"/register\" element={<Register />} />\n          <Route\n            path=\"/profile/complete\"\n            element={\n              <ProtectedRoute>\n                <CompleteProfile />\n              </ProtectedRoute>\n            }\n          />\n          <Route\n            path=\"/dashboard\"\n            element={\n              <ProtectedRoute>\n                <Dashboard />\n              </ProtectedRoute>\n            }\n          />\n          <Route\n            path=\"/listings/create\"\n            element={\n              <ProtectedRoute>\n                <CreateEditListing />\n              </ProtectedRoute>\n            }\n          />\n          <Route\n            path=\"/listings/:id/edit\"\n            element={\n              <ProtectedRoute>\n                <CreateEditListing />\n              </ProtectedRoute>\n            }\n          />\n          <Route\n            path=\"/messages/:conversationId\"\n            element={\n              <ProtectedRoute>\n                <ChatPage />\n              </ProtectedRoute>\n            }\n          />\n          <Route\n            path=\"/messages\"\n            element={\n              <ProtectedRoute>\n                <Dashboard />\n              </ProtectedRoute>\n            }\n          />\n          <Route\n            path=\"/profile\"\n            element={\n              <ProtectedRoute>\n                <Dashboard />\n              </ProtectedRoute>\n            }\n          />\n        </Routes>\n      </main>\n      <Footer />\n      <Toaster position=\"top-right\" />\n    </div>\n  );\n};\n\nfunction App() {\n  return (\n    <BrowserRouter>\n      <AuthProvider>\n        <AppContent />\n      </AuthProvider>\n    </BrowserRouter>\n  );\n}\n\nexport default App;\n
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from './components/ui/sonner';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { Navbar } from './components/Navbar';
+import { Footer } from './components/Footer';
+
+// Pages
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import CompleteProfile from './pages/CompleteProfile';
+import CreateEditListing from './pages/CreateEditListing';
+import ChatPage from './pages/ChatPage';
+
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-slate-500">Yukleniyor...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+const AppContent = () => {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/profile/complete"
+            element={
+              <ProtectedRoute>
+                <CompleteProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/listings/create"
+            element={
+              <ProtectedRoute>
+                <CreateEditListing />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/listings/:id/edit"
+            element={
+              <ProtectedRoute>
+                <CreateEditListing />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages/:conversationId"
+            element={
+              <ProtectedRoute>
+                <ChatPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </main>
+      <Footer />
+      <Toaster position="top-right" />
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}
+
+export default App;
