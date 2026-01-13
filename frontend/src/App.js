@@ -13,6 +13,8 @@ import Dashboard from './pages/Dashboard';
 import CompleteProfile from './pages/CompleteProfile';
 import CreateEditListing from './pages/CreateEditListing';
 import ChatPage from './pages/ChatPage';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
