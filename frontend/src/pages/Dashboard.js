@@ -44,7 +44,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+    if (user?.profile) {
+      setProfileData({
+        display_name: user.profile.display_name || '',
+        bio: user.profile.bio || ''
+      });
+    }
+  }, [user]);
 
   const fetchDashboardData = async () => {
     try {
