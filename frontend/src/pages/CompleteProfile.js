@@ -16,6 +16,8 @@ const CompleteProfile = () => {
   const { fetchUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [provinces, setProvinces] = useState([]);
+  const [institutions, setInstitutions] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [formData, setFormData] = useState({
     display_name: '',
     institution: '',
@@ -27,6 +29,8 @@ const CompleteProfile = () => {
 
   useEffect(() => {
     fetchProvinces();
+    fetchInstitutions();
+    fetchPositions();
   }, []);
 
   const fetchProvinces = async () => {
