@@ -16,6 +16,10 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true }) => {
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       
       <div className="relative">
+        {listing.title && (
+          <h3 className="text-lg font-bold text-slate-900 mb-3">{listing.title}</h3>
+        )}
+        
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center">
