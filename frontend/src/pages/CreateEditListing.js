@@ -64,13 +64,15 @@ const CreateEditListing = () => {
       const response = await api.get(`/listings/${id}`);
       setFormData({
         title: response.data.title || '',
+        notes: response.data.notes || '',
+        desired_province: response.data.desired_province,
+        desired_district: response.data.desired_district
+      });
+      setProfileData({
         institution: response.data.institution,
         role: response.data.role,
         current_province: response.data.current_province,
-        current_district: response.data.current_district,
-        desired_province: response.data.desired_province,
-        desired_district: response.data.desired_district,
-        notes: response.data.notes || ''
+        current_district: response.data.current_district
       });
     } catch (error) {
       toast.error('İlan yüklenemedi');
@@ -80,14 +82,32 @@ const CreateEditListing = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!user?.profile) {
+      toast.error('Lütfen önce profil bilgilerinizi tamamlayın');
+      navigate('/profile/complete');
+      return;
+    }
+
     setLoading(true);
 
     try {
+      const listingData = {
+        title: formData.title,
+        institution: profileData.institution,
+        role: profileData.role,
+        current_province: profileData.current_province,
+        current_district: profileData.current_district,
+        desired_province: formData.desired_province,
+        desired_district: formData.desired_district,
+        notes: formData.notes
+      };
+
       if (isEdit) {
-        await api.put(`/listings/${id}`, formData);
+        await api.put(`/listings/${id}`, listingData);
         toast.success('İlan güncellendi');
       } else {
-        await api.post('/listings', formData);
+        await api.post('/listings', listingData);
         toast.success('İlan oluşturuldu');
       }
       navigate('/dashboard');
