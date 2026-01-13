@@ -231,14 +231,24 @@ const AdminDashboard = () => {
                         {user.blocked && <Badge variant="destructive">Engellenmiş</Badge>}
                       </div>
                     </div>
-                    <Button
-                      variant={user.blocked ? 'outline' : 'destructive'}
-                      size="sm"
-                      onClick={() => handleBlockUser(user.id, user.blocked)}
-                      data-testid={`admin-block-user-${user.id}`}
-                    >
-                      {user.blocked ? 'Engeli Kaldır' : 'Engelle'}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant={user.blocked ? 'outline' : 'destructive'}
+                        size="sm"
+                        onClick={() => handleBlockUser(user.id, user.blocked)}
+                        data-testid={`admin-block-user-${user.id}`}
+                      >
+                        {user.blocked ? 'Engeli Kaldır' : 'Engelle'}
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteUser(user.id)}
+                        data-testid={`admin-delete-user-${user.id}`}
+                      >
+                        Sil
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
