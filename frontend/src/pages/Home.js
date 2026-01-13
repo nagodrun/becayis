@@ -87,19 +87,20 @@ const Home = () => {
             <p className="text-lg md:text-xl mb-8 text-slate-200">
               Güvenli ve kolay bir şekilde aynı pozisyondaki diğer kamu çalışanlarıyla yer değiştirin
             </p>
-            {!user && (
+            {!user ? (
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/register">
-                  <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8" data-testid="hero-register-button">
-                    Hemen Başla
-                  </Button>
-                </Link>
-                <Link to="/login">
-                  <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20" data-testid="hero-login-button">
-                    Giriş Yap
+                <Link to="/listings/create">
+                  <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8" data-testid="hero-create-listing-button">
+                    İlan Oluştur
                   </Button>
                 </Link>
               </div>
+            ) : (
+              <Link to="/dashboard">
+                <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white px-8">
+                  Panele Git
+                </Button>
+              </Link>
             )}
           </div>
         </div>
