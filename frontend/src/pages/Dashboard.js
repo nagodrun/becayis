@@ -463,6 +463,82 @@ const Dashboard = () => {
               </div>
             )}
           </TabsContent>
+
+          <TabsContent value="profile">
+            <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Manrope' }}>Profil Ayarları</h2>
+            <Card className="p-6">
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Kişisel Bilgiler</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Görünen Ad
+                      </label>
+                      <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                        {user?.profile?.display_name || 'Belirtilmemiş'}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        E-posta
+                      </label>
+                      <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                        {user?.email}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Kurum
+                      </label>
+                      <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                        {user?.profile?.institution || 'Belirtilmemiş'}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Pozisyon
+                      </label>
+                      <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                        {user?.profile?.position || 'Belirtilmemiş'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Hesap Bilgileri</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Üyelik Tarihi
+                      </label>
+                      <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                        {user?.created_at ? formatDate(user.created_at) : 'Bilinmiyor'}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Hesap Durumu
+                      </label>
+                      <div className="p-3 bg-slate-50 rounded-md">
+                        <Badge className="bg-emerald-500">Aktif</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t">
+                  <p className="text-sm text-slate-500 mb-4">
+                    Profil bilgilerinizi güncellemek için lütfen destek ekibi ile iletişime geçin.
+                  </p>
+                  <Button variant="outline" className="w-full md:w-auto">
+                    Destek Ekibi ile İletişim
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
       
