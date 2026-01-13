@@ -87,6 +87,26 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleApproveDeletion = async (requestId) => {
+    try {
+      await api.post(`/admin/deletion-requests/${requestId}/approve`);
+      toast.success('Silme isteği onaylandı');
+      fetchData();
+    } catch (error) {
+      toast.error('İşlem başarısız');
+    }
+  };
+
+  const handleRejectDeletion = async (requestId) => {
+    try {
+      await api.post(`/admin/deletion-requests/${requestId}/reject`);
+      toast.success('Silme isteği reddedildi');
+      fetchData();
+    } catch (error) {
+      toast.error('İşlem başarısız');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
     localStorage.removeItem('is_admin');
