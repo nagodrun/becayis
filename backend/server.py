@@ -151,6 +151,10 @@ class BlockUser(BaseModel):
 
 class UpdateProfile(BaseModel):
     display_name: Optional[str] = None
+    institution: Optional[str] = None
+    role: Optional[str] = None
+    current_province: Optional[str] = None
+    current_district: Optional[str] = None
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
 
