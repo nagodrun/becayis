@@ -1,0 +1,151 @@
+{
+  "identity": {
+    "name": "Becayiş (The Swap)",
+    "mission": "To provide a trustworthy, transparent, and efficient platform for public employees to find location swap opportunities.",
+    "tone": "Official yet Human. Reliable, Clear, Hopeful.",
+    "archetype": "The Modern State (Swiss Clarity + Organic Trust)",
+    "theme_preference": "light"
+  },
+  "typography": {
+    "primary_font": "Manrope",
+    "secondary_font": "Inter",
+    "usage": {
+      "headings": "Manrope, font-bold, tracking-tight. Use for H1-H3.",
+      "body": "Inter, font-normal, leading-relaxed. Use for paragraphs and UI text.",
+      "ui_labels": "Inter, font-medium, tracking-wide, uppercase. Use for small labels and badges."
+    },
+    "scale": {
+      "h1": "text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight",
+      "h2": "text-3xl md:text-4xl font-bold tracking-tight",
+      "h3": "text-2xl font-bold",
+      "body_lg": "text-lg leading-7",
+      "body_base": "text-base leading-6",
+      "caption": "text-sm text-muted-foreground"
+    }
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "name": "State Slate",
+        "hex": "#0F172A",
+        "tailwind": "bg-slate-900",
+        "usage": "Primary buttons, Headings, Footer background, Strong borders"
+      },
+      "secondary": {
+        "name": "Official Blue",
+        "hex": "#2563EB",
+        "tailwind": "bg-blue-600",
+        "usage": "Links, Active states, Primary Icons, Verification badges"
+      },
+      "accent": {
+        "name": "Opportunity Amber",
+        "hex": "#F59E0B",
+        "tailwind": "bg-amber-500",
+        "usage": "Call to Actions (Swap), Notifications, Highlights"
+      },
+      "background": {
+        "name": "Paper White",
+        "hex": "#F8FAFC",
+        "tailwind": "bg-slate-50",
+        "usage": "Page background"
+      },
+      "surface": {
+        "name": "Clean White",
+        "hex": "#FFFFFF",
+        "tailwind": "bg-white",
+        "usage": "Cards, Modals, Dropdowns"
+      },
+      "success": {
+        "name": "Approved Green",
+        "hex": "#10B981",
+        "tailwind": "bg-emerald-500",
+        "usage": "Success messages, Verified status"
+      },
+      "error": {
+        "name": "Alert Red",
+        "hex": "#EF4444",
+        "tailwind": "bg-red-500",
+        "usage": "Error states, Destructive actions"
+      }
+    },
+    "gradients": {
+      "hero_overlay": "bg-gradient-to-b from-slate-900/80 to-slate-900/40",
+      "subtle_glow": "bg-gradient-to-tr from-blue-50 to-slate-50"
+    }
+  },
+  "layout": {
+    "grid_system": {
+      "dashboard": "grid grid-cols-1 md:grid-cols-12 gap-6",
+      "listings": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
+      "form": "grid grid-cols-1 gap-6 max-w-2xl mx-auto"
+    },
+    "spacing": {
+      "section_padding": "py-16 md:py-24",
+      "container_padding": "px-4 md:px-8",
+      "card_padding": "p-6"
+    },
+    "container": "max-w-7xl mx-auto"
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-slate-900 text-white hover:bg-slate-800 rounded-lg px-6 py-3 font-medium transition-all shadow-sm hover:shadow-md",
+      "secondary": "bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 rounded-lg px-6 py-3 font-medium transition-all",
+      "accent": "bg-amber-500 text-white hover:bg-amber-600 rounded-lg px-6 py-3 font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+    },
+    "cards": {
+      "listing": "bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all p-6 group relative overflow-hidden",
+      "dashboard_widget": "bg-white rounded-xl border border-slate-100 shadow-sm p-6 h-full"
+    },
+    "inputs": {
+      "default": "flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+    },
+    "badges": {
+      "verified": "inline-flex items-center rounded-full border border-transparent bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+      "pending": "inline-flex items-center rounded-full border border-transparent bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+    }
+  },
+  "visual_enhancers": {
+    "shadows": {
+      "soft": "shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
+      "medium": "shadow-[0_8px_24px_rgba(0,0,0,0.08)]",
+      "floating": "shadow-[0_12px_32px_rgba(0,0,0,0.12)]"
+    },
+    "borders": {
+      "subtle": "border border-slate-100",
+      "active": "border-blue-500 ring-2 ring-blue-100"
+    },
+    "radius": {
+      "default": "rounded-lg",
+      "large": "rounded-xl",
+      "pill": "rounded-full"
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_bg": "https://images.unsplash.com/photo-1591911677374-5a6143b8ca3c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzd8MHwxfHNlYXJjaHwzfHxtb2Rlcm4lMjBpc3RhbmJ1bCUyMHNreWxpbmUlMjBibHVlJTIwc2t5fGVufDB8fHx8MTc2ODMzOTUxMXww&ixlib=rb-4.1.0&q=85",
+      "handshake": "https://images.unsplash.com/photo-1752159684779-0639174cdfac?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODd8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBidXNpbmVzcyUyMGhhbmRzaGFrZSUyMGNsb3NlJTIwdXB8ZW58MHx8fHwxNzY4MzM5NTA5fDA&ixlib=rb-4.1.0&q=85",
+      "avatar_placeholder": "https://images.unsplash.com/photo-1607639106901-28314a0a622e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHxkaXZlcnNlJTIwcHJvZmVzc2lvbmFsJTIwcG9ydHJhaXRzJTIwc21pbGluZ3xlbnwwfHx8fDE3NjgzMzk1MTR8MA&ixlib=rb-4.1.0&q=85"
+    },
+    "icons": {
+      "library": "lucide-react",
+      "preferred_icons": ["MapPin", "RefreshCw", "ShieldCheck", "User", "Bell", "MessageSquare", "Search", "Filter", "Briefcase", "Building2"]
+    }
+  },
+  "universal_guidelines": [
+    "Use 'Manrope' for all headings to establish a modern, friendly authority.",
+    "Use 'Inter' for all body text for maximum legibility.",
+    "Primary action buttons must always be Slate-900 (Black/Dark Blue) to convey seriousness.",
+    "Secondary actions (like 'Cancel' or 'Back') should be outlined or ghost buttons.",
+    "Use the 'Ticket' metaphor for listings: Origin on left, Destination on right, connected by an arrow.",
+    "Always show a 'Verification Badge' next to user names if they are verified.",
+    "Forms must be split into multi-step wizards to reduce cognitive load (e.g., Step 1: ID, Step 2: Job, Step 3: Contact).",
+    "Use 'Sonner' for all toast notifications.",
+    "Ensure all interactive elements have a hover state that includes a slight color shift or lift.",
+    "Do not use pure black (#000000). Use Slate-900 (#0F172A) instead.",
+    "Mobile navigation bar is mandatory for mobile views.",
+    "All inputs must have clear labels and helper text where necessary.",
+    "Use 'Skeleton' loaders for data fetching states.",
+    "Add 'data-testid' to all interactive elements."
+  ],
+  "instructions_to_main_agent": "You are building the 'Becayiş' platform. Follow these guidelines strictly. Start by setting up the global font and color variables in your CSS/Tailwind config. Then build the layout components (Navbar, Footer, Sidebar). Then proceed to the pages. Use the provided image URLs for the landing page and placeholders. Ensure the 'One Account' policy is visually reinforced (e.g., 'Verified ID' icons). Use Shadcn components but style them according to the 'components' section above."
+}
