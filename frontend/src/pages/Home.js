@@ -75,7 +75,7 @@ const Home = () => {
     <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
       <div
-        className="relative h-[500px] bg-cover bg-center"
+        className="relative h-[400px] bg-cover bg-center"
         style={{
           backgroundImage: `linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.4)), url('https://images.unsplash.com/photo-1591911677374-5a6143b8ca3c?crop=entropy&cs=srgb&fm=jpg&q=85')`
         }}
