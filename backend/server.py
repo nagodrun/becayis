@@ -561,13 +561,13 @@ async def get_conversations(current_user: dict = Depends(get_current_user)):
         other_profile = await db.profiles.find_one({"user_id": other_user_id}, {"_id": 0})
         
         # Get last message
-        last_message = await db.messages.find_one(
+        last_message = await db.messages.find(
             {"conversation_id": conv["id"]},
             {"_id": 0}
-        ).sort("created_at", -1).limit(1)
+        ).sort("created_at", -1).limit(1).to_list(1)
         
         conv["other_user"] = other_profile
-        conv["last_message"] = last_message
+        conv["last_message"] = last_message[0] if last_message else None
     
     return conversations
 
