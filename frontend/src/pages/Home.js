@@ -4,6 +4,13 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { ListingCard } from '../components/ListingCard';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '../components/ui/accordion';
+import { Card } from '../components/ui/card';
 import { Search, Filter, MapPin, Users, ShieldCheck, MessageSquare } from 'lucide-react';
 import api from '../lib/api';
 import { toast } from 'sonner';
