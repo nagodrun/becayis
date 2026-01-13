@@ -16,6 +16,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [provinces, setProvinces] = useState([]);
   const [filters, setFilters] = useState({
+    title: '',
     institution: '',
     role: '',
     current_province: '',
