@@ -82,17 +82,17 @@ const Home = () => {
     <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
       <div
-        className="relative h-[400px] bg-cover bg-center"
+        className="relative h-[300px] bg-cover bg-center"
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.4)), url('https://images.unsplash.com/photo-1591911677374-5a6143b8ca3c?crop=entropy&cs=srgb&fm=jpg&q=85')`
+          backgroundImage: `linear-gradient(to bottom, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.5)), url('https://images.unsplash.com/photo-1591911677374-5a6143b8ca3c?crop=entropy&cs=srgb&fm=jpg&q=85')`
         }}
       >
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white px-4 max-w-4xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 tracking-tight" style={{ fontFamily: 'Manrope' }}>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight" style={{ fontFamily: 'Manrope' }}>
               Kamu Çalışanları için<br />Yer Değişim Platformu
             </h1>
-            <p className="text-lg md:text-xl mb-8 text-slate-200">
+            <p className="text-base md:text-lg mb-6 text-slate-200">
               Güvenli ve kolay bir şekilde aynı pozisyondaki diğer kamu çalışanlarıyla yer değiştirin
             </p>
             {!user ? (
