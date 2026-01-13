@@ -27,7 +27,11 @@ const Dashboard = () => {
   const [invitations, setInvitations] = useState({ sent: [], received: [] });
   const [conversations, setConversations] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [deletionRequests, setDeletionRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletionDialogOpen, setDeletionDialogOpen] = useState(false);
+  const [selectedListing, setSelectedListing] = useState(null);
+  const [deletionReason, setDeletionReason] = useState('');
 
   useEffect(() => {
     fetchDashboardData();
