@@ -392,18 +392,37 @@ const Dashboard = () => {
               </Card>
             ) : (
               <div className="space-y-4">
-                {notifications.map((notif) => (
-                  <Card key={notif.id} className={`p-6 ${!notif.read ? 'bg-blue-50' : ''}`} data-testid="notification-card">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="font-semibold">{notif.title}</div>
-                        <div className="text-sm text-slate-600 mt-1">{notif.message}</div>
-                        <div className="text-xs text-slate-400 mt-2">{formatDate(notif.created_at)}</div>
+                {notifications.map((notif) => {
+                  const isInvitationAccepted = notif.type === 'invitation_accepted';
+                  const conversation = conversations.find(c => 
+                    c.invitation_id && invitations.sent.some(inv => 
+                      inv.id === c.invitation_id && inv.status === 'accepted'
+                    )
+                  );
+                  
+                  return (
+                    <Card key={notif.id} className={`p-6 ${!notif.read ? 'bg-blue-50' : ''}`} data-testid="notification-card">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="font-semibold">{notif.title}</div>
+                          <div className="text-sm text-slate-600 mt-1">{notif.message}</div>
+                          <div className="text-xs text-slate-400 mt-2">{formatDate(notif.created_at)}</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {!notif.read && <Badge className="bg-blue-600">Yeni</Badge>}
+                          {isInvitationAccepted && conversation && (
+                            <Link to={`/messages/${conversation.id}`}>
+                              <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600" data-testid="go-to-chat-button">
+                                <MessageSquare className="w-4 h-4 mr-2" />
+                                Mesajlaş
+                              </Button>
+                            </Link>
+                          )}
+                        </div>
                       </div>
-                      {!notif.read && <Badge className="bg-blue-600">Yeni</Badge>}
-                    </div>
-                  </Card>
-                ))}
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </TabsContent>
