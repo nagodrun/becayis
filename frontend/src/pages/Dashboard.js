@@ -127,6 +127,18 @@ const Dashboard = () => {
     localStorage.setItem('hideWarning', 'true');
   };
 
+  const handleUpdateProfile = async () => {
+    try {
+      await api.put('/profile', profileData);
+      toast.success('Profil güncellendi');
+      setEditingProfile(false);
+      // Refresh user data
+      window.location.reload();
+    } catch (error) {
+      toast.error('Profil güncellenemedi');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
