@@ -195,27 +195,66 @@ const Dashboard = () => {
                 </Link>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {myListings.map((listing) => (
-                  <div key={listing.id}>
-                    <ListingCard listing={listing} showInviteButton={false} />
-                    <div className="mt-2 flex gap-2">
-                      <Link to={`/listings/${listing.id}/edit`} className="flex-1">
-                        <Button variant="outline" className="w-full" size="sm" data-testid={`edit-listing-${listing.id}`}>Düzenle</Button>
-                      </Link>
-                      <Button
-                        variant="destructive"
-                        className="flex-1"
-                        size="sm"
-                        onClick={() => handleDeleteListing(listing.id)}
-                        data-testid={`delete-listing-${listing.id}`}
-                      >
-                        Sil
-                      </Button>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {myListings.map((listing) => {
+                    const hasPendingDeletion = deletionRequests.some(
+                      req => req.listing_id === listing.id && req.status === 'pending'
+                    );
+                    
+                    return (
+                      <div key={listing.id}>
+                        <ListingCard listing={listing} showInviteButton={false} />
+                        <div className="mt-2 flex gap-2">
+                          <Link to={`/listings/${listing.id}/edit`} className="flex-1">
+                            <Button variant="outline" className="w-full" size="sm" data-testid={`edit-listing-${listing.id}`}>Düzenle</Button>
+                          </Link>
+                          <Button
+                            variant="destructive"
+                            className="flex-1"
+                            size="sm"
+                            onClick={() => handleDeleteListing(listing.id)}
+                            disabled={hasPendingDeletion}
+                            data-testid={`delete-listing-${listing.id}`}
+                          >
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            {hasPendingDeletion ? 'İstek Bekliyor' : 'Sil'}
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                
+                {/* Deletion Requests Status */}
+                {deletionRequests.length > 0 && (
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold mb-4">Silme İsteklerim</h3>
+                    <div className="space-y-3">
+                      {deletionRequests.map((req) => (
+                        <Card key={req.id} className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="font-medium">{req.listing?.institution} - {req.listing?.role}</div>
+                              <div className="text-sm text-slate-500 mt-1">Sebep: {req.reason}</div>
+                              <div className="text-xs text-slate-400 mt-1">{formatDate(req.created_at)}</div>
+                            </div>
+                            <Badge variant={
+                              req.status === 'pending' ? 'default' : 
+                              req.status === 'approved' ? 'outline' : 
+                              'destructive'
+                            }>
+                              {req.status === 'pending' ? 'Bekliyor' : 
+                               req.status === 'approved' ? 'Onaylandı' : 
+                               'Reddedildi'}
+                            </Badge>
+                          </div>
+                        </Card>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
+                )}
+              </>
             )}
           </TabsContent>
 
