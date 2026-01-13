@@ -192,7 +192,7 @@ const Register = () => {
               </div>
 
               <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800" disabled={loading} data-testid="register-step2-button">
-                {loading ? 'Gönderiliyor...' : 'OTP Gönder'}
+                {loading ? 'Doğrulanıyor...' : 'Devam Et'}
               </Button>
             </form>
           </>
