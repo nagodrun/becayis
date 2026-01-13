@@ -83,9 +83,9 @@ const CreateEditListing = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!user?.profile) {
+    if (!user?.profile || !profileData.institution || !profileData.role) {
       toast.error('Lütfen önce profil bilgilerinizi tamamlayın');
-      navigate('/profile/complete');
+      navigate('/profile');
       return;
     }
 
