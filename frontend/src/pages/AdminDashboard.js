@@ -37,17 +37,19 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [statsRes, usersRes, listingsRes, reportsRes] = await Promise.all([
+      const [statsRes, usersRes, listingsRes, reportsRes, deletionReqRes] = await Promise.all([
         api.get('/admin/stats'),
         api.get('/admin/users'),
         api.get('/admin/listings'),
-        api.get('/admin/reports')
+        api.get('/admin/reports'),
+        api.get('/admin/deletion-requests')
       ]);
 
       setStats(statsRes.data);
       setUsers(usersRes.data);
       setListings(listingsRes.data);
       setReports(reportsRes.data);
+      setDeletionRequests(deletionReqRes.data);
     } catch (error) {
       toast.error('Veriler yüklenirken hata oluştu');
       if (error.response?.status === 403) {
