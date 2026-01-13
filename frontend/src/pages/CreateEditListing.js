@@ -20,28 +20,33 @@ const CreateEditListing = () => {
   const [provinces, setProvinces] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
+    notes: '',
+    desired_province: '',
+    desired_district: ''
+  });
+
+  // Profile data (read-only)
+  const [profileData, setProfileData] = useState({
     institution: '',
     role: '',
     current_province: '',
-    current_district: '',
-    desired_province: '',
-    desired_district: '',
-    notes: ''
+    current_district: ''
   });
 
   useEffect(() => {
     fetchProvinces();
-    if (isEdit) {
-      fetchListing();
-    } else if (user?.profile) {
-      // Auto-fill with user profile data
-      setFormData(prev => ({
-        ...prev,
+    
+    if (user?.profile) {
+      setProfileData({
         institution: user.profile.institution || '',
         role: user.profile.role || '',
         current_province: user.profile.current_province || '',
         current_district: user.profile.current_district || ''
-      }));
+      });
+    }
+    
+    if (isEdit) {
+      fetchListing();
     }
   }, [id, user]);
 
