@@ -100,28 +100,27 @@ const CompleteProfile = () => {
 
             <div>
               <Label htmlFor="institution">Kurum</Label>
-              <Input
-                id="institution"
-                value={formData.institution}
-                onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
-                placeholder="örn: Milli Eğitim Bakanlığı"
-                required
-                data-testid="profile-institution-input"
-              />
+              <Select value={formData.institution || undefined} onValueChange={(val) => setFormData({ ...formData, institution: val })}>
+                <SelectTrigger data-testid="profile-institution">
+                  <SelectValue placeholder="Kurum seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  {institutions.map(inst => <SelectItem key={inst} value={inst}>{inst}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
-          </div>
 
-          <div>
-            <Label htmlFor="role">Pozisyon/Görev</Label>
-            <Input
-              id="role"
-              value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-              placeholder="örn: Öğretmen, Müdür, Memur"
-              required
-              data-testid="profile-role-input"
-            />
-          </div>
+            <div>
+              <Label htmlFor="role">Pozisyon/Görev</Label>
+              <Select value={formData.role || undefined} onValueChange={(val) => setFormData({ ...formData, role: val })}>
+                <SelectTrigger data-testid="profile-role">
+                  <SelectValue placeholder="Pozisyon seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  {positions.map(pos => <SelectItem key={pos} value={pos}>{pos}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
