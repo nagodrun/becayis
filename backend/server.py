@@ -844,6 +844,7 @@ async def admin_get_stats(admin = Depends(verify_admin)):
     accepted_invitations = await db.invitations.count_documents({"status": "accepted"})
     total_conversations = await db.conversations.count_documents({})
     total_messages = await db.messages.count_documents({})
+    pending_deletions = await db.deletion_requests.count_documents({"status": "pending"})
     
     return {
         "total_users": total_users,
@@ -852,8 +853,81 @@ async def admin_get_stats(admin = Depends(verify_admin)):
         "total_invitations": total_invitations,
         "accepted_invitations": accepted_invitations,
         "total_conversations": total_conversations,
-        "total_messages": total_messages
+        "total_messages": total_messages,
+        "pending_deletions": pending_deletions
     }
+
+@api_router.get("/admin/deletion-requests")
+async def admin_get_deletion_requests(admin = Depends(verify_admin)):
+    requests = await db.deletion_requests.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    
+    # Enrich with listing and user data
+    for req in requests:
+        listing = await db.listings.find_one({"id": req["listing_id"]}, {"_id": 0})
+        profile = await db.profiles.find_one({"user_id": req["user_id"]}, {"_id": 0})
+        req["listing"] = listing
+        req["user_profile"] = profile
+    
+    return requests
+
+@api_router.post("/admin/deletion-requests/{request_id}/approve")
+async def admin_approve_deletion(request_id: str, admin = Depends(verify_admin)):
+    request = await db.deletion_requests.find_one({"id": request_id}, {"_id": 0})
+    if not request:
+        raise HTTPException(status_code=404, detail="Silme isteği bulunamadı")
+    
+    if request["status"] != "pending":
+        raise HTTPException(status_code=400, detail="Bu istek zaten işlenmiş")
+    
+    # Delete the listing
+    await db.listings.delete_one({"id": request["listing_id"]})
+    
+    # Update request status
+    await db.deletion_requests.update_one(
+        {"id": request_id},
+        {"$set": {
+            "status": "approved",
+            "approved_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    # Send notification to user
+    await create_notification(
+        request["user_id"],
+        "İlan Silme Onaylandı",
+        "İlan silme isteğiniz onaylandı. İlanınız sistemden kaldırıldı.",
+        "deletion_approved"
+    )
+    
+    return {"message": "Silme isteği onaylandı ve ilan silindi"}
+
+@api_router.post("/admin/deletion-requests/{request_id}/reject")
+async def admin_reject_deletion(request_id: str, admin = Depends(verify_admin)):
+    request = await db.deletion_requests.find_one({"id": request_id}, {"_id": 0})
+    if not request:
+        raise HTTPException(status_code=404, detail="Silme isteği bulunamadı")
+    
+    if request["status"] != "pending":
+        raise HTTPException(status_code=400, detail="Bu istek zaten işlenmiş")
+    
+    # Update request status
+    await db.deletion_requests.update_one(
+        {"id": request_id},
+        {"$set": {
+            "status": "rejected",
+            "rejected_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    # Send notification to user
+    await create_notification(
+        request["user_id"],
+        "İlan Silme Reddedildi",
+        "İlan silme isteğiniz reddedildi. İlanınız sistemde kalmaya devam edecek.",
+        "deletion_rejected"
+    )
+    
+    return {"message": "Silme isteği reddedildi"}
 
 # ============= UTILITY ENDPOINTS =============
 @api_router.get("/provinces")
