@@ -88,7 +88,6 @@ async def create_notification(user_id: str, title: str, message: str, notificati
 
 # ============= MODELS =============
 class RegisterStep1(BaseModel):
-    tc_id: str  # 11 digit
     registry_number: str  # sicil no
     email: EmailStr
     password: str
@@ -115,6 +114,7 @@ class Login(BaseModel):
     password: str
 
 class CreateListing(BaseModel):
+    title: str
     institution: str
     role: str
     current_province: str
@@ -124,6 +124,7 @@ class CreateListing(BaseModel):
     notes: Optional[str] = None
 
 class UpdateListing(BaseModel):
+    title: Optional[str] = None
     institution: Optional[str] = None
     role: Optional[str] = None
     current_province: Optional[str] = None
