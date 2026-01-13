@@ -40,17 +40,19 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [listingsRes, invitationsRes, conversationsRes, notificationsRes] = await Promise.all([
+      const [listingsRes, invitationsRes, conversationsRes, notificationsRes, deletionReqRes] = await Promise.all([
         api.get('/listings/my'),
         api.get('/invitations'),
         api.get('/conversations'),
-        api.get('/notifications')
+        api.get('/notifications'),
+        api.get('/listings/deletion-requests/my')
       ]);
 
       setMyListings(listingsRes.data);
       setInvitations(invitationsRes.data);
       setConversations(conversationsRes.data);
       setNotifications(notificationsRes.data);
+      setDeletionRequests(deletionReqRes.data);
     } catch (error) {
       toast.error('Veriler yüklenirken hata oluştu');
     } finally {
