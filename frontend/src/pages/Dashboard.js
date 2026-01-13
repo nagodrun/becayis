@@ -392,6 +392,39 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Deletion Request Dialog */}
+      <Dialog open={deletionDialogOpen} onOpenChange={setDeletionDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>İlan Silme İsteği</DialogTitle>
+            <DialogDescription>
+              İlanınızı silmek için admin onayı gereklidir. Lütfen silme sebebinizi açıklayın.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="reason">Silme Sebebi</Label>
+              <Textarea
+                id="reason"
+                value={deletionReason}
+                onChange={(e) => setDeletionReason(e.target.value)}
+                placeholder="Örn: Hatalı bilgi girdim, artık aktarma planım yok, vs."
+                rows={4}
+                data-testid="deletion-reason-input"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeletionDialogOpen(false)}>
+              İptal
+            </Button>
+            <Button onClick={handleSubmitDeletionRequest} data-testid="submit-deletion-request">
+              İstek Gönder
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
