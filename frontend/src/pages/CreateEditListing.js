@@ -13,10 +13,12 @@ import { FileText } from 'lucide-react';
 const CreateEditListing = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useAuth();
   const isEdit = !!id;
   const [loading, setLoading] = useState(false);
   const [provinces, setProvinces] = useState([]);
   const [formData, setFormData] = useState({
+    title: '',
     institution: '',
     role: '',
     current_province: '',
@@ -30,8 +32,17 @@ const CreateEditListing = () => {
     fetchProvinces();
     if (isEdit) {
       fetchListing();
+    } else if (user?.profile) {
+      // Auto-fill with user profile data
+      setFormData(prev => ({
+        ...prev,
+        institution: user.profile.institution || '',
+        role: user.profile.role || '',
+        current_province: user.profile.current_province || '',
+        current_district: user.profile.current_district || ''
+      }));
     }
-  }, [id]);
+  }, [id, user]);
 
   const fetchProvinces = async () => {
     try {
