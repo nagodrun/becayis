@@ -23,6 +23,7 @@ import { formatDate } from '../lib/utils';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [myListings, setMyListings] = useState([]);
   const [invitations, setInvitations] = useState({ sent: [], received: [] });
   const [conversations, setConversations] = useState([]);
@@ -34,6 +35,11 @@ const Dashboard = () => {
   const [deletionReason, setDeletionReason] = useState('');
   const [showWarning, setShowWarning] = useState(() => {
     return localStorage.getItem('hideWarning') !== 'true';
+  });
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileData, setProfileData] = useState({
+    display_name: '',
+    bio: ''
   });
 
   useEffect(() => {
