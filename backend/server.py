@@ -883,6 +883,23 @@ async def admin_get_deletion_requests(admin = Depends(verify_admin)):
     
     return requests
 
+@api_router.delete("/admin/users/{user_id}")
+async def admin_delete_user(user_id: str, admin = Depends(verify_admin)):
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+    
+    # Delete user and all related data
+    await db.users.delete_one({"id": user_id})
+    await db.profiles.delete_many({"user_id": user_id})
+    await db.listings.delete_many({"user_id": user_id})
+    await db.notifications.delete_many({"user_id": user_id})
+    
+    # TODO: Send email notification to user
+    # send_email(user["email"], "Hesabınız Silindi", "...")
+    
+    return {"message": "Kullanıcı silindi"}
+
 @api_router.post("/admin/deletion-requests/{request_id}/approve")
 async def admin_approve_deletion(request_id: str, admin = Depends(verify_admin)):
     request = await db.deletion_requests.find_one({"id": request_id}, {"_id": 0})
