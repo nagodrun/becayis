@@ -32,6 +32,9 @@ const Dashboard = () => {
   const [deletionDialogOpen, setDeletionDialogOpen] = useState(false);
   const [selectedListing, setSelectedListing] = useState(null);
   const [deletionReason, setDeletionReason] = useState('');
+  const [showWarning, setShowWarning] = useState(() => {
+    return localStorage.getItem('hideWarning') !== 'true';
+  });
 
   useEffect(() => {
     fetchDashboardData();
