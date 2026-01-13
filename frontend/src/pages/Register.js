@@ -120,22 +120,10 @@ const Register = () => {
             <div className="text-center mb-8">
               <ShieldCheck className="w-12 h-12 text-slate-900 mx-auto mb-4" />
               <h2 className="text-2xl font-bold" style={{ fontFamily: 'Manrope' }}>Kimlik Doğrulama</h2>
-              <p className="text-slate-600 mt-2">TC Kimlik ve Sicil numarasınızı girin</p>
+              <p className="text-slate-600 mt-2">Sicil numaranız ve kurumsal e-postanızı girin</p>
             </div>
 
             <form onSubmit={handleStep1} className="space-y-4">
-              <div>
-                <Label htmlFor="tc_id">TC Kimlik No</Label>
-                <Input
-                  id="tc_id"
-                  value={step1Data.tc_id}
-                  onChange={(e) => setStep1Data({ ...step1Data, tc_id: e.target.value })}
-                  maxLength={11}
-                  required
-                  data-testid="register-tc-input"
-                />
-              </div>
-
               <div>
                 <Label htmlFor="registry_number">Sicil No</Label>
                 <Input
@@ -148,15 +136,17 @@ const Register = () => {
               </div>
 
               <div>
-                <Label htmlFor="email">E-posta</Label>
+                <Label htmlFor="email">Kurumsal E-posta</Label>
                 <Input
                   id="email"
                   type="email"
                   value={step1Data.email}
                   onChange={(e) => setStep1Data({ ...step1Data, email: e.target.value })}
+                  placeholder="ornek@adalet.gov.tr"
                   required
                   data-testid="register-email-input"
                 />
+                <p className="text-xs text-slate-500 mt-1">Sadece .gov.tr uzantılı e-postalar kabul edilir</p>
               </div>
 
               <div>
