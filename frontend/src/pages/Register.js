@@ -198,39 +198,6 @@ const Register = () => {
           </>
         )}
 
-        {step === 3 && (
-          <>
-            <div className="text-center mb-8">
-              <Phone className="w-12 h-12 text-slate-900 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold" style={{ fontFamily: 'Manrope' }}>OTP Doğrulama</h2>
-              <p className="text-slate-600 mt-2">{step2Data.phone} numarasına kod gönderildi</p>
-              {mockOtp && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-4">
-                  <p className="text-sm text-amber-800">MVP Test Modu: OTP = <strong>{mockOtp}</strong></p>
-                </div>
-              )}
-            </div>
-
-            <form onSubmit={handleStep3} className="space-y-4">
-              <div>
-                <Label htmlFor="otp">Doğrulama Kodu</Label>
-                <Input
-                  id="otp"
-                  value={step2Data.otp}
-                  onChange={(e) => setStep2Data({ ...step2Data, otp: e.target.value })}
-                  maxLength={6}
-                  required
-                  data-testid="register-otp-input"
-                />
-              </div>
-
-              <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800" disabled={loading} data-testid="register-step3-button">
-                {loading ? 'Doğrulanıyor...' : 'Doğrula ve Devam Et'}
-              </Button>
-            </form>
-          </>
-        )}
-
         <div className="mt-6 text-center text-sm">
           <span className="text-slate-600">Zaten hesabınız var mı? </span>
           <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium" data-testid="login-link">
