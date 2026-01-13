@@ -39,7 +39,6 @@ const Register = () => {
 
     try {
       const response = await api.post('/auth/register/step1', {
-        registry_number: step1Data.registry_number,
         email: step1Data.email,
         password: step1Data.password
       });
