@@ -104,7 +104,7 @@ const CompleteProfile = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="current_province">Şu Anki İl</Label>
-              <Select value={formData.current_province} onValueChange={(val) => setFormData({ ...formData, current_province: val })}>
+              <Select value={formData.current_province || undefined} onValueChange={(val) => setFormData({ ...formData, current_province: val })}>
                 <SelectTrigger data-testid="profile-current-province">
                   <SelectValue placeholder="İl seçin" />
                 </SelectTrigger>
