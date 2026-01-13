@@ -348,6 +348,7 @@ async def create_listing(data: CreateListing, current_user: dict = Depends(get_c
     listing = {
         "id": str(uuid.uuid4()),
         "user_id": current_user["id"],
+        "title": data.title,
         "institution": data.institution,
         "role": data.role,
         "current_province": data.current_province,
@@ -365,6 +366,7 @@ async def create_listing(data: CreateListing, current_user: dict = Depends(get_c
 
 @api_router.get("/listings")
 async def get_listings(
+    title: Optional[str] = None,
     institution: Optional[str] = None,
     role: Optional[str] = None,
     current_province: Optional[str] = None,
@@ -373,6 +375,8 @@ async def get_listings(
     limit: int = 50
 ):
     query = {"status": status}
+    if title:
+        query["title"] = {"$regex": title, "$options": "i"}
     if institution:
         query["institution"] = {"$regex": institution, "$options": "i"}
     if role:
