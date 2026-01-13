@@ -106,6 +106,18 @@ const CreateEditListing = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <Label htmlFor="title">İlan Başlığı</Label>
+              <Input
+                id="title"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder="örn: İstanbul'dan Ankara'ya yer değişimi"
+                required
+                data-testid="listing-title-input"
+              />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="institution">Kurum</Label>
