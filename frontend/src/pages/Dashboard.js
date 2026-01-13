@@ -428,8 +428,17 @@ const Dashboard = () => {
                   );
                   
                   return (
-                    <Card key={notif.id} className={`p-6 ${!notif.read ? 'bg-blue-50' : ''}`} data-testid="notification-card">
-                      <div className="flex justify-between items-start">
+                    <Card key={notif.id} className={`p-6 ${!notif.read ? 'bg-blue-50' : ''} relative`} data-testid="notification-card">
+                      <button
+                        onClick={() => handleDeleteNotification(notif.id)}
+                        className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors"
+                        data-testid={`delete-notification-${notif.id}`}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                      <div className="flex justify-between items-start pr-8">
                         <div className="flex-1">
                           <div className="font-semibold">{notif.title}</div>
                           <div className="text-sm text-slate-600 mt-1">{notif.message}</div>
