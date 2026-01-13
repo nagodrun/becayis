@@ -164,21 +164,19 @@ const Home = () => {
               onChange={(e) => setFilters({ ...filters, role: e.target.value })}
               data-testid="filter-role"
             />
-            <Select value={filters.current_province} onValueChange={(val) => setFilters({ ...filters, current_province: val })}>
+            <Select value={filters.current_province || undefined} onValueChange={(val) => setFilters({ ...filters, current_province: val })}>
               <SelectTrigger data-testid="filter-current-province">
                 <SelectValue placeholder="Şu anki il" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tümü</SelectItem>
                 {provinces.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
               </SelectContent>
             </Select>
-            <Select value={filters.desired_province} onValueChange={(val) => setFilters({ ...filters, desired_province: val })}>
+            <Select value={filters.desired_province || undefined} onValueChange={(val) => setFilters({ ...filters, desired_province: val })}>
               <SelectTrigger data-testid="filter-desired-province">
                 <SelectValue placeholder="Hedef il" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tümü</SelectItem>
                 {provinces.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
               </SelectContent>
             </Select>
