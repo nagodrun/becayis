@@ -942,6 +942,18 @@ async def admin_reject_deletion(request_id: str, admin = Depends(verify_admin)):
     
     return {"message": "Silme isteği reddedildi"}
 
+@api_router.delete("/notifications/{notification_id}")
+async def delete_notification(notification_id: str, current_user: dict = Depends(get_current_user)):
+    result = await db.notifications.delete_one({
+        "id": notification_id,
+        "user_id": current_user["id"]
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Bildirim bulunamadı")
+    
+    return {"message": "Bildirim silindi"}
+
 # ============= UTILITY ENDPOINTS =============
 @api_router.get("/provinces")
 async def get_provinces():
