@@ -19,8 +19,8 @@ export const Footer = () => {
             <h4 className="font-semibold mb-4">Hızlı Erişim</h4>
             <ul className="space-y-2 text-sm text-slate-400">
               <li><Link to="/" className="hover:text-white transition-colors">Anasayfa</Link></li>
+              <li><Link to="/faq" className="hover:text-white transition-colors">Sıkça Sorulan Sorular</Link></li>
               <li><Link to="/dashboard" className="hover:text-white transition-colors">Panel</Link></li>
-              <li><Link to="/about" className="hover:text-white transition-colors">Hakkımızda</Link></li>
             </ul>
           </div>
           
