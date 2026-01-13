@@ -134,21 +134,30 @@ const Dashboard = () => {
         </div>
 
         {/* Single Account Warning */}
-        <Card className="p-6 mb-8 bg-amber-50 border-amber-200">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              <Bell className="w-6 h-6 text-amber-600" />
+        {showWarning && (
+          <Card className="p-6 mb-8 bg-amber-50 border-amber-200 relative">
+            <button
+              onClick={handleCloseWarning}
+              className="absolute top-4 right-4 text-amber-600 hover:text-amber-800 transition-colors"
+              data-testid="close-warning"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="flex items-start space-x-4 pr-8">
+              <div className="flex-shrink-0">
+                <Bell className="w-6 h-6 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-amber-900 mb-2">Platform Kullanım Politikası</h3>
+                <p className="text-sm text-amber-800 leading-relaxed">
+                  Platformumuzun tüm kullanıcılarına kesintisiz ve adil hizmet sunabilmek için her kullanıcının yalnızca tek bir hesap ile kayıt olması gerekmektedir. Çoklu hesap kullanımı, platform kurallarına aykırı faaliyetler veya hizmet şartlarının ihlali durumunda hesabınız geçici olarak kısıtlanabilir veya kalıcı olarak kapatılabilir. Platformumuzu güvenli ve verimli tutmak için anlayışınıza teşekkür ederiz.
+                </p>
+              </div>
             </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-amber-900 mb-1">Önemli Uyarı: Tek Hesap Politikası</h3>
-              <p className="text-sm text-amber-800">
-                Platformumuzda her kullanıcı <strong>sadece bir hesap</strong> oluşturabilir. 
-                Birden fazla hesap tespit edilmesi durumunda <strong>tüm hesaplarınız engellenecektir</strong>. 
-                Lütfen tek hesap kuralına uyunuz.
-              </p>
-            </div>
-          </div>
-        </Card>
+          </Card>
+        )}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
