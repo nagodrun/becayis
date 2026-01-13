@@ -998,21 +998,41 @@ async def get_institutions():
 async def get_positions():
     """Return common public sector positions"""
     positions = [
+        # Adalet Bakanlığı
         "Zabıt Katibi",
-        "İcra Katibi", 
+        "İcra Katibi",
         "Mübaşir",
+        "İnfaz ve Koruma Memuru",
+        "Adli Tıp Uzmanı",
+        # Milli Eğitim
         "Öğretmen",
+        "Okul Müdürü",
+        "Müdür Yardımcısı",
+        "Rehber Öğretmen",
+        # Sağlık
         "Hemşire",
+        "Ebe",
         "Sağlık Teknikeri",
+        "Laborant",
+        "Anestezi Teknisyeni",
+        "Ameliyathane Teknisyeni",
+        "Tıbbi Sekreter",
+        "Doktor",
+        "Uzman Doktor",
+        # Genel Pozisyonlar
         "Memur",
+        "Şef",
+        "Müdür",
         "Teknisyen",
         "Mühendis",
         "Uzman",
-        "Şef",
-        "Müdür Yardımcısı",
-        "Müdür"
+        "Avukat",
+        "Mali Hizmetler Uzmanı",
+        "İdari Personel",
+        "Bilgisayar İşletmeni",
+        "Veri Hazırlama ve Kontrol İşletmeni"
     ]
-    return positions
+    return sorted(positions)
 
 @api_router.get("/provinces")
 async def get_provinces():
