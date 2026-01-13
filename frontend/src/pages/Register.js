@@ -101,14 +101,14 @@ const Register = () => {
       <Card className="w-full max-w-2xl p-8">
         {/* Progress Steps */}
         <div className="flex items-center justify-between mb-8">
-          {[1, 2, 3].map((s) => (
+          {[1, 2].map((s) => (
             <div key={s} className="flex items-center">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
                 step >= s ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-400'
               }`}>
                 {s}
               </div>
-              {s < 3 && <div className={`w-20 h-1 mx-2 ${step > s ? 'bg-slate-900' : 'bg-slate-200'}`} />}
+              {s < 2 && <div className={`w-20 h-1 mx-2 ${step > s ? 'bg-slate-900' : 'bg-slate-200'}`} />}
             </div>
           ))}
         </div>
