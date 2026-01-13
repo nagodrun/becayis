@@ -36,16 +36,10 @@ const Register = () => {
       return;
     }
 
-    if (step1Data.tc_id.length !== 11) {
-      toast.error('TC Kimlik No 11 haneli olmalıdır');
-      return;
-    }
-
     setLoading(true);
 
     try {
       const response = await api.post('/auth/register/step1', {
-        tc_id: step1Data.tc_id,
         registry_number: step1Data.registry_number,
         email: step1Data.email,
         password: step1Data.password
