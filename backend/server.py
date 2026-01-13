@@ -88,7 +88,6 @@ async def create_notification(user_id: str, title: str, message: str, notificati
 
 # ============= MODELS =============
 class RegisterStep1(BaseModel):
-    registry_number: str  # sicil no
     email: EmailStr
     password: str
 
