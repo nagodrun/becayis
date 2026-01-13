@@ -223,6 +223,65 @@ const Home = () => {
           </div>
         )}
       </div>
+
+      {/* FAQ Section */}
+      <div className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
+              Sıkça Sorulan Sorular
+            </h2>
+            <p className="text-slate-600">Merak ettiğiniz soruların cevapları</p>
+          </div>
+
+          <Accordion type="single" collapsible className="w-full space-y-4">
+            <AccordionItem value="item-1" className="border rounded-lg px-6">
+              <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                Becayiş nedir?
+              </AccordionTrigger>
+              <AccordionContent className="text-slate-600">
+                Becayiş, kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla yer değiştirmesini kolaylaştıran bir platformdur. Güvenli ve kolay bir şekilde yer değişimi yapmanızı sağlar.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-2" className="border rounded-lg px-6">
+              <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                Platforma nasıl kayıt olabilirim?
+              </AccordionTrigger>
+              <AccordionContent className="text-slate-600">
+                Kayıt için kurumsal e-posta adresiniz (@gov.tr uzantılı), sicil numaranız ve telefon numaranız gereklidir. Kayıt üç adımda tamamlanır: Email ve sicil doğrulama, telefon doğrulama (OTP), profil oluşturma.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-3" className="border rounded-lg px-6">
+              <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                İletişim bilgilerim ne zaman paylaşılır?
+              </AccordionTrigger>
+              <AccordionContent className="text-slate-600">
+                İletişim bilgileriniz (telefon, e-posta) gizlidir ve sadece gönderdiğiniz veya aldığınız bir daveti KABUL ETTİĞİNİZDE karşı tarafla paylaşılır.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-4" className="border rounded-lg px-6">
+              <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                Kaç hesap oluşturabilirim?
+              </AccordionTrigger>
+              <AccordionContent className="text-slate-600">
+                Her kişi yalnızca BİR hesap oluşturabilir. Birden fazla hesap oluşturma durumunda hesaplarınız engellenebilir.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-5" className="border rounded-lg px-6">
+              <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                İlanımı nasıl silebilirim?
+              </AccordionTrigger>
+              <AccordionContent className="text-slate-600">
+                İlanlarınızı dashboard'dan 'Sil' butonuna tıklayarak silebilirsiniz. Silme işlemi için admin onayı gereklidir.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </div>
     </div>
   );
 };
