@@ -100,6 +100,21 @@ const Dashboard = () => {
     }
   };
 
+  const handleDeleteNotification = async (notificationId) => {
+    try {
+      await api.delete(`/notifications/${notificationId}`);
+      setNotifications(notifications.filter(n => n.id !== notificationId));
+      toast.success('Bildirim silindi');
+    } catch (error) {
+      toast.error('Bildirim silinemedi');
+    }
+  };
+
+  const handleCloseWarning = () => {
+    setShowWarning(false);
+    localStorage.setItem('hideWarning', 'true');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
