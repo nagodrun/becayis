@@ -125,9 +125,12 @@ const AppContent = () => {
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppContent />
+          <FeedbackButton />
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }
