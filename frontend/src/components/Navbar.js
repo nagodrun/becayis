@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Bell, User, LogOut, LayoutDashboard, MessageSquare } from 'lucide-react';
+import { Bell, User, LogOut, LayoutDashboard, MessageSquare, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
