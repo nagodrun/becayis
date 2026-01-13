@@ -15,6 +15,7 @@ import CreateEditListing from './pages/CreateEditListing';
 import ChatPage from './pages/ChatPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import FAQ from './pages/FAQ';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
