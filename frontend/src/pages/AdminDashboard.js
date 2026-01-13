@@ -1,0 +1,284 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Badge } from '../components/ui/badge';
+import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut } from 'lucide-react';
+import api from '../lib/api';
+import { toast } from 'sonner';
+import { formatDate } from '../lib/utils';
+
+const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const [stats, setStats] = useState({});
+  const [users, setUsers] = useState([]);
+  const [listings, setListings] = useState([]);
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const isAdmin = localStorage.getItem('is_admin');
+    if (!isAdmin) {
+      navigate('/admin/login');
+      return;
+    }
+    
+    // Set admin token for api calls
+    const adminToken = localStorage.getItem('admin_token');
+    if (adminToken) {
+      localStorage.setItem('token', adminToken);
+    }
+    
+    fetchData();
+  }, [navigate]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const [statsRes, usersRes, listingsRes, reportsRes] = await Promise.all([
+        api.get('/admin/stats'),
+        api.get('/admin/users'),
+        api.get('/admin/listings'),
+        api.get('/admin/reports')
+      ]);
+
+      setStats(statsRes.data);
+      setUsers(usersRes.data);
+      setListings(listingsRes.data);
+      setReports(reportsRes.data);
+    } catch (error) {
+      toast.error('Veriler yüklenirken hata oluştu');
+      if (error.response?.status === 403) {
+        navigate('/admin/login');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBlockUser = async (userId, isBlocked) => {
+    try {
+      if (isBlocked) {
+        await api.put(`/admin/users/${userId}/unblock`);
+        toast.success('Kullanıcı engeli kaldırıldı');
+      } else {
+        await api.put(`/admin/users/${userId}/block`);
+        toast.success('Kullanıcı engellendi');
+      }
+      fetchData();
+    } catch (error) {
+      toast.error('İşlem başarısız');
+    }
+  };
+
+  const handleDeleteListing = async (listingId) => {
+    if (!window.confirm('İlanı silmek istediğinizden emin misiniz?')) return;
+
+    try {
+      await api.delete(`/admin/listings/${listingId}`);
+      toast.success('İlan silindi');
+      fetchData();
+    } catch (error) {
+      toast.error('İlan silinemedi');
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('admin_token');
+    localStorage.removeItem('is_admin');
+    localStorage.removeItem('token');
+    navigate('/admin/login');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-slate-500">Yükleniyor...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      {/* Admin Header */}
+      <div className="bg-red-600 text-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Shield className="w-8 h-8" />
+              <div>
+                <h1 className="text-2xl font-bold" style={{ fontFamily: 'Manrope' }}>Admin Paneli</h1>
+                <p className="text-red-100 text-sm">Becayiş Yönetim Paneli</p>
+              </div>
+            </div>
+            <Button onClick={handleLogout} variant="outline" className="bg-white text-red-600 hover:bg-red-50" data-testid="admin-logout-button">
+              <LogOut className="w-4 h-4 mr-2" />
+              Çıkış Yap
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-500">Toplam Kullanıcı</p>
+                <p className="text-3xl font-bold mt-1">{stats.total_users}</p>
+              </div>
+              <Users className="w-10 h-10 text-blue-600" />
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-500">Aktif İlanlar</p>
+                <p className="text-3xl font-bold mt-1">{stats.active_listings}/{stats.total_listings}</p>
+              </div>
+              <FileText className="w-10 h-10 text-amber-600" />
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-500">Toplam Konuşma</p>
+                <p className="text-3xl font-bold mt-1">{stats.total_conversations}</p>
+              </div>
+              <MessageSquare className="w-10 h-10 text-emerald-600" />
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-500">Kabul Edilen Davetler</p>
+                <p className="text-3xl font-bold mt-1">{stats.accepted_invitations}/{stats.total_invitations}</p>
+              </div>
+              <Shield className="w-10 h-10 text-red-600" />
+            </div>
+          </Card>
+        </div>
+
+        {/* Tabs */}
+        <Tabs defaultValue="users" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="users" data-testid="admin-tab-users">Kullanıcılar</TabsTrigger>
+            <TabsTrigger value="listings" data-testid="admin-tab-listings">İlanlar</TabsTrigger>
+            <TabsTrigger value="reports" data-testid="admin-tab-reports">Raporlar</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="users">
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Kullanıcılar ({users.length})</h2>
+              <div className="space-y-4">
+                {users.map((user) => (
+                  <div key={user.id} className="border rounded-lg p-4 flex items-center justify-between" data-testid="admin-user-row">
+                    <div className="flex-1">
+                      <div className="font-semibold">{user.profile?.display_name || user.email}</div>
+                      <div className="text-sm text-slate-500">{user.email} • {user.phone}</div>
+                      <div className="text-sm text-slate-500 mt-1">
+                        {user.profile?.institution} - {user.profile?.role}
+                      </div>
+                      <div className="flex gap-2 mt-2">
+                        <Badge variant={user.verified ? 'default' : 'outline'}>
+                          {user.verified ? 'Doğrulanmış' : 'Doğrulanmamış'}
+                        </Badge>
+                        {user.blocked && <Badge variant="destructive">Engellenmiş</Badge>}
+                      </div>
+                    </div>
+                    <Button
+                      variant={user.blocked ? 'outline' : 'destructive'}
+                      size="sm"
+                      onClick={() => handleBlockUser(user.id, user.blocked)}
+                      data-testid={`admin-block-user-${user.id}`}
+                    >
+                      {user.blocked ? 'Engeli Kaldır' : 'Engelle'}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="listings">
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>İlanlar ({listings.length})</h2>
+              <div className="space-y-4">
+                {listings.map((listing) => (
+                  <div key={listing.id} className="border rounded-lg p-4" data-testid="admin-listing-row">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="font-semibold">{listing.profile?.display_name}</div>
+                        <div className="text-sm text-slate-600 mt-1">
+                          {listing.institution} - {listing.role}
+                        </div>
+                        <div className="text-sm text-slate-500 mt-2">
+                          {listing.current_province}/{listing.current_district} → {listing.desired_province}/{listing.desired_district}
+                        </div>
+                        <div className="flex gap-2 mt-2">
+                          <Badge variant={listing.status === 'active' ? 'default' : 'outline'}>
+                            {listing.status === 'active' ? 'Aktif' : 'Kapalı'}
+                          </Badge>
+                          <span className="text-xs text-slate-400">{formatDate(listing.created_at)}</span>
+                        </div>
+                      </div>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteListing(listing.id)}
+                        data-testid={`admin-delete-listing-${listing.id}`}
+                      >
+                        Sil
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="reports">
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Raporlar ({reports.length})</h2>
+              {reports.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                  <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <p>Henüz rapor yok</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {reports.map((report) => (
+                    <div key={report.id} className="border rounded-lg p-4" data-testid="admin-report-row">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <div className="font-semibold text-red-600">Engelleme Raporu</div>
+                          <div className="text-sm text-slate-600 mt-2">
+                            <strong>{report.blocker_profile?.display_name}</strong> kullanıcısı{' '}
+                            <strong>{report.blocked_profile?.display_name}</strong> kullanıcısını engelledi
+                          </div>
+                          {report.reason && (
+                            <div className="text-sm text-slate-500 mt-2">
+                              <strong>Sebep:</strong> {report.reason}
+                            </div>
+                          )}
+                          <div className="text-xs text-slate-400 mt-2">{formatDate(report.created_at)}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;
