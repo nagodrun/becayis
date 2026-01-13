@@ -17,7 +17,6 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
 
   const [step1Data, setStep1Data] = useState({
-    registry_number: '',
     email: '',
     password: '',
     passwordConfirm: ''
