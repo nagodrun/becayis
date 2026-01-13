@@ -75,6 +75,18 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm('Kullanıcıyı kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) return;
+
+    try {
+      await api.delete(`/admin/users/${userId}`);
+      toast.success('Kullanıcı silindi');
+      fetchData();
+    } catch (error) {
+      toast.error('Kullanıcı silinemedi');
+    }
+  };
+
   const handleDeleteListing = async (listingId) => {
     if (!window.confirm('İlanı silmek istediğinizden emin misiniz?')) return;
 
