@@ -693,6 +693,121 @@ async def get_blocks(current_user: dict = Depends(get_current_user)):
     
     return blocks
 
+# ============= ADMIN ENDPOINTS =============
+ADMIN_USERNAME = "becayis"
+ADMIN_PASSWORD = "1234"
+
+async def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        is_admin = payload.get("is_admin", False)
+        if not is_admin:
+            raise HTTPException(status_code=403, detail="Admin yetkisi gerekli")
+        return payload
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token geçersiz")
+
+@api_router.post("/admin/login")
+async def admin_login(username: str, password: str):
+    if username != ADMIN_USERNAME or password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı")
+    
+    access_token = create_access_token(data={"sub": "admin", "is_admin": True})
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {"username": username, "role": "admin"}
+    }
+
+@api_router.get("/admin/users")
+async def admin_get_users(admin = Depends(verify_admin)):
+    users = await db.users.find({}, {"_id": 0, "password_hash": 0, "tc_hash": 0, "registry_hash": 0}).to_list(1000)
+    
+    # Enrich with profile data
+    for user in users:
+        profile = await db.profiles.find_one({"user_id": user["id"]}, {"_id": 0})
+        user["profile"] = profile
+    
+    return users
+
+@api_router.get("/admin/listings")
+async def admin_get_listings(admin = Depends(verify_admin)):
+    listings = await db.listings.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    
+    # Enrich with profile data
+    for listing in listings:
+        profile = await db.profiles.find_one({"user_id": listing["user_id"]}, {"_id": 0})
+        listing["profile"] = profile
+    
+    return listings
+
+@api_router.put("/admin/users/{user_id}/block")
+async def admin_block_user(user_id: str, admin = Depends(verify_admin)):
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"blocked": True, "blocked_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+    
+    return {"message": "Kullanıcı engellendi"}
+
+@api_router.put("/admin/users/{user_id}/unblock")
+async def admin_unblock_user(user_id: str, admin = Depends(verify_admin)):
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"blocked": False}, "$unset": {"blocked_at": ""}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+    
+    return {"message": "Kullanıcı engeli kaldırıldı"}
+
+@api_router.delete("/admin/listings/{listing_id}")
+async def admin_delete_listing(listing_id: str, admin = Depends(verify_admin)):
+    result = await db.listings.delete_one({"id": listing_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="İlan bulunamadı")
+    
+    return {"message": "İlan silindi"}
+
+@api_router.get("/admin/reports")
+async def admin_get_reports(admin = Depends(verify_admin)):
+    blocks = await db.blocks.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    
+    # Enrich with profile data
+    for block in blocks:
+        blocker = await db.profiles.find_one({"user_id": block["blocker_id"]}, {"_id": 0})
+        blocked = await db.profiles.find_one({"user_id": block["blocked_id"]}, {"_id": 0})
+        block["blocker_profile"] = blocker
+        block["blocked_profile"] = blocked
+    
+    return blocks
+
+@api_router.get("/admin/stats")
+async def admin_get_stats(admin = Depends(verify_admin)):
+    total_users = await db.users.count_documents({})
+    total_listings = await db.listings.count_documents({})
+    active_listings = await db.listings.count_documents({"status": "active"})
+    total_invitations = await db.invitations.count_documents({})
+    accepted_invitations = await db.invitations.count_documents({"status": "accepted"})
+    total_conversations = await db.conversations.count_documents({})
+    total_messages = await db.messages.count_documents({})
+    
+    return {
+        "total_users": total_users,
+        "total_listings": total_listings,
+        "active_listings": active_listings,
+        "total_invitations": total_invitations,
+        "accepted_invitations": accepted_invitations,
+        "total_conversations": total_conversations,
+        "total_messages": total_messages
+    }
+
 # ============= UTILITY ENDPOINTS =============
 @api_router.get("/provinces")
 async def get_provinces():
