@@ -427,9 +427,52 @@ async def delete_listing(listing_id: str, current_user: dict = Depends(get_curre
     if listing["user_id"] != current_user["id"]:
         raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok")
     
-    await db.listings.delete_one({"id": listing_id})
+    # Instead of deleting, create a deletion request
+    raise HTTPException(status_code=400, detail="İlan silme için admin onayı gereklidir. Lütfen silme isteği gönderin.")
+
+@api_router.post("/listings/{listing_id}/request-deletion")
+async def request_listing_deletion(listing_id: str, data: RequestListingDeletion, current_user: dict = Depends(get_current_user)):
+    listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
+    if not listing:
+        raise HTTPException(status_code=404, detail="İlan bulunamadı")
     
-    return {"message": "İlan silindi"}
+    if listing["user_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok")
+    
+    # Check if already requested
+    existing = await db.deletion_requests.find_one({
+        "listing_id": listing_id,
+        "status": "pending"
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="Bu ilan için zaten bekleyen bir silme isteği var")
+    
+    # Create deletion request
+    deletion_request = {
+        "id": str(uuid.uuid4()),
+        "listing_id": listing_id,
+        "user_id": current_user["id"],
+        "reason": data.reason,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.deletion_requests.insert_one(deletion_request)
+    
+    return {"message": "Silme isteği gönderildi. Admin onayı bekleniyor.", "request_id": deletion_request["id"]}
+
+@api_router.get("/listings/deletion-requests/my")
+async def get_my_deletion_requests(current_user: dict = Depends(get_current_user)):
+    requests = await db.deletion_requests.find(
+        {"user_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    # Enrich with listing data
+    for req in requests:
+        listing = await db.listings.find_one({"id": req["listing_id"]}, {"_id": 0})
+        req["listing"] = listing
+    
+    return requests
 
 # ============= INVITATION ENDPOINTS =============
 @api_router.post("/invitations")
