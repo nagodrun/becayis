@@ -67,7 +67,8 @@ const Register = () => {
       setMockOtp(response.data.otp_mock);
       toast.success('OTP gönderildi! (Geliştirme modu: OTP otomatik dolduruldu)');
       setStep2Data({ ...step2Data, otp: response.data.otp_mock });
-      setStep(3);
+      // Auto submit OTP
+      setTimeout(() => handleStep3({ preventDefault: () => {} }), 500);
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Telefon doğrulaması başarısız');
     } finally {
