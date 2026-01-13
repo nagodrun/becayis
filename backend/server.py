@@ -161,27 +161,32 @@ class RequestListingDeletion(BaseModel):
 # ============= AUTH ENDPOINTS =============
 @api_router.post("/auth/register/step1")
 async def register_step1(data: RegisterStep1):
-    """Step 1: Verify TC ID and Registry Number uniqueness"""
-    tc_hash = hash_sensitive_data(data.tc_id)
+    """Step 1: Verify email domain and registry number uniqueness"""
+    # Check email domain (must be government email)
+    email_domain = data.email.split('@')[1]
+    allowed_domains = ['adalet.gov.tr', 'meb.gov.tr', 'saglik.gov.tr', 'icisleri.gov.tr', 
+                      'maliye.gov.tr', 'gov.tr']  # Add more as needed
+    
+    if not any(email_domain.endswith(domain) for domain in allowed_domains):
+        raise HTTPException(status_code=400, detail="Sadece kurumsal (.gov.tr) e-posta adresleri ile kayıt olabilirsiniz")
+    
     registry_hash = hash_sensitive_data(data.registry_number)
     
     # Check if already registered
     existing = await db.users.find_one({
         "$or": [
-            {"tc_hash": tc_hash},
             {"registry_hash": registry_hash},
             {"email": data.email}
         ]
     })
     
     if existing:
-        raise HTTPException(status_code=400, detail="Bu TC, sicil numarası veya email ile zaten kayıtlı bir hesap var")
+        raise HTTPException(status_code=400, detail="Bu sicil numarası veya email ile zaten kayıtlı bir hesap var")
     
     # Create verification record
     verification_id = str(uuid.uuid4())
     verification = {
         "id": verification_id,
-        "tc_hash": tc_hash,
         "registry_hash": registry_hash,
         "email": data.email,
         "password_hash": get_password_hash(data.password),
