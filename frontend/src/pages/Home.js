@@ -153,9 +153,15 @@ const Home = () => {
 
         {/* Filters */}
         <div className="bg-white rounded-xl border border-slate-200 p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Input
-              placeholder="Kurum ara..."
+              placeholder="İlan başlığı ara..."
+              value={filters.title}
+              onChange={(e) => setFilters({ ...filters, title: e.target.value })}
+              data-testid="filter-title"
+            />
+            <Input
+              placeholder="Kurum adı ara..."
               value={filters.institution}
               onChange={(e) => setFilters({ ...filters, institution: e.target.value })}
               data-testid="filter-institution"
