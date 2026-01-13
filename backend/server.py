@@ -250,7 +250,6 @@ async def verify_otp(data: VerifyOTP):
         "email": verification["email"],
         "password_hash": verification["password_hash"],
         "phone": verification["phone"],
-        "tc_hash": verification["tc_hash"],
         "registry_hash": verification["registry_hash"],
         "verified": True,
         "profile_completed": False,
