@@ -955,6 +955,48 @@ async def delete_notification(notification_id: str, current_user: dict = Depends
     return {"message": "Bildirim silindi"}
 
 # ============= UTILITY ENDPOINTS =============
+@api_router.get("/utility/institutions")
+async def get_institutions():
+    """Return Turkish public institutions"""
+    institutions = [
+        "ADALET BAKANLIĞI",
+        "MİLLİ EĞİTİM BAKANLIĞI",
+        "SAĞLIK BAKANLIĞI",
+        "İÇİŞLERİ BAKANLIĞI",
+        "MALİYE VE HAZİNE BAKANLIĞI",
+        "ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞI",
+        "TARIM VE ORMAN BAKANLIĞI",
+        "ULAŞTIRMA VE ALTYAPI BAKANLIĞI",
+        "TİCARET BAKANLIĞI",
+        "ENERJİ VE TABİİ KAYNAKLAR BAKANLIĞI",
+        "ÇALIŞMA VE SOSYAL GÜVENLİK BAKANLIĞI",
+        "AİLE VE SOSYAL HİZMETLER BAKANLIĞI",
+        "KÜLTÜR VE TURİZM BAKANLIĞI",
+        "GENÇLİK VE SPOR BAKANLIĞI",
+        "SANAYİ VE TEKNOLOJİ BAKANLIĞI"
+    ]
+    return institutions
+
+@api_router.get("/utility/positions")
+async def get_positions():
+    """Return common public sector positions"""
+    positions = [
+        "Zabıt Katibi",
+        "İcra Katibi", 
+        "Mübaşir",
+        "Öğretmen",
+        "Hemşire",
+        "Sağlık Teknikeri",
+        "Memur",
+        "Teknisyen",
+        "Mühendis",
+        "Uzman",
+        "Şef",
+        "Müdür Yardımcısı",
+        "Müdür"
+    ]
+    return positions
+
 @api_router.get("/provinces")
 async def get_provinces():
     """Return Turkish provinces"""
