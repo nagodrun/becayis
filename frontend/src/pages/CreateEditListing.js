@@ -8,6 +8,7 @@ import { Card } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
 import api from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
 import { FileText } from 'lucide-react';
 
 const CreateEditListing = () => {
