@@ -34,11 +34,19 @@ const CreateEditListing = () => {
     current_district: ''
   });
 
-  // Block digits in title and notes
+  // Block digits in title and notes with character limits
   const handleTextChange = (field, value) => {
     // Remove any digits from the input
     const sanitizedValue = value.replace(/[0-9]/g, '');
-    setFormData({ ...formData, [field]: sanitizedValue });
+    
+    // Apply character limits
+    if (field === 'title') {
+      setFormData({ ...formData, [field]: sanitizedValue.slice(0, 45) });
+    } else if (field === 'notes') {
+      setFormData({ ...formData, [field]: sanitizedValue.slice(0, 140) });
+    } else {
+      setFormData({ ...formData, [field]: sanitizedValue });
+    }
   };
 
   useEffect(() => {
@@ -167,26 +175,28 @@ const CreateEditListing = () => {
               <p className="text-sm text-muted-foreground">İlanınızın başlığı ve açıklaması</p>
               
               <div>
-                <Label htmlFor="title">İlan Başlığı *</Label>
+                <Label htmlFor="title">İlan Başlığı * <span className="text-muted-foreground font-normal">({formData.title.length}/45)</span></Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => handleTextChange('title', e.target.value)}
-                  placeholder="Örn: Ankara Adliyesi - İstanbul Adliyesi Becayiş"
+                  placeholder="Örn: Ankara - İstanbul Becayiş"
                   required
+                  maxLength={45}
                   data-testid="listing-title-input"
                 />
                 <p className="text-xs text-muted-foreground mt-1">Telefon numarası yazmak yasaktır</p>
               </div>
 
               <div>
-                <Label htmlFor="notes">Açıklama</Label>
+                <Label htmlFor="notes">Açıklama <span className="text-muted-foreground font-normal">({formData.notes.length}/140)</span></Label>
                 <Textarea
                   id="notes"
                   value={formData.notes}
                   onChange={(e) => handleTextChange('notes', e.target.value)}
-                  rows={4}
+                  rows={3}
                   placeholder="İlan hakkında detaylı bilgi..."
+                  maxLength={140}
                   data-testid="listing-notes-input"
                 />
                 <p className="text-xs text-muted-foreground mt-1">Telefon numarası yazmak yasaktır</p>
