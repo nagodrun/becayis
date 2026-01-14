@@ -8,125 +8,145 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 - Farklı illere tayin olmak isteyen memurlar
 - Kurumlar arası veya kurum içi yer değişimi arayan çalışanlar
 
-## Temel Gereksinimler
-
-### 1. Kimlik Doğrulama (Tamamlandı)
-- [x] Kurumsal e-posta ile kayıt (@gov.tr uzantısı)
-- [x] E-posta doğrulama kodu (MOCKED - gerçek e-posta gönderilmiyor)
-- [x] Ad ve Soyad alanları zorunlu
-- [x] JWT tabanlı oturum yönetimi
-- [x] Çıkış yapıldığında ana sayfaya yönlendirme
-
-### 2. Kullanıcı Paneli (Tamamlandı)
-- [x] Profil tamamlanma durumu
-- [x] Aktif ilan sayısı
-- [x] Bekleyen davet sayısı
-- [x] Aktif konuşma sayısı
-- [x] Bildirim sayısı
-- [x] Profil sekmesi (Dashboard içinde, detaylı düzenleme)
-- [x] Kapatılabilir platform politikası uyarısı
-- [x] Konuşma silme (X butonu)
-- [x] **Admin onaylı hesap silme talebi**
-
-### 3. Ana Sayfa & İlanlar (Tamamlandı - Güncellendi)
-- [x] Son ilanların listesi
-- [x] **Hero bölümüne entegre arama kutusu** (saffetcelik.com.tr benzeri)
-- [x] **Tek arama input'u** + **3 dropdown** (Pozisyon, Bulunduğu İl, Hedef İl)
-- [x] Anlık arama (debounce ile live search)
-- [x] Aktif filtre etiketleri gösterimi
-- [x] "Hemen Başla" CTA butonu
-- [x] Giriş yapmamış kullanıcılar için "Talep Gönder" butonu
-- [x] Koyu temada tutarlı görünüm
-
-### 4. Navbar (Tamamlandı)
-- [x] Logo ve tema toggle
-- [x] **Animasyonlu Becayiş ikonu** (turuncu gradient, hover'da dönen çift ok)
-- [x] **Bildirim rozeti** (okunmamış bildirim, mesaj, davet sayısı)
-- [x] Tek profil dropdown butonu (Profilim, Çıkış Yap)
-- [x] Mesaj butonu kaldırıldı
-- [x] Panel butonu kaldırıldı
-- [x] **Bildirimler okunduğunda rozet otomatik silinir**
-
-### 5. Profil Yönetimi (Tamamlandı)
-- [x] Profil düzenleme (Dashboard içinde, detaylı form)
-- [x] Düzenlenebilir alanlar: Ad, Kurum, Pozisyon, İl, İlçe, Bio
-- [x] Ayrı profil sayfası kaldırıldı
-- [x] Profil bilgileri kayıttan otomatik doldurulur
-- [ ] Profil fotoğrafı yükleme (Planlanıyor)
-
-### 6. Admin Paneli (Tamamlandı - Güncellendi)
-- [x] Admin girişi (becayis/1234)
-- [x] **5 sekme**: Kullanıcılar, İlanlar, İlan Silme, Hesap Silme, Raporlar
-- [x] **Kullanıcı silme çalışıyor**
-- [x] **İlan silme çalışıyor**
-- [x] **İlan silme isteklerini onaylama/reddetme**
-- [x] **İlan silme isteklerini temizleme (X butonu)**
-- [x] **Hesap silme taleplerini onaylama/reddetme**
-- [x] **Hesap silme taleplerini temizleme (X butonu)**
-- [x] Kullanıcı engelleme/kaldırma
-
-### 7. Statik Sayfalar (Tamamlandı)
-- [x] /terms - Kullanım Şartları
-- [x] /privacy - Gizlilik Politikası
-- [x] /help - Yardım Merkezi (SSS dahil)
-
-### 8. UI/UX (Tamamlandı)
-- [x] FAQ bölümü (ana sayfa)
-- [x] Kapatılabilir politika uyarısı
-- [x] Dark/Light tema (site genelinde)
-- [x] Anlık arama (arama butonu yok)
-
 ## Tech Stack
-- **Frontend**: React, TailwindCSS, Shadcn/UI
-- **Backend**: FastAPI (Python)
+- **Frontend**: React, TailwindCSS, Shadcn/UI, WebSocket
+- **Backend**: FastAPI (Python), WebSocket
 - **Database**: MongoDB
 - **Authentication**: JWT
 
-## Son Güncelleme: Ocak 2026
+---
 
-### Bu Oturumda Tamamlanan İşler:
-1. ✅ **Admin Onaylı Hesap Silme** - Kullanıcılar artık doğrudan hesap silemez, admin'e talep gönderiyor
-2. ✅ **Admin Hesap Silme Sekmesi** - Admin paneline "Hesap Silme" sekmesi eklendi
-3. ✅ **Admin Kullanıcı Silme** - Admin panel → Kullanıcılar → "Sil" butonu çalışıyor
-4. ✅ **Admin İlan Silme Temizleme** - Admin panel → İlan Silme → X butonu ile işlenmiş istekler temizlenebiliyor
-5. ✅ **Statik Sayfalar** - /terms, /privacy, /help sayfaları oluşturuldu
-6. ✅ **Kullanılmayan Dosya Temizliği** - Profile.js silindi
+## Tamamlanan Özellikler
 
-## Mocklanmış Özellikler
-- **E-posta Doğrulama**: Gerçek e-posta gönderilmiyor, kod response'da dönüyor
+### 1. Kimlik Doğrulama ✅
+- [x] Kurumsal e-posta ile kayıt (@gov.tr uzantısı)
+- [x] E-posta doğrulama kodu (MOCKED)
+- [x] Ad ve Soyad alanları zorunlu
+- [x] JWT tabanlı oturum yönetimi
+- [x] Admin onaylı hesap silme
 
-## Sonraki Öncelikli Görevler (P1)
-1. Ana sayfa arama tasarımı (saffetcelik.com.tr benzeri dropdown'lar)
-2. Gerçek e-posta gönderimi (SendGrid entegrasyonu)
+### 2. Kullanıcı Paneli ✅
+- [x] Profil sekmesi (Dashboard içinde)
+- [x] **Profil fotoğrafı yükleme/silme** ✨ NEW
+- [x] Bildirim rozeti (navbar'da)
+- [x] Bildirimler okunduğunda rozet sıfırlanır
+- [x] Konuşma silme (X butonu)
+- [x] **Konuşma silindiğinde diğer kullanıcıya bildirim** ✨ NEW
+- [x] Hesap silme talebi (admin onaylı)
 
-## Backlog (P2+)
-- Profil fotoğrafı yükleme
-- WebSocket ile gerçek zamanlı mesajlaşma
-- İlan detay sayfası
-- Bildirim tercihleri
-- saffetcelik.com.tr'den pozisyon listesi scraping
+### 3. Ana Sayfa & İlanlar ✅
+- [x] Hero bölümüne entegre arama kutusu
+- [x] 3 dropdown: Pozisyon, Bulunduğu İl, Hedef İl
+- [x] **220+ pozisyon listesi** (becayis.memurlar.net'ten) ✨ NEW
+- [x] **105+ kurum listesi** (becayis.memurlar.net'ten) ✨ NEW
+- [x] **İlan kartlarında kullanıcı baş harfleri** (örn: "AY") ✨ NEW
+- [x] Anlık arama (debounce ile live search)
+- [x] Koyu/açık tema uyumlu
 
-## Test Durumu
-- Backend: %100 geçti
-- Frontend: %100 geçti
-- Son test raporu: /app/test_reports/iteration_6.json
+### 4. Davet Sistemi ✅
+- [x] Davet gönderme
+- [x] **Aynı ilana birden fazla davet engellemesi** ✨ NEW
+- [x] Davet kabul/reddetme
+- [x] Günlük davet limiti (10)
+
+### 5. Kullanıcı Engelleme ✅ NEW
+- [x] **Kullanıcı engelleme** (POST /api/block)
+- [x] **Engel kaldırma** (DELETE /api/blocks/{id})
+- [x] Engellenen kullanıcıya davet gönderememe
+- [x] Engellenen kullanıcıyla mesajlaşamama
+
+### 6. Mesajlaşma ✅
+- [x] **WebSocket ile gerçek zamanlı mesajlaşma** ✨ NEW
+- [x] Yazıyor göstergesi
+- [x] Mesaj okundu işareti
+- [x] Konuşma silme + bildirim
+
+### 7. Navbar ✅
+- [x] Animasyonlu Becayiş ikonu (hover'da dönen)
+- [x] Bildirim rozeti (okunmamış sayısı)
+- [x] Tek profil dropdown butonu
+- [x] Dark/Light tema toggle
+
+### 8. Admin Paneli ✅
+- [x] 5 sekme: Kullanıcılar, İlanlar, İlan Silme, Hesap Silme, Raporlar
+- [x] Kullanıcı silme
+- [x] İlan silme isteklerini onaylama/reddetme
+- [x] Hesap silme taleplerini onaylama/reddetme
+
+### 9. FAQ ✅ NEW
+- [x] **8 soru/cevap becayis.memurlar.net'ten** ✨
+- [x] Accordion formatında
+
+### 10. Statik Sayfalar ✅
+- [x] /terms - Kullanım Şartları
+- [x] /privacy - Gizlilik Politikası
+- [x] /help - Yardım Merkezi
+
+---
 
 ## API Endpoints
+
 ### Auth
 - POST /api/auth/register/step1
 - POST /api/auth/verify-email
 - POST /api/auth/login
 - GET /api/auth/me
-- POST /api/auth/request-account-deletion ✅ NEW
-- GET /api/auth/account-deletion-status ✅ NEW
+- POST /api/auth/request-account-deletion
+- GET /api/auth/account-deletion-status
+
+### Profile
+- GET/POST/PUT /api/profile
+- POST /api/profile/avatar ✨ NEW
+- DELETE /api/profile/avatar ✨ NEW
+
+### Listings
+- GET /api/listings (includes user_initials) ✨ UPDATED
+- POST /api/listings
+- PUT /api/listings/{id}
+- DELETE /api/listings/{id}
+
+### Invitations
+- GET /api/invitations
+- POST /api/invitations (duplicate prevention) ✨ UPDATED
+- POST /api/invitations/{id}/respond
+
+### Messages
+- GET /api/conversations
+- GET /api/conversations/{id}/messages
+- POST /api/messages
+- DELETE /api/conversations/{id} (sends notification) ✨ UPDATED
+
+### Blocking ✨ NEW
+- POST /api/block
+- GET /api/blocks
+- DELETE /api/blocks/{blocked_user_id}
+
+### Utility ✨ UPDATED
+- GET /api/faq (8 questions)
+- GET /api/provinces (81 il)
+- GET /api/positions (220+ pozisyon)
+- GET /api/institutions (105+ kurum)
+- GET /api/utility/positions
+- GET /api/utility/institutions
+
+### WebSocket ✨ NEW
+- WS /ws/{token}
 
 ### Admin
 - POST /api/admin/login
 - GET /api/admin/users
 - DELETE /api/admin/users/{id}
-- GET /api/admin/deletion-requests
-- DELETE /api/admin/deletion-requests/{id}
-- GET /api/admin/account-deletion-requests ✅ NEW
-- POST /api/admin/account-deletion-requests/{id}/approve ✅ NEW
-- POST /api/admin/account-deletion-requests/{id}/reject ✅ NEW
-- DELETE /api/admin/account-deletion-requests/{id} ✅ NEW
+- GET/DELETE /api/admin/deletion-requests
+- GET/POST /api/admin/account-deletion-requests
+
+---
+
+## Mocklanmış Özellikler
+- **E-posta Doğrulama**: Gerçek e-posta gönderilmiyor, kod response'da dönüyor
+
+## Test Durumu
+- Backend: %100 geçti
+- Frontend: Manuel test geçti
+- Son test raporu: /app/test_reports/iteration_7.json
+
+## Son Güncelleme: Ocak 2026
