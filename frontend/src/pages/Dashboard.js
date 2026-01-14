@@ -525,18 +525,67 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="profile">
-            <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Manrope' }}>Profil Ayarları</h2>
+            <h2 className="text-2xl font-bold mb-6 text-foreground" style={{ fontFamily: 'Manrope' }}>Profil Ayarları</h2>
             <Card className="p-6">
               <div className="space-y-6">
                 {editingProfile ? (
                   <>
-                    <div>
-                      <Label htmlFor="display_name">Görünen Ad</Label>
-                      <Input
-                        id="display_name"
-                        value={profileData.display_name}
-                        onChange={(e) => setProfileData({ ...profileData, display_name: e.target.value })}
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="display_name">Görünen Ad</Label>
+                        <Input
+                          id="display_name"
+                          value={profileData.display_name}
+                          onChange={(e) => setProfileData({ ...profileData, display_name: e.target.value })}
+                          placeholder="Adınız Soyadınız"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="phone">Telefon</Label>
+                        <Input
+                          id="phone"
+                          value={profileData.phone || user?.phone || ''}
+                          disabled
+                          className="bg-slate-100 dark:bg-slate-800"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">Telefon numarası değiştirilemez</p>
+                      </div>
+                      <div>
+                        <Label htmlFor="institution">Kurum</Label>
+                        <Input
+                          id="institution"
+                          value={profileData.institution}
+                          onChange={(e) => setProfileData({ ...profileData, institution: e.target.value })}
+                          placeholder="Çalıştığınız kurum"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="role">Pozisyon</Label>
+                        <Input
+                          id="role"
+                          value={profileData.role}
+                          onChange={(e) => setProfileData({ ...profileData, role: e.target.value })}
+                          placeholder="Göreviniz"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="current_province">Şu Anki İl</Label>
+                        <Input
+                          id="current_province"
+                          value={profileData.current_province}
+                          onChange={(e) => setProfileData({ ...profileData, current_province: e.target.value })}
+                          placeholder="Bulunduğunuz il"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="current_district">Şu Anki İlçe</Label>
+                        <Input
+                          id="current_district"
+                          value={profileData.current_district}
+                          onChange={(e) => setProfileData({ ...profileData, current_district: e.target.value })}
+                          placeholder="Bulunduğunuz ilçe"
+                        />
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="bio">Hakkında</Label>
@@ -544,73 +593,89 @@ const Dashboard = () => {
                         id="bio"
                         value={profileData.bio}
                         onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
-                        rows={3}
+                        rows={4}
+                        placeholder="Kendinizi kısaca tanıtın..."
                       />
                     </div>
-                    <div className="flex gap-2">
-                      <Button onClick={handleUpdateProfile}>Kaydet</Button>
+                    <div className="flex gap-2 pt-4">
+                      <Button onClick={handleUpdateProfile} className="bg-emerald-600 hover:bg-emerald-700">
+                        Değişiklikleri Kaydet
+                      </Button>
                       <Button variant="outline" onClick={() => setEditingProfile(false)}>İptal</Button>
                     </div>
                   </>
                 ) : (
                   <>
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">Kişisel Bilgiler</h3>
+                      <h3 className="text-lg font-semibold mb-4 text-foreground">Kişisel Bilgiler</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-2">Görünen Ad</label>
-                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                          <label className="block text-sm font-medium text-muted-foreground mb-2">Görünen Ad</label>
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
                             {user?.profile?.display_name || 'Belirtilmemiş'}
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-2">E-posta</label>
-                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">{user?.email}</div>
+                          <label className="block text-sm font-medium text-muted-foreground mb-2">E-posta</label>
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">{user?.email}</div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-2">Kurum</label>
-                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                          <label className="block text-sm font-medium text-muted-foreground mb-2">Telefon</label>
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
+                            {user?.phone || 'Belirtilmemiş'}
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-muted-foreground mb-2">Kurum</label>
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
                             {user?.profile?.institution || 'Belirtilmemiş'}
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-2">Pozisyon</label>
-                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                          <label className="block text-sm font-medium text-muted-foreground mb-2">Pozisyon</label>
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
                             {user?.profile?.role || 'Belirtilmemiş'}
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-muted-foreground mb-2">Konum</label>
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
+                            {user?.profile?.current_province && user?.profile?.current_district 
+                              ? `${user.profile.current_province} / ${user.profile.current_district}`
+                              : 'Belirtilmemiş'}
                           </div>
                         </div>
                       </div>
                       {user?.profile?.bio && (
                         <div className="mt-4">
-                          <label className="block text-sm font-medium text-slate-700 mb-2">Hakkında</label>
-                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">{user.profile.bio}</div>
+                          <label className="block text-sm font-medium text-muted-foreground mb-2">Hakkında</label>
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">{user.profile.bio}</div>
                         </div>
                       )}
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">Hesap Bilgileri</h3>
+                      <h3 className="text-lg font-semibold mb-4 text-foreground">Hesap Bilgileri</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-2">Üyelik Tarihi</label>
-                          <div className="p-3 bg-slate-50 rounded-md text-slate-600">
+                          <label className="block text-sm font-medium text-muted-foreground mb-2">Üyelik Tarihi</label>
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
                             {user?.created_at ? formatDate(user.created_at) : 'Bilinmiyor'}
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-2">Hesap Durumu</label>
-                          <div className="p-3 bg-slate-50 rounded-md">
+                          <label className="block text-sm font-medium text-muted-foreground mb-2">Hesap Durumu</label>
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md">
                             <Badge className="bg-emerald-500">Aktif</Badge>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t flex gap-2">
-                      <Button onClick={() => setEditingProfile(true)}>Profili Düzenle</Button>
-                      <Link to="/profile">
-                        <Button variant="outline">Detaylı Düzenleme</Button>
-                      </Link>
+                    <div className="pt-4 border-t">
+                      <Button onClick={() => setEditingProfile(true)} className="bg-blue-600 hover:bg-blue-700">
+                        Profili Düzenle
+                      </Button>
                     </div>
                   </>
                 )}
