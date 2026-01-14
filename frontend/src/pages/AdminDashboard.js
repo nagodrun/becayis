@@ -16,6 +16,7 @@ const AdminDashboard = () => {
   const [listings, setListings] = useState([]);
   const [reports, setReports] = useState([]);
   const [deletionRequests, setDeletionRequests] = useState([]);
+  const [accountDeletionRequests, setAccountDeletionRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,12 +38,13 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [statsRes, usersRes, listingsRes, reportsRes, deletionReqRes] = await Promise.all([
+      const [statsRes, usersRes, listingsRes, reportsRes, deletionReqRes, accountDeletionReqRes] = await Promise.all([
         api.get('/admin/stats'),
         api.get('/admin/users'),
         api.get('/admin/listings'),
         api.get('/admin/reports'),
-        api.get('/admin/deletion-requests')
+        api.get('/admin/deletion-requests'),
+        api.get('/admin/account-deletion-requests')
       ]);
 
       setStats(statsRes.data);
@@ -50,6 +52,7 @@ const AdminDashboard = () => {
       setListings(listingsRes.data);
       setReports(reportsRes.data);
       setDeletionRequests(deletionReqRes.data);
+      setAccountDeletionRequests(accountDeletionReqRes.data);
     } catch (error) {
       toast.error('Veriler yüklenirken hata oluştu');
       if (error.response?.status === 403) {
