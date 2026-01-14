@@ -18,6 +18,7 @@ const CreateEditListing = () => {
   const isEdit = !!id;
   const [loading, setLoading] = useState(false);
   const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     notes: '',
@@ -32,6 +33,13 @@ const CreateEditListing = () => {
     current_province: '',
     current_district: ''
   });
+
+  // Block digits in title and notes
+  const handleTextChange = (field, value) => {
+    // Remove any digits from the input
+    const sanitizedValue = value.replace(/[0-9]/g, '');
+    setFormData({ ...formData, [field]: sanitizedValue });
+  };
 
   useEffect(() => {
     fetchProvinces();
@@ -50,12 +58,31 @@ const CreateEditListing = () => {
     }
   }, [id, user]);
 
+  // Fetch districts when province changes
+  useEffect(() => {
+    if (formData.desired_province) {
+      fetchDistricts(formData.desired_province);
+    } else {
+      setDistricts([]);
+    }
+  }, [formData.desired_province]);
+
   const fetchProvinces = async () => {
     try {
       const response = await api.get('/provinces');
       setProvinces(response.data);
     } catch (error) {
       console.error('Failed to fetch provinces:', error);
+    }
+  };
+
+  const fetchDistricts = async (province) => {
+    try {
+      const response = await api.get(`/districts/${encodeURIComponent(province)}`);
+      setDistricts(response.data);
+    } catch (error) {
+      console.error('Failed to fetch districts:', error);
+      setDistricts([]);
     }
   };
 

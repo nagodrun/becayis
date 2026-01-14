@@ -6,6 +6,15 @@ import { Button } from './ui/button';
 import { MapPin, Briefcase, Building2, ArrowRight, Send } from 'lucide-react';
 import { formatDate } from '../lib/utils';
 
+// Mask name: "Ahmet Yılmaz" -> "A*** Y***"
+const maskName = (name) => {
+  if (!name) return 'Anonim';
+  return name.split(' ').map(word => {
+    if (word.length <= 1) return word;
+    return word[0] + '*'.repeat(Math.min(word.length - 1, 3));
+  }).join(' ');
+};
+
 export const ListingCard = ({ listing, onInvite, showInviteButton = true, showInviteForGuest = false }) => {
   const { profile, user_initials } = listing;
   const navigate = useNavigate();
@@ -17,6 +26,7 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
   // Get avatar URL or use initials
   const avatarUrl = profile?.avatar_url;
   const initials = user_initials || '??';
+  const maskedName = maskName(profile?.display_name);
 
   return (
     <Card
@@ -37,7 +47,7 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
               {avatarUrl ? (
                 <img 
                   src={avatarUrl} 
-                  alt={profile?.display_name || 'Kullanıcı'} 
+                  alt={maskedName} 
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -46,7 +56,7 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
             </div>
             <div>
               <div className="font-semibold text-foreground">
-                {profile?.display_name || 'Anonim'}
+                {maskedName}
               </div>
               <div className="text-sm text-muted-foreground">{formatDate(listing.created_at)}</div>
             </div>
@@ -56,14 +66,16 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
           </Badge>
         </div>
 
-        <div className="space-y-3 mb-4">
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Building2 className="w-4 h-4 mr-2" />
-            {listing.institution}
+        {/* Institution and Role side by side */}
+        <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
+          <div className="flex items-center">
+            <Building2 className="w-4 h-4 mr-1.5 flex-shrink-0" />
+            <span className="truncate">{listing.institution}</span>
           </div>
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Briefcase className="w-4 h-4 mr-2" />
-            {listing.role}
+          <span className="text-muted-foreground/50">•</span>
+          <div className="flex items-center">
+            <Briefcase className="w-4 h-4 mr-1.5 flex-shrink-0" />
+            <span className="truncate">{listing.role}</span>
           </div>
         </div>
 
