@@ -893,6 +893,19 @@ async def get_blocks(current_user: dict = Depends(get_current_user)):
     
     return blocks
 
+@api_router.delete("/blocks/{blocked_user_id}")
+async def unblock_user(blocked_user_id: str, current_user: dict = Depends(get_current_user)):
+    """Remove a user block"""
+    result = await db.blocks.delete_one({
+        "blocker_id": current_user["id"],
+        "blocked_id": blocked_user_id
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Engel bulunamadı")
+    
+    return {"message": "Engel kaldırıldı"}
+
 # ============= ADMIN ENDPOINTS =============
 ADMIN_USERNAME = "becayis"
 ADMIN_PASSWORD = "1234"
