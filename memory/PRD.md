@@ -38,9 +38,12 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 
 ### 4. Navbar (Tamamlandı)
 - [x] Logo ve tema toggle
+- [x] **Animasyonlu Becayiş ikonu** (turuncu gradient, hover'da dönen çift ok)
+- [x] **Bildirim rozeti** (okunmamış bildirim, mesaj, davet sayısı)
 - [x] Tek profil dropdown butonu (Profilim, Çıkış Yap)
 - [x] Mesaj butonu kaldırıldı
 - [x] Panel butonu kaldırıldı
+- [x] **Bildirimler okunduğunda rozet otomatik silinir**
 
 ### 5. Profil Yönetimi (Tamamlandı)
 - [x] Profil düzenleme (Dashboard içinde, detaylı form)
