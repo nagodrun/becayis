@@ -90,14 +90,12 @@ async def create_notification(user_id: str, title: str, message: str, notificati
 class RegisterStep1(BaseModel):
     email: EmailStr
     password: str
+    first_name: str
+    last_name: str
 
-class RegisterStep2(BaseModel):
+class VerifyEmail(BaseModel):
     verification_id: str
-    phone: str
-
-class VerifyOTP(BaseModel):
-    verification_id: str
-    otp: str
+    code: str
 
 class CompleteProfile(BaseModel):
     user_id: str
