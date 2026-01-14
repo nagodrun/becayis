@@ -171,11 +171,12 @@ const CreateEditListing = () => {
                 <Input
                   id="title"
                   value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  onChange={(e) => handleTextChange('title', e.target.value)}
                   placeholder="Örn: Ankara Adliyesi - İstanbul Adliyesi Becayiş"
                   required
                   data-testid="listing-title-input"
                 />
+                <p className="text-xs text-muted-foreground mt-1">Telefon numarası yazmak yasaktır</p>
               </div>
 
               <div>
@@ -183,11 +184,12 @@ const CreateEditListing = () => {
                 <Textarea
                   id="notes"
                   value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  onChange={(e) => handleTextChange('notes', e.target.value)}
                   rows={4}
                   placeholder="İlan hakkında detaylı bilgi..."
                   data-testid="listing-notes-input"
                 />
+                <p className="text-xs text-muted-foreground mt-1">Telefon numarası yazmak yasaktır</p>
               </div>
             </div>
 
@@ -270,11 +272,14 @@ const CreateEditListing = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="desired_province">Şehir *</Label>
-                  <Select value={formData.desired_province || undefined} onValueChange={(val) => setFormData({ ...formData, desired_province: val })}>
+                  <Select 
+                    value={formData.desired_province || undefined} 
+                    onValueChange={(val) => setFormData({ ...formData, desired_province: val, desired_district: '' })}
+                  >
                     <SelectTrigger data-testid="listing-desired-province">
                       <SelectValue placeholder="Şehir seçin" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px]">
                       {provinces.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
                     </SelectContent>
                   </Select>
@@ -282,13 +287,18 @@ const CreateEditListing = () => {
 
                 <div>
                   <Label htmlFor="desired_district">İlçe</Label>
-                  <Input
-                    id="desired_district"
-                    value={formData.desired_district}
-                    onChange={(e) => setFormData({ ...formData, desired_district: e.target.value })}
-                    placeholder="İlçe seçin (isteğe bağlı)"
-                    data-testid="listing-desired-district-input"
-                  />
+                  <Select 
+                    value={formData.desired_district || undefined} 
+                    onValueChange={(val) => setFormData({ ...formData, desired_district: val })}
+                    disabled={!formData.desired_province || districts.length === 0}
+                  >
+                    <SelectTrigger data-testid="listing-desired-district">
+                      <SelectValue placeholder={formData.desired_province ? "İlçe seçin" : "Önce il seçin"} />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                      {districts.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
