@@ -368,6 +368,19 @@ const AdminDashboard = () => {
                             </Button>
                           </div>
                         )}
+                        
+                        {/* X button to clear processed requests */}
+                        {request.status !== 'pending' && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="ml-4 text-slate-400 hover:text-red-500 hover:bg-red-50"
+                            onClick={() => handleClearDeletionRequest(request.id)}
+                            data-testid={`clear-deletion-${request.id}`}
+                          >
+                            <X className="w-5 h-5" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}
