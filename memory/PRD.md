@@ -71,15 +71,13 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 ## Son Güncelleme: Ocak 2026
 
 ### Bu Oturumda Tamamlanan İşler:
-1. ✅ **Kayıt akışı yenilendi**: Ad, Soyad, Kurumsal E-posta, Şifre
-2. ✅ **SMS doğrulaması kaldırıldı**, E-posta doğrulaması eklendi
-3. ✅ **Admin kullanıcı silme** çalışır hale getirildi
-4. ✅ **Kullanıcı kendi hesabını silme** özelliği eklendi
-5. ✅ **Profil güncelleme** tam çalışır hale getirildi
-6. ✅ Navbar'dan mesaj butonu kaldırıldı
-7. ✅ Profil+Panel butonları tek dropdown'da birleştirildi
-8. ✅ Anlık arama (debounce) eklendi
-9. ✅ Giriş yapmamış kullanıcılar için "Talep Gönder" butonu
+1. ✅ **Profil Güncelleme Düzeltildi** - Profil yoksa oluşturur, varsa günceller
+2. ✅ **Hesap Silme Çalışıyor** - Dashboard → Profil sekmesinde "Hesabı Sil" butonu
+3. ✅ **İlan Oluştur Otomatik Doldurma** - Kurum, Pozisyon, İl, İlçe profilden alınıyor
+4. ✅ **Kayıt akışı**: Ad, Soyad, Kurumsal E-posta, E-posta doğrulama
+5. ✅ Admin kullanıcı silme çalışıyor
+6. ✅ Dark tema uyumluluğu (CreateEditListing.js dahil)
+7. ✅ Profil boşsa ilan oluşturma butonu devre dışı
 
 ## Mocklanmış Özellikler
 - **E-posta Doğrulama**: Gerçek e-posta gönderilmiyor, kod response'da dönüyor
