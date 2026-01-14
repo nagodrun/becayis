@@ -682,6 +682,59 @@ const Dashboard = () => {
             <h2 className="text-2xl font-bold mb-6 text-foreground" style={{ fontFamily: 'Manrope' }}>Profil Ayarları</h2>
             <Card className="p-6">
               <div className="space-y-6">
+                {/* Avatar Section */}
+                <div className="flex items-center gap-6 pb-6 border-b border-border">
+                  <div className="relative">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-lg">
+                      {profileData.avatar_url ? (
+                        <img 
+                          src={profileData.avatar_url} 
+                          alt="Profil" 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-white font-bold text-2xl">
+                          {(user?.first_name?.[0] || '?').toUpperCase()}
+                          {(user?.last_name?.[0] || '?').toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      className="hidden"
+                      onChange={handleAvatarUpload}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-foreground mb-1">Profil Fotoğrafı</h3>
+                    <p className="text-sm text-muted-foreground mb-3">JPEG, PNG, WebP veya GIF. Max 5MB.</p>
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploadingAvatar}
+                        className="bg-amber-500 hover:bg-amber-600"
+                      >
+                        <Camera className="w-4 h-4 mr-2" />
+                        {uploadingAvatar ? 'Yükleniyor...' : 'Fotoğraf Yükle'}
+                      </Button>
+                      {profileData.avatar_url && (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={handleDeleteAvatar}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <X className="w-4 h-4 mr-2" />
+                          Kaldır
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
                 {editingProfile ? (
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
