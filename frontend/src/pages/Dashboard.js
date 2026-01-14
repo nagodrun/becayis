@@ -221,6 +221,42 @@ const Dashboard = () => {
     localStorage.setItem('hideWarning', 'true');
   };
 
+  // State for pending avatar upload
+  const [pendingAvatarFile, setPendingAvatarFile] = useState(null);
+  const [pendingAvatarPreview, setPendingAvatarPreview] = useState(null);
+
+  const handleAvatarSelect = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Sadece JPEG, PNG, WebP veya GIF dosyaları kabul edilir');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Dosya boyutu 5MB\'dan küçük olmalıdır');
+      return;
+    }
+
+    // Create preview URL
+    const previewUrl = URL.createObjectURL(file);
+    setPendingAvatarFile(file);
+    setPendingAvatarPreview(previewUrl);
+    toast.info('Fotoğraf seçildi. Kaydetmek için "Değişiklikleri Kaydet" butonuna tıklayın.');
+  };
+
+  const handleCancelAvatarSelect = () => {
+    if (pendingAvatarPreview) {
+      URL.revokeObjectURL(pendingAvatarPreview);
+    }
+    setPendingAvatarFile(null);
+    setPendingAvatarPreview(null);
+  };
+
   const handleAvatarUpload = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
