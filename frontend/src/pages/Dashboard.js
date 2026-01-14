@@ -150,7 +150,22 @@ const Dashboard = () => {
 
   const handleUpdateProfile = async () => {
     try {
-      await api.put('/profile', profileData);
+      // Check if profile exists, if not create, otherwise update
+      if (!user?.profile) {
+        // Create profile
+        await api.post('/profile', {
+          user_id: user?.id,
+          display_name: profileData.display_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim(),
+          institution: profileData.institution,
+          role: profileData.role,
+          current_province: profileData.current_province,
+          current_district: profileData.current_district,
+          bio: profileData.bio
+        });
+      } else {
+        // Update profile
+        await api.put('/profile', profileData);
+      }
       toast.success('Profil güncellendi');
       setEditingProfile(false);
       // Refresh page to get updated data
