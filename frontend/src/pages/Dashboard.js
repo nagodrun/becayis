@@ -7,6 +7,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { ListingCard } from '../components/ListingCard';
 import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Trash2, Camera, X } from 'lucide-react';
 import {
