@@ -10,13 +10,12 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 
 ## Temel Gereksinimler
 
-### 1. Kimlik Doğrulama (Tamamlandı - Güncellendi)
+### 1. Kimlik Doğrulama (Tamamlandı)
 - [x] Kurumsal e-posta ile kayıt (@gov.tr uzantısı)
 - [x] E-posta doğrulama kodu (MOCKED - gerçek e-posta gönderilmiyor)
 - [x] Ad ve Soyad alanları zorunlu
 - [x] JWT tabanlı oturum yönetimi
 - [x] Çıkış yapıldığında ana sayfaya yönlendirme
-- [x] Kullanıcı kendi hesabını silebilir
 
 ### 2. Kullanıcı Paneli (Tamamlandı)
 - [x] Profil tamamlanma durumu
@@ -27,7 +26,7 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 - [x] Profil sekmesi (Dashboard içinde, detaylı düzenleme)
 - [x] Kapatılabilir platform politikası uyarısı
 - [x] Konuşma silme (X butonu)
-- [x] **Hesap Silme butonu**
+- [x] **Admin onaylı hesap silme talebi**
 
 ### 3. Ana Sayfa & İlanlar (Tamamlandı)
 - [x] Son ilanların listesi
@@ -47,16 +46,26 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 - [x] Profil düzenleme (Dashboard içinde, detaylı form)
 - [x] Düzenlenebilir alanlar: Ad, Kurum, Pozisyon, İl, İlçe, Bio
 - [x] Ayrı profil sayfası kaldırıldı
+- [x] Profil bilgileri kayıttan otomatik doldurulur
 - [ ] Profil fotoğrafı yükleme (Planlanıyor)
 
-### 6. Admin Paneli (Tamamlandı)
+### 6. Admin Paneli (Tamamlandı - Güncellendi)
 - [x] Admin girişi (becayis/1234)
+- [x] **5 sekme**: Kullanıcılar, İlanlar, İlan Silme, Hesap Silme, Raporlar
 - [x] **Kullanıcı silme çalışıyor**
 - [x] **İlan silme çalışıyor**
-- [x] İlan silme onayları
+- [x] **İlan silme isteklerini onaylama/reddetme**
+- [x] **İlan silme isteklerini temizleme (X butonu)**
+- [x] **Hesap silme taleplerini onaylama/reddetme**
+- [x] **Hesap silme taleplerini temizleme (X butonu)**
 - [x] Kullanıcı engelleme/kaldırma
 
-### 7. UI/UX (Tamamlandı)
+### 7. Statik Sayfalar (Tamamlandı)
+- [x] /terms - Kullanım Şartları
+- [x] /privacy - Gizlilik Politikası
+- [x] /help - Yardım Merkezi (SSS dahil)
+
+### 8. UI/UX (Tamamlandı)
 - [x] FAQ bölümü (ana sayfa)
 - [x] Kapatılabilir politika uyarısı
 - [x] Dark/Light tema (site genelinde)
@@ -71,22 +80,48 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 ## Son Güncelleme: Ocak 2026
 
 ### Bu Oturumda Tamamlanan İşler:
-1. ✅ **Profil Otomatik Doldurma** - Kayıt sırasındaki Ad+Soyad otomatik olarak profil "Görünen Ad" alanına geliyor
-2. ✅ **Kullanıcı Hesap Silme** - Dashboard → Profil → "Hesabı Sil" butonu çalışıyor
+1. ✅ **Admin Onaylı Hesap Silme** - Kullanıcılar artık doğrudan hesap silemez, admin'e talep gönderiyor
+2. ✅ **Admin Hesap Silme Sekmesi** - Admin paneline "Hesap Silme" sekmesi eklendi
 3. ✅ **Admin Kullanıcı Silme** - Admin panel → Kullanıcılar → "Sil" butonu çalışıyor
-4. ✅ **Silme İsteği Temizleme** - Admin panel → Silme İstekleri → **X butonu** ile işlenmiş istekler temizlenebiliyor
-5. ✅ **Profil Güncelleme** - Profil yoksa oluşturur, varsa günceller
-6. ✅ **İlan Oluştur Otomatik Doldurma** - Kurum, Pozisyon, İl, İlçe profilden alınıyor
+4. ✅ **Admin İlan Silme Temizleme** - Admin panel → İlan Silme → X butonu ile işlenmiş istekler temizlenebiliyor
+5. ✅ **Statik Sayfalar** - /terms, /privacy, /help sayfaları oluşturuldu
+6. ✅ **Kullanılmayan Dosya Temizliği** - Profile.js silindi
 
 ## Mocklanmış Özellikler
 - **E-posta Doğrulama**: Gerçek e-posta gönderilmiyor, kod response'da dönüyor
 
-## Sonraki Öncelikli Görevler
-1. Geri bildirim butonu işlevselliği
+## Sonraki Öncelikli Görevler (P1)
+1. Ana sayfa arama tasarımı (saffetcelik.com.tr benzeri dropdown'lar)
 2. Gerçek e-posta gönderimi (SendGrid entegrasyonu)
-3. Profil fotoğrafı yükleme
 
-## Backlog
+## Backlog (P2+)
+- Profil fotoğrafı yükleme
 - WebSocket ile gerçek zamanlı mesajlaşma
 - İlan detay sayfası
 - Bildirim tercihleri
+- saffetcelik.com.tr'den pozisyon listesi scraping
+
+## Test Durumu
+- Backend: %100 geçti
+- Frontend: %100 geçti
+- Son test raporu: /app/test_reports/iteration_6.json
+
+## API Endpoints
+### Auth
+- POST /api/auth/register/step1
+- POST /api/auth/verify-email
+- POST /api/auth/login
+- GET /api/auth/me
+- POST /api/auth/request-account-deletion ✅ NEW
+- GET /api/auth/account-deletion-status ✅ NEW
+
+### Admin
+- POST /api/admin/login
+- GET /api/admin/users
+- DELETE /api/admin/users/{id}
+- GET /api/admin/deletion-requests
+- DELETE /api/admin/deletion-requests/{id}
+- GET /api/admin/account-deletion-requests ✅ NEW
+- POST /api/admin/account-deletion-requests/{id}/approve ✅ NEW
+- POST /api/admin/account-deletion-requests/{id}/reject ✅ NEW
+- DELETE /api/admin/account-deletion-requests/{id} ✅ NEW
