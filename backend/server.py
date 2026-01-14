@@ -831,11 +831,26 @@ async def delete_conversation(conversation_id: str, current_user: dict = Depends
     if current_user["id"] not in conversation["participants"]:
         raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok")
     
+    # Get other participant to send notification
+    other_user_id = [p for p in conversation["participants"] if p != current_user["id"]][0]
+    
+    # Get current user's profile for notification message
+    current_profile = await db.profiles.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    display_name = current_profile.get("display_name", "Bir kullanıcı") if current_profile else "Bir kullanıcı"
+    
     # Delete all messages in the conversation
     await db.messages.delete_many({"conversation_id": conversation_id})
     
     # Delete the conversation
     await db.conversations.delete_one({"id": conversation_id})
+    
+    # Send notification to other user
+    await create_notification(
+        other_user_id,
+        "Konuşma Sonlandırıldı",
+        f"{display_name} sizinle olan konuşmayı sonlandırdı",
+        "conversation_ended"
+    )
     
     return {"message": "Konuşma silindi"}
 
