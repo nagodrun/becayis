@@ -1315,6 +1315,12 @@ async def get_provinces():
     """Return Turkish provinces from constants"""
     return PROVINCES
 
+@api_router.get("/districts/{province}")
+async def get_districts(province: str):
+    """Return districts for a given province"""
+    from constants import DISTRICTS
+    return DISTRICTS.get(province, [])
+
 @api_router.get("/faq")
 async def get_faq():
     """Return FAQ data from constants"""
