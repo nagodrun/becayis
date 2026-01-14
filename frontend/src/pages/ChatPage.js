@@ -98,8 +98,38 @@ const ChatPage = () => {
 
   // Fetch initial messages
   useEffect(() => {
-    fetchMessages();
-  }, [conversationId, fetchMessages]);
+    let isMounted = true;
+    
+    const loadMessages = async () => {
+      try {
+        const response = await api.get(`/conversations/${conversationId}/messages`);
+        if (isMounted) {
+          setMessages(response.data.messages);
+          setParticipants(response.data.participants);
+          setLoading(false);
+          
+          // Mark messages as read via WebSocket
+          if (wsRef.current?.readyState === WebSocket.OPEN) {
+            wsRef.current.send(JSON.stringify({
+              type: 'read',
+              conversation_id: conversationId
+            }));
+          }
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error('Mesajlar yüklenemedi');
+          navigate('/dashboard');
+        }
+      }
+    };
+    
+    loadMessages();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [conversationId, navigate]);
 
   useEffect(() => {
     scrollToBottom();
