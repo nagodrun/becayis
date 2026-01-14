@@ -359,22 +359,44 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "profile": profile
     }
 
-@api_router.delete("/auth/delete-account")
-async def delete_own_account(current_user: dict = Depends(get_current_user)):
-    """Delete user's own account and all related data"""
+@api_router.post("/auth/request-account-deletion")
+async def request_account_deletion(data: RequestAccountDeletion, current_user: dict = Depends(get_current_user)):
+    """Request account deletion - requires admin approval"""
     user_id = current_user["id"]
     
-    # Delete all user data
-    await db.users.delete_one({"id": user_id})
-    await db.profiles.delete_many({"user_id": user_id})
-    await db.listings.delete_many({"user_id": user_id})
-    await db.notifications.delete_many({"user_id": user_id})
-    await db.invitations.delete_many({"$or": [{"sender_id": user_id}, {"receiver_id": user_id}]})
-    await db.conversations.delete_many({"participants": user_id})
-    await db.messages.delete_many({"sender_id": user_id})
-    await db.deletion_requests.delete_many({"user_id": user_id})
+    # Check if already has pending request
+    existing = await db.account_deletion_requests.find_one({
+        "user_id": user_id, 
+        "status": "pending"
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="Zaten bekleyen bir hesap silme talebiniz var")
     
-    return {"message": "Hesabınız başarıyla silindi"}
+    request = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "reason": data.reason,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.account_deletion_requests.insert_one(request)
+    
+    return {"message": "Hesap silme talebiniz alındı. Admin onayından sonra hesabınız silinecektir."}
+
+@api_router.get("/auth/account-deletion-status")
+async def get_account_deletion_status(current_user: dict = Depends(get_current_user)):
+    """Check if user has pending account deletion request"""
+    request = await db.account_deletion_requests.find_one({
+        "user_id": current_user["id"],
+        "status": "pending"
+    }, {"_id": 0})
+    return {"has_pending_request": request is not None, "request": request}
+
+# ============= POSITIONS ENDPOINT =============
+@api_router.get("/positions")
+async def get_positions():
+    """Get list of available positions"""
+    return POSITIONS
 
 # ============= PROFILE ENDPOINTS =============
 @api_router.post("/profile")
