@@ -859,7 +859,7 @@ const Dashboard = () => {
                     </div>
                     {pendingAvatarPreview && (
                       <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
-                        Fotoğraf seçildi. Kaydetmek için aşağıdaki "Değişiklikleri Kaydet" butonuna tıklayın.
+                        Fotoğraf seçildi. Kaydetmek için aşağıdaki &quot;Değişiklikleri Kaydet&quot; butonuna tıklayın.
                       </p>
                     )}
                   </div>
