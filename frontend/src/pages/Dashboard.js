@@ -181,28 +181,45 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    const confirmed = window.confirm(
-      'Hesabınızı silmek istediğinizden emin misiniz?\n\n' +
-      'Bu işlem geri alınamaz ve şunlar silinecektir:\n' +
-      '- Tüm ilanlarınız\n' +
-      '- Tüm mesajlarınız\n' +
-      '- Tüm davetleriniz\n' +
-      '- Profil bilgileriniz'
-    );
+  const [accountDeletionPending, setAccountDeletionPending] = useState(false);
+  const [deletionReasonAccount, setDeletionReasonAccount] = useState('');
+  const [accountDeletionDialogOpen, setAccountDeletionDialogOpen] = useState(false);
 
-    if (!confirmed) return;
+  // Check for pending account deletion request
+  useEffect(() => {
+    const checkAccountDeletionStatus = async () => {
+      try {
+        const res = await api.get('/auth/account-deletion-status');
+        setAccountDeletionPending(res.data.has_pending_request);
+      } catch (error) {
+        // Ignore error
+      }
+    };
+    checkAccountDeletionStatus();
+  }, []);
 
-    const doubleConfirmed = window.confirm('Bu işlem GERİ ALINAMAZ. Devam etmek istediğinizden emin misiniz?');
-    if (!doubleConfirmed) return;
+  const handleDeleteAccount = () => {
+    if (accountDeletionPending) {
+      toast.info('Hesap silme talebiniz zaten beklemede. Admin onayı bekleniyor.');
+      return;
+    }
+    setAccountDeletionDialogOpen(true);
+  };
+
+  const handleSubmitAccountDeletion = async () => {
+    if (!deletionReasonAccount.trim()) {
+      toast.error('Lütfen hesap silme sebebinizi belirtin');
+      return;
+    }
 
     try {
-      await api.delete('/auth/delete-account');
-      localStorage.removeItem('token');
-      toast.success('Hesabınız başarıyla silindi');
-      navigate('/');
+      await api.post('/auth/request-account-deletion', { reason: deletionReasonAccount });
+      toast.success('Hesap silme talebiniz alındı. Admin onayından sonra hesabınız silinecektir.');
+      setAccountDeletionDialogOpen(false);
+      setDeletionReasonAccount('');
+      setAccountDeletionPending(true);
     } catch (error) {
-      toast.error('Hesap silinemedi');
+      toast.error(error.response?.data?.detail || 'Talep gönderilemedi');
     }
   };
 
