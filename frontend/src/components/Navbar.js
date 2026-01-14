@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { User, LogOut, Moon, Sun, ArrowLeftRight } from 'lucide-react';
@@ -55,10 +55,12 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
-  const prevUserRef = useRef(user);
 
   const fetchUnreadCounts = useCallback(async () => {
-    if (!user) return;
+    if (!user) {
+      setUnreadCount(0);
+      return;
+    }
     
     try {
       const [notificationsRes, invitationsRes, conversationsRes] = await Promise.all([
@@ -80,33 +82,21 @@ export const Navbar = () => {
 
       const total = unreadNotifications + pendingInvitations + unreadMessages;
       setUnreadCount(total);
-    } catch (error) {
+    } catch {
       // Silently fail - don't show error for notification fetch
-      console.log('Failed to fetch notifications');
     }
   }, [user]);
 
-  // Fetch unread counts when user is logged in
+  // Fetch unread counts when user changes or location changes
   useEffect(() => {
-    if (!user) return;
-
-    // Fetch immediately
     fetchUnreadCounts();
 
-    // Set up polling every 30 seconds
-    const interval = setInterval(fetchUnreadCounts, 30000);
-
-    return () => clearInterval(interval);
-  }, [user, location.pathname, fetchUnreadCounts]);
-
-  // Handle user logout - reset count
-  useEffect(() => {
-    if (prevUserRef.current && !user) {
-      // User just logged out
-      setUnreadCount(0);
+    // Set up polling every 30 seconds only if user exists
+    if (user) {
+      const interval = setInterval(fetchUnreadCounts, 30000);
+      return () => clearInterval(interval);
     }
-    prevUserRef.current = user;
-  });
+  }, [user, location.pathname, fetchUnreadCounts]);
 
   const isActive = (path) => location.pathname === path;
 
