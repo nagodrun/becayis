@@ -179,6 +179,59 @@ const Dashboard = () => {
     localStorage.setItem('hideWarning', 'true');
   };
 
+  const handleAvatarUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Sadece JPEG, PNG, WebP veya GIF dosyaları kabul edilir');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Dosya boyutu 5MB\'dan küçük olmalıdır');
+      return;
+    }
+
+    setUploadingAvatar(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await api.post('/profile/avatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      
+      toast.success('Profil fotoğrafı yüklendi');
+      setProfileData(prev => ({ ...prev, avatar_url: response.data.avatar_url }));
+      
+      // Refresh user data
+      if (refreshUser) refreshUser();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Profil fotoğrafı yüklenemedi');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  const handleDeleteAvatar = async () => {
+    if (!window.confirm('Profil fotoğrafınızı silmek istediğinizden emin misiniz?')) return;
+    
+    try {
+      await api.delete('/profile/avatar');
+      toast.success('Profil fotoğrafı silindi');
+      setProfileData(prev => ({ ...prev, avatar_url: null }));
+      
+      // Refresh user data
+      if (refreshUser) refreshUser();
+    } catch (error) {
+      toast.error('Profil fotoğrafı silinemedi');
+    }
+  };
+
   const handleUpdateProfile = async () => {
     try {
       // Check if profile exists, if not create, otherwise update
