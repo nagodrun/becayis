@@ -89,6 +89,7 @@ export const Navbar = () => {
 
   // Fetch unread counts when user changes or location changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchUnreadCounts();
 
     // Set up polling every 30 seconds only if user exists
