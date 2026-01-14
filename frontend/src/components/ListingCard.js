@@ -30,20 +30,20 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
 
   return (
     <Card
-      className="p-6 hover:shadow-lg transition-all group relative overflow-hidden"
+      className="p-4 hover:shadow-md transition-all group relative overflow-hidden"
       data-testid="listing-card"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity dark:from-blue-900/20" />
       
       <div className="relative">
         {listing.title && (
-          <h3 className="text-lg font-bold text-foreground mb-3">{listing.title}</h3>
+          <h3 className="text-base font-bold text-foreground mb-2 line-clamp-1">{listing.title}</h3>
         )}
         
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            {/* Avatar with initials fallback */}
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-md">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-2">
+            {/* Smaller Avatar */}
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-sm">
               {avatarUrl ? (
                 <img 
                   src={avatarUrl} 
@@ -51,67 +51,68 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-white font-bold text-lg">{initials}</span>
+                <span className="text-white font-bold text-sm">{initials}</span>
               )}
             </div>
             <div>
-              <div className="font-semibold text-foreground">
+              <div className="font-medium text-sm text-foreground">
                 {maskedName}
               </div>
-              <div className="text-sm text-muted-foreground">{formatDate(listing.created_at)}</div>
+              <div className="text-xs text-muted-foreground">{formatDate(listing.created_at)}</div>
             </div>
           </div>
-          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800">
+          <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800">
             {listing.status === 'active' ? 'Aktif' : 'Kapalı'}
           </Badge>
         </div>
 
-        {/* Institution and Role side by side */}
-        <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
-          <div className="flex items-center">
-            <Building2 className="w-4 h-4 mr-1.5 flex-shrink-0" />
+        {/* Institution and Role side by side - smaller */}
+        <div className="flex items-center gap-2 mb-3 text-xs text-muted-foreground">
+          <div className="flex items-center min-w-0">
+            <Building2 className="w-3.5 h-3.5 mr-1 flex-shrink-0" />
             <span className="truncate">{listing.institution}</span>
           </div>
           <span className="text-muted-foreground/50">•</span>
-          <div className="flex items-center">
-            <Briefcase className="w-4 h-4 mr-1.5 flex-shrink-0" />
+          <div className="flex items-center min-w-0">
+            <Briefcase className="w-3.5 h-3.5 mr-1 flex-shrink-0" />
             <span className="truncate">{listing.role}</span>
           </div>
         </div>
 
-        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 mb-4">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <div className="text-xs text-muted-foreground mb-1">Şu Anki Konum</div>
-              <div className="flex items-center text-sm font-medium text-foreground">
-                <MapPin className="w-4 h-4 mr-1 text-blue-600 dark:text-blue-400" />
-                {listing.current_province} / {listing.current_district}
+        {/* Location Box - more compact */}
+        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-md p-3 mb-3">
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex-1 min-w-0">
+              <div className="text-muted-foreground mb-0.5">Mevcut</div>
+              <div className="flex items-center font-medium text-foreground">
+                <MapPin className="w-3.5 h-3.5 mr-1 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                <span className="truncate">{listing.current_province}</span>
               </div>
             </div>
             
-            <ArrowRight className="w-5 h-5 text-amber-500 mx-4 flex-shrink-0" />
+            <ArrowRight className="w-4 h-4 text-amber-500 mx-2 flex-shrink-0" />
             
-            <div className="flex-1 text-right">
-              <div className="text-xs text-muted-foreground mb-1">Hedef Konum</div>
-              <div className="flex items-center justify-end text-sm font-medium text-foreground">
-                {listing.desired_province} / {listing.desired_district}
-                <MapPin className="w-4 h-4 ml-1 text-amber-600 dark:text-amber-400" />
+            <div className="flex-1 min-w-0 text-right">
+              <div className="text-muted-foreground mb-0.5">Hedef</div>
+              <div className="flex items-center justify-end font-medium text-foreground">
+                <span className="truncate">{listing.desired_province}</span>
+                <MapPin className="w-3.5 h-3.5 ml-1 text-amber-600 dark:text-amber-400 flex-shrink-0" />
               </div>
             </div>
           </div>
         </div>
 
         {listing.notes && (
-          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{listing.notes}</p>
+          <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{listing.notes}</p>
         )}
 
         {showInviteButton && onInvite && (
           <Button
             onClick={() => onInvite(listing)}
-            className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white h-8 text-sm"
             data-testid="invite-button"
           >
-            <Send className="w-4 h-4 mr-2" />
+            <Send className="w-3.5 h-3.5 mr-1.5" />
             Talep Gönder
           </Button>
         )}
@@ -119,10 +120,10 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
         {showInviteForGuest && (
           <Button
             onClick={handleGuestInvite}
-            className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white h-8 text-sm"
             data-testid="guest-invite-button"
           >
-            <Send className="w-4 h-4 mr-2" />
+            <Send className="w-3.5 h-3.5 mr-1.5" />
             Talep Gönder
           </Button>
         )}
