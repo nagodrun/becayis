@@ -58,6 +58,12 @@ const Dashboard = () => {
         current_province: user.profile.current_province || '',
         current_district: user.profile.current_district || ''
       });
+    } else if (user) {
+      // If no profile yet, pre-fill display_name from registration info
+      setProfileData(prev => ({
+        ...prev,
+        display_name: `${user.first_name || ''} ${user.last_name || ''}`.trim()
+      }));
     }
   }, [user]);
 
