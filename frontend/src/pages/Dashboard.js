@@ -57,6 +57,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchDashboardData();
+    fetchDropdownData();
     if (user?.profile) {
       setProfileData({
         display_name: user.profile.display_name || '',
@@ -74,6 +75,21 @@ const Dashboard = () => {
       }));
     }
   }, [user]);
+
+  const fetchDropdownData = async () => {
+    try {
+      const [institutionsRes, positionsRes, provincesRes] = await Promise.all([
+        api.get('/institutions'),
+        api.get('/utility/positions'),
+        api.get('/provinces')
+      ]);
+      setInstitutions(institutionsRes.data);
+      setPositions(positionsRes.data);
+      setProvinces(provincesRes.data);
+    } catch (error) {
+      console.error('Failed to fetch dropdown data:', error);
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
