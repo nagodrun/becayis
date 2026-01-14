@@ -833,7 +833,7 @@ const Dashboard = () => {
                         <Label htmlFor="current_province">Şu Anki İl</Label>
                         <Select 
                           value={profileData.current_province || "none"} 
-                          onValueChange={(val) => setProfileData({ ...profileData, current_province: val === "none" ? "" : val })}
+                          onValueChange={(val) => setProfileData({ ...profileData, current_province: val === "none" ? "" : val, current_district: "" })}
                         >
                           <SelectTrigger className="w-full" data-testid="profile-province-select">
                             <SelectValue placeholder="İl Seçin" />
@@ -846,12 +846,19 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <Label htmlFor="current_district">Şu Anki İlçe</Label>
-                        <Input
-                          id="current_district"
-                          value={profileData.current_district}
-                          onChange={(e) => setProfileData({ ...profileData, current_district: e.target.value })}
-                          placeholder="Bulunduğunuz ilçe"
-                        />
+                        <Select 
+                          value={profileData.current_district || "none"} 
+                          onValueChange={(val) => setProfileData({ ...profileData, current_district: val === "none" ? "" : val })}
+                          disabled={!profileData.current_province || districts.length === 0}
+                        >
+                          <SelectTrigger className="w-full" data-testid="profile-district-select">
+                            <SelectValue placeholder={profileData.current_province ? "İlçe Seçin" : "Önce il seçin"} />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[300px]">
+                            <SelectItem value="none">İlçe Seçin</SelectItem>
+                            {districts.map(dist => <SelectItem key={dist} value={dist}>{dist}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                     <div>
