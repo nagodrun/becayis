@@ -158,6 +158,56 @@ class UpdateProfile(BaseModel):
 class RequestListingDeletion(BaseModel):
     reason: str
 
+class RequestAccountDeletion(BaseModel):
+    reason: str
+
+# ============= POSITIONS LIST =============
+POSITIONS = [
+    "Zabıt Katibi",
+    "İcra Katibi",
+    "Mübaşir",
+    "Yazı İşleri Müdürü",
+    "Şoför",
+    "Hizmetli",
+    "Güvenlik Görevlisi",
+    "Teknisyen",
+    "Memur",
+    "VHKİ",
+    "Bilgisayar İşletmeni",
+    "Programcı",
+    "Mühendis",
+    "Avukat",
+    "Savcı",
+    "Hakim",
+    "Öğretmen",
+    "Doktor",
+    "Hemşire",
+    "Sağlık Memuru",
+    "Laborant",
+    "Ebe",
+    "Paramedik",
+    "Sosyal Hizmet Uzmanı",
+    "Psikolog",
+    "Diyetisyen",
+    "Fizyoterapist",
+    "Veteriner",
+    "Mimar",
+    "Şehir Plancısı",
+    "Arkeolog",
+    "Kütüphaneci",
+    "İmam",
+    "Müezzin",
+    "Vaiz",
+    "Polis Memuru",
+    "Komiser",
+    "Jandarma",
+    "Uzman Çavuş",
+    "Astsubay",
+    "Subay",
+    "İtfaiyeci",
+    "Diğer"
+]
+
 # ============= AUTH ENDPOINTS =============
 @api_router.post("/auth/register/step1")
 async def register_step1(data: RegisterStep1):
