@@ -4,7 +4,7 @@ import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
-import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut } from 'lucide-react';
+import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut, X } from 'lucide-react';
 import api from '../lib/api';
 import { toast } from 'sonner';
 import { formatDate } from '../lib/utils';
