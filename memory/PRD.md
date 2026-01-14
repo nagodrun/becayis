@@ -61,6 +61,7 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 - [x] İlan yönetimi
 - [x] İlan silme onayları
 - [x] Kullanıcı silme
+- [x] Kullanıcı engelleme/engel kaldırma
 
 ### 10. İlan Silme Akışı (Tamamlandı)
 - [x] Kullanıcı silme talebi gönderir
@@ -70,7 +71,7 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 ### 11. UI/UX (Tamamlandı)
 - [x] FAQ bölümü (ana sayfa)
 - [x] Kapatılabilir politika uyarısı
-- [x] Dark/Light tema
+- [x] Dark/Light tema (site genelinde)
 - [x] Geri bildirim butonu (işlevsellik bekliyor)
 
 ## Tech Stack
@@ -79,75 +80,28 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 - **Database**: MongoDB
 - **Authentication**: JWT
 
-## API Endpoint'leri
+## Son Güncelleme: Ocak 2026
 
-### Auth
-- POST `/api/auth/register/step1` - E-posta ve şifre
-- POST `/api/auth/register/step2` - Telefon numarası
-- POST `/api/auth/verify-otp` - OTP doğrulama
-- POST `/api/auth/login` - Giriş
-- GET `/api/auth/me` - Mevcut kullanıcı
-
-### Profile
-- POST `/api/profile` - Profil oluştur
-- GET `/api/profile` - Profil getir
-- PUT `/api/profile` - Profil güncelle
-
-### Listings
-- POST `/api/listings` - İlan oluştur
-- GET `/api/listings` - İlanları listele
-- GET `/api/listings/my` - Kullanıcının ilanları
-- GET `/api/listings/{id}` - İlan detayı
-- PUT `/api/listings/{id}` - İlan güncelle
-- POST `/api/listings/{id}/request-deletion` - Silme talebi
-
-### Invitations
-- POST `/api/invitations` - Davet gönder
-- GET `/api/invitations` - Davetleri listele
-- POST `/api/invitations/respond` - Davete yanıt
-
-### Conversations
-- GET `/api/conversations` - Konuşmaları listele
-- GET `/api/conversations/{id}/messages` - Mesajları getir
-- DELETE `/api/conversations/{id}` - Konuşma sil
-
-### Messages
-- POST `/api/messages` - Mesaj gönder
-
-### Notifications
-- GET `/api/notifications` - Bildirimleri listele
-- POST `/api/notifications/{id}/read` - Okundu işaretle
-- DELETE `/api/notifications/{id}` - Bildirim sil
-
-### Admin
-- POST `/api/admin/login` - Admin girişi
-- GET `/api/admin/users` - Kullanıcıları listele
-- GET `/api/admin/listings` - İlanları listele
-- GET `/api/admin/deletion-requests` - Silme taleplerini listele
-- POST `/api/admin/deletion-requests/{id}/approve` - Silme onayla
-- POST `/api/admin/deletion-requests/{id}/reject` - Silme reddet
-- DELETE `/api/admin/users/{id}` - Kullanıcı sil
+### Bu Oturumda Tamamlanan İşler:
+1. ✅ Dashboard useNavigate hatası düzeltildi
+2. ✅ Profil güncelleme çalışır hale getirildi
+3. ✅ Konuşma silme endpoint'i eklendi (`DELETE /api/conversations/:id`)
+4. ✅ MongoDB ObjectId hataları düzeltildi
+5. ✅ Admin panel silme işlemleri düzeltildi (kullanıcı ve ilan silme)
+6. ✅ Dark/Light tema tüm sayfalarda çalışır hale getirildi
+7. ✅ Ana sayfa sloganı güncellendi (TC Kimlik, sicil no ibareleri kaldırıldı)
+8. ✅ Admin token yönetimi düzeltildi (api.js)
 
 ## Mocklanmış Özellikler
 - **OTP SMS Gönderimi**: Gerçek SMS gönderilmiyor, OTP response'da dönüyor
 - **E-posta Bildirimleri**: Henüz entegre edilmedi
 
-## Tamamlanan İşler (Aralık 2025)
-1. Dashboard useNavigate hatası düzeltildi
-2. Profil sekmesi Dashboard'a entegre edildi
-3. Profil güncelleme çalışır hale getirildi
-4. Konuşma silme endpoint'i eklendi
-5. MongoDB _id hataları düzeltildi
-6. Tüm sekmeler test edildi ve çalışıyor
-
 ## Sonraki Öncelikli Görevler
 1. Geri bildirim butonu işlevselliği
 2. E-posta bildirimleri (SendGrid entegrasyonu)
 3. Profil fotoğrafı yükleme
-4. Gerçek OTP entegrasyonu
 
 ## Backlog
 - WebSocket ile gerçek zamanlı mesajlaşma
-- Gelişmiş arama filtreleri
-- Bildirim tercihleri
-- Rapor sistemi geliştirmeleri
+- Gerçek OTP entegrasyonu
+- ESLint uyarılarının düzeltilmesi
