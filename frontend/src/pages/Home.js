@@ -123,7 +123,7 @@ const Home = () => {
                 <ShieldCheck className="w-8 h-8 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Manrope' }}>Güvenli</h3>
-              <p className="text-slate-600">TC Kimlik, sicil no ve telefon doğrulaması ile tek hesap garantisi</p>
+              <p className="text-slate-600">Kurumsal e-posta ve telefon doğrulaması ile güvenli hesap sistemi</p>
             </div>
             
             <div className="text-center">
