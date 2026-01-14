@@ -71,13 +71,12 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 ## Son Güncelleme: Ocak 2026
 
 ### Bu Oturumda Tamamlanan İşler:
-1. ✅ **Profil Güncelleme Düzeltildi** - Profil yoksa oluşturur, varsa günceller
-2. ✅ **Hesap Silme Çalışıyor** - Dashboard → Profil sekmesinde "Hesabı Sil" butonu
-3. ✅ **İlan Oluştur Otomatik Doldurma** - Kurum, Pozisyon, İl, İlçe profilden alınıyor
-4. ✅ **Kayıt akışı**: Ad, Soyad, Kurumsal E-posta, E-posta doğrulama
-5. ✅ Admin kullanıcı silme çalışıyor
-6. ✅ Dark tema uyumluluğu (CreateEditListing.js dahil)
-7. ✅ Profil boşsa ilan oluşturma butonu devre dışı
+1. ✅ **Kullanıcı Hesap Silme** - Dashboard → Profil sekmesinde çalışıyor
+2. ✅ **Admin Kullanıcı Silme** - Admin panelinde çalışıyor
+3. ✅ **Silme İsteği Temizleme** - Admin panelinde X butonu ile işlenmiş istekler temizlenebiliyor
+4. ✅ **Profil Güncelleme** - Profil yoksa oluşturur, varsa günceller
+5. ✅ **İlan Oluştur Otomatik Doldurma** - Kurum, Pozisyon, İl, İlçe profilden alınıyor
+6. ✅ **Kayıt akışı**: Ad, Soyad, Kurumsal E-posta, E-posta doğrulama
 
 ## Mocklanmış Özellikler
 - **E-posta Doğrulama**: Gerçek e-posta gönderilmiyor, kod response'da dönüyor
