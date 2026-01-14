@@ -747,14 +747,22 @@ const Dashboard = () => {
                       <Button onClick={() => setEditingProfile(true)} className="bg-blue-600 hover:bg-blue-700">
                         Profili Düzenle
                       </Button>
-                      <Button 
-                        variant="destructive" 
-                        onClick={handleDeleteAccount}
-                        data-testid="delete-account-button"
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Hesabı Sil
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        {accountDeletionPending && (
+                          <Badge variant="outline" className="border-amber-500 text-amber-600">
+                            Silme Talebi Beklemede
+                          </Badge>
+                        )}
+                        <Button 
+                          variant="destructive" 
+                          onClick={handleDeleteAccount}
+                          disabled={accountDeletionPending}
+                          data-testid="delete-account-button"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          {accountDeletionPending ? 'Talep Bekliyor' : 'Hesabı Sil'}
+                        </Button>
+                      </div>
                     </div>
                   </>
                 )}
