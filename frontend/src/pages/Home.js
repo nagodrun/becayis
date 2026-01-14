@@ -159,9 +159,9 @@ const Home = () => {
                   <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200" data-testid="filter-position">
                     <SelectValue placeholder="Pozisyon Seçin" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-[300px]">
                     <SelectItem value="all">Tüm Pozisyonlar</SelectItem>
-                    {POSITIONS.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                    {positions.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
                   </SelectContent>
                 </Select>
                 
