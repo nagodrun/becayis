@@ -186,7 +186,7 @@ class UpdateListing(BaseModel):
     desired_province: Optional[str] = None
     desired_district: Optional[str] = None
     notes: Optional[str] = None
-    status: Optional[str] = None
+    listing_status: Optional[str] = None
 
 class SendInvitation(BaseModel):
     listing_id: str
