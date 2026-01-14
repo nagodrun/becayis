@@ -49,6 +49,11 @@ const Dashboard = () => {
     current_province: '',
     current_district: ''
   });
+  
+  // Dropdown data
+  const [institutions, setInstitutions] = useState([]);
+  const [positions, setPositions] = useState([]);
+  const [provinces, setProvinces] = useState([]);
 
   useEffect(() => {
     fetchDashboardData();
