@@ -119,6 +119,18 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleClearDeletionRequest = async (requestId) => {
+    if (!window.confirm('Bu silme isteğini temizlemek istediğinizden emin misiniz?')) return;
+    
+    try {
+      await api.delete(`/admin/deletion-requests/${requestId}`);
+      toast.success('Silme isteği temizlendi');
+      fetchData();
+    } catch (error) {
+      toast.error('İşlem başarısız');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
     localStorage.removeItem('is_admin');
