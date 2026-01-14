@@ -23,7 +23,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { formatDate } from '../lib/utils';
 
 const Dashboard = () => {
-  const { user, refreshUser } = useAuth();
+  const { user, fetchUser } = useAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const [myListings, setMyListings] = useState([]);
