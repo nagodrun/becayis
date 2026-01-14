@@ -33,6 +33,28 @@ const ChatPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
+  const fetchMessages = useCallback(async () => {
+    try {
+      const response = await api.get(`/conversations/${conversationId}/messages`);
+      setMessages(response.data.messages);
+      setParticipants(response.data.participants);
+      setLoading(false);
+      
+      // Mark messages as read via WebSocket
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({
+          type: 'read',
+          conversation_id: conversationId
+        }));
+      }
+    } catch (error) {
+      if (loading) {
+        toast.error('Mesajlar yüklenemedi');
+        navigate('/dashboard');
+      }
+    }
+  }, [conversationId, loading, navigate]);
+
   // Connect to WebSocket
   useEffect(() => {
     const token = localStorage.getItem('token');
