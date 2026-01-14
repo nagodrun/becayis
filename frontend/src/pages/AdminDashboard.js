@@ -251,12 +251,17 @@ const AdminDashboard = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="users" data-testid="admin-tab-users">Kullanıcılar</TabsTrigger>
             <TabsTrigger value="listings" data-testid="admin-tab-listings">İlanlar</TabsTrigger>
             <TabsTrigger value="deletions" data-testid="admin-tab-deletions">
-              Silme İstekleri {stats.pending_deletions > 0 && (
-                <Badge className="ml-2 bg-red-500">{stats.pending_deletions}</Badge>
+              İlan Silme {deletionRequests.filter(r => r.status === 'pending').length > 0 && (
+                <Badge className="ml-2 bg-red-500">{deletionRequests.filter(r => r.status === 'pending').length}</Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="account-deletions" data-testid="admin-tab-account-deletions">
+              Hesap Silme {accountDeletionRequests.filter(r => r.status === 'pending').length > 0 && (
+                <Badge className="ml-2 bg-red-500">{accountDeletionRequests.filter(r => r.status === 'pending').length}</Badge>
               )}
             </TabsTrigger>
             <TabsTrigger value="reports" data-testid="admin-tab-reports">Raporlar</TabsTrigger>
