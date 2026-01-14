@@ -89,14 +89,26 @@ export const Navbar = () => {
 
   // Fetch unread counts when user changes or location changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchUnreadCounts();
+    let isMounted = true;
+    
+    const doFetch = async () => {
+      if (isMounted) {
+        await fetchUnreadCounts();
+      }
+    };
+    
+    doFetch();
 
     // Set up polling every 30 seconds only if user exists
+    let interval;
     if (user) {
-      const interval = setInterval(fetchUnreadCounts, 30000);
-      return () => clearInterval(interval);
+      interval = setInterval(doFetch, 30000);
     }
+    
+    return () => {
+      isMounted = false;
+      if (interval) clearInterval(interval);
+    };
   }, [user, location.pathname, fetchUnreadCounts]);
 
   const isActive = (path) => location.pathname === path;
