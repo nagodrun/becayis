@@ -1,152 +1,101 @@
-# Becayiş - Kamu Çalışanları Yer Değişim Platformu PRD
+# Becayiş - Kamu Çalışanları Yer Değişim Platformu
 
-## Orijinal Problem Tanımı
-Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla karşılıklı yer değişimi yapmasına olanak sağlayan bir web platformu.
+## Proje Özeti
+Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla karşılıklı yer değişimi yapmasını kolaylaştıran platform.
 
-## Kullanıcı Profili
-- Türkiye'deki kamu kurumlarında çalışan personel
-- Farklı illere tayin olmak isteyen memurlar
-- Kurumlar arası veya kurum içi yer değişimi arayan çalışanlar
+## Temel Özellikler
 
-## Tech Stack
-- **Frontend**: React, TailwindCSS, Shadcn/UI, WebSocket
-- **Backend**: FastAPI (Python), WebSocket
-- **Database**: MongoDB
-- **Authentication**: JWT
+### Kimlik Doğrulama
+- Kurumsal e-posta ile kayıt (@gov.tr)
+- JWT tabanlı oturum yönetimi
+- Sicil numarası ve telefon doğrulama
 
----
+### Kullanıcı Paneli
+- Profil yönetimi (fotoğraf, kurum, pozisyon, konum)
+- İlan oluşturma/düzenleme
+- Davet gönderme/alma
+- Gerçek zamanlı mesajlaşma (WebSocket)
+- Bildirim sistemi
 
-## Tamamlanan Özellikler
+### Admin Paneli
+- Kullanıcı moderasyonu
+- İlan onaylama/reddetme
+- Hesap silme taleplerini yönetme
 
-### 1. Kimlik Doğrulama ✅
-- [x] Kurumsal e-posta ile kayıt (@gov.tr uzantısı)
-- [x] E-posta doğrulama kodu (MOCKED)
-- [x] Ad ve Soyad alanları zorunlu
-- [x] JWT tabanlı oturum yönetimi
-- [x] Admin onaylı hesap silme
+## Teknik Altyapı
+- **Frontend:** React, TailwindCSS, Shadcn/UI
+- **Backend:** FastAPI, Python
+- **Database:** MongoDB
+- **Real-time:** WebSocket
 
-### 2. Kullanıcı Paneli ✅
-- [x] Profil sekmesi (Dashboard içinde)
-- [x] **Profil fotoğrafı yükleme/silme** ✨ NEW
-- [x] Bildirim rozeti (navbar'da)
-- [x] Bildirimler okunduğunda rozet sıfırlanır
-- [x] Konuşma silme (X butonu)
-- [x] **Konuşma silindiğinde diğer kullanıcıya bildirim** ✨ NEW
-- [x] Hesap silme talebi (admin onaylı)
+## Son Güncellemeler (Ocak 2026)
 
-### 3. Ana Sayfa & İlanlar ✅
-- [x] Hero bölümüne entegre arama kutusu
-- [x] 3 dropdown: Pozisyon, Bulunduğu İl, Hedef İl
-- [x] **220+ pozisyon listesi** (becayis.memurlar.net'ten) ✨ NEW
-- [x] **105+ kurum listesi** (becayis.memurlar.net'ten) ✨ NEW
-- [x] **İlan kartlarında kullanıcı baş harfleri** (örn: "AY") ✨ NEW
-- [x] Anlık arama (debounce ile live search)
-- [x] Koyu/açık tema uyumlu
+### v1.4 - UI/UX İyileştirmeleri
+- İlan kartları küçültüldü ve kompaktlaştırıldı
+- Kullanıcı isimleri maskelendi (A*** Y*** formatı)
+- Kurum/pozisyon yan yana gösterildi
+- İlan başlığı max 45, açıklama max 140 karakter
+- Rakam girişi engellendi (telefon numarası önleme)
+- İlçe dropdown'ları il seçimine göre otomatik dolduruluyor
+- Profil fotoğrafı panelde görünüyor
+- Sekme sırası: Profil ilk sırada
 
-### 4. Davet Sistemi ✅
-- [x] Davet gönderme
-- [x] **Aynı ilana birden fazla davet engellemesi** ✨ NEW
-- [x] Davet kabul/reddetme
-- [x] Günlük davet limiti (10)
+### v1.3 - Veri ve Tema
+- becayis.memurlar.net'ten 105 kurum, 220 pozisyon çekildi
+- 81 il için ilçe verileri eklendi
+- Dark tema tüm sayfalarda düzeltildi
+- Statik sayfalar (SSS, Gizlilik, Şartlar) yeniden tasarlandı
 
-### 5. Kullanıcı Engelleme ✅ NEW
-- [x] **Kullanıcı engelleme** (POST /api/block)
-- [x] **Engel kaldırma** (DELETE /api/blocks/{id})
-- [x] Engellenen kullanıcıya davet gönderememe
-- [x] Engellenen kullanıcıyla mesajlaşamama
-
-### 6. Mesajlaşma ✅
-- [x] **WebSocket ile gerçek zamanlı mesajlaşma** ✨ NEW
-- [x] Yazıyor göstergesi
-- [x] Mesaj okundu işareti
-- [x] Konuşma silme + bildirim
-
-### 7. Navbar ✅
-- [x] Animasyonlu Becayiş ikonu (hover'da dönen)
-- [x] Bildirim rozeti (okunmamış sayısı)
-- [x] Tek profil dropdown butonu
-- [x] Dark/Light tema toggle
-
-### 8. Admin Paneli ✅
-- [x] 5 sekme: Kullanıcılar, İlanlar, İlan Silme, Hesap Silme, Raporlar
-- [x] Kullanıcı silme
-- [x] İlan silme isteklerini onaylama/reddetme
-- [x] Hesap silme taleplerini onaylama/reddetme
-
-### 9. FAQ ✅ NEW
-- [x] **8 soru/cevap becayis.memurlar.net'ten** ✨
-- [x] Accordion formatında
-
-### 10. Statik Sayfalar ✅
-- [x] /terms - Kullanım Şartları
-- [x] /privacy - Gizlilik Politikası
-- [x] /help - Yardım Merkezi
-
----
+### v1.2 - Yeni Özellikler
+- Profil fotoğrafı yükleme
+- Kullanıcı engelleme
+- Tekrarlı davet engelleme
+- Konuşma silme bildirimi
+- WebSocket ile gerçek zamanlı chat
 
 ## API Endpoints
 
 ### Auth
-- POST /api/auth/register/step1
-- POST /api/auth/verify-email
+- POST /api/auth/register
 - POST /api/auth/login
 - GET /api/auth/me
-- POST /api/auth/request-account-deletion
-- GET /api/auth/account-deletion-status
-
-### Profile
-- GET/POST/PUT /api/profile
-- POST /api/profile/avatar ✨ NEW
-- DELETE /api/profile/avatar ✨ NEW
 
 ### Listings
-- GET /api/listings (includes user_initials) ✨ UPDATED
-- POST /api/listings
-- PUT /api/listings/{id}
-- DELETE /api/listings/{id}
+- GET/POST /api/listings
+- PUT/DELETE /api/listings/{id}
 
-### Invitations
-- GET /api/invitations
-- POST /api/invitations (duplicate prevention) ✨ UPDATED
-- POST /api/invitations/{id}/respond
+### Profile
+- GET/PUT /api/profile
+- POST /api/profile/avatar
+- DELETE /api/profile/avatar
 
-### Messages
-- GET /api/conversations
-- GET /api/conversations/{id}/messages
-- POST /api/messages
-- DELETE /api/conversations/{id} (sends notification) ✨ UPDATED
-
-### Blocking ✨ NEW
-- POST /api/block
-- GET /api/blocks
-- DELETE /api/blocks/{blocked_user_id}
-
-### Utility ✨ UPDATED
-- GET /api/faq (8 questions)
-- GET /api/provinces (81 il)
-- GET /api/positions (220+ pozisyon)
-- GET /api/institutions (105+ kurum)
+### Utility
+- GET /api/provinces
+- GET /api/districts/{province}
+- GET /api/institutions
 - GET /api/utility/positions
-- GET /api/utility/institutions
+- GET /api/faq
 
-### WebSocket ✨ NEW
+### Communication
+- GET/POST /api/invitations
+- GET/POST /api/conversations
 - WS /ws/{token}
 
-### Admin
-- POST /api/admin/login
-- GET /api/admin/users
-- DELETE /api/admin/users/{id}
-- GET/DELETE /api/admin/deletion-requests
-- GET/POST /api/admin/account-deletion-requests
+## Bekleyen Görevler
 
----
+### P1 - Orta Öncelik
+- E-posta bildirimleri (SendGrid entegrasyonu)
+- Gerçek OTP doğrulama
 
-## Mocklanmış Özellikler
-- **E-posta Doğrulama**: Gerçek e-posta gönderilmiyor, kod response'da dönüyor
+### P2 - Düşük Öncelik
+- Admin panel iyileştirmeleri
+- Performans optimizasyonları
+- Arama/filtreleme geliştirmeleri
 
-## Test Durumu
-- Backend: %100 geçti
-- Frontend: Manuel test geçti
-- Son test raporu: /app/test_reports/iteration_7.json
+## Test Bilgileri
+- Admin: becayis / 1234
+- Test kullanıcı: @gov.tr uzantılı e-posta ile kayıt
 
-## Son Güncelleme: Ocak 2026
+## Mock/Eksik Özellikler
+- E-posta bildirimleri (henüz entegre değil)
+- OTP doğrulama (mock)
