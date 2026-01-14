@@ -804,6 +804,44 @@ const Dashboard = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Account Deletion Request Dialog */}
+      <Dialog open={accountDeletionDialogOpen} onOpenChange={setAccountDeletionDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Hesap Silme Talebi</DialogTitle>
+            <DialogDescription>
+              Hesabınızı silmek için admin onayı gereklidir. Lütfen silme sebebinizi açıklayın.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+              <p className="text-sm text-amber-800 dark:text-amber-200">
+                <strong>Dikkat:</strong> Hesabınız silindiğinde tüm ilanlarınız, mesajlarınız ve profil bilgileriniz kalıcı olarak kaldırılacaktır.
+              </p>
+            </div>
+            <div>
+              <Label htmlFor="account-reason">Silme Sebebi</Label>
+              <Textarea
+                id="account-reason"
+                value={deletionReasonAccount}
+                onChange={(e) => setDeletionReasonAccount(e.target.value)}
+                placeholder="Örn: Artık platformu kullanmıyorum, başka bir hesap açacağım, vs."
+                rows={4}
+                data-testid="account-deletion-reason-input"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAccountDeletionDialogOpen(false)}>
+              İptal
+            </Button>
+            <Button variant="destructive" onClick={handleSubmitAccountDeletion} data-testid="submit-account-deletion-request">
+              Silme Talebi Gönder
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
