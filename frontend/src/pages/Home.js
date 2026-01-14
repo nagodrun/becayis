@@ -43,8 +43,7 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     position: '',
-    current_province: '',
-    desired_province: ''
+    current_province: ''
   });
 
   // Debounce search query
@@ -58,7 +57,7 @@ const Home = () => {
   useEffect(() => {
     fetchListings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch, filters.position, filters.current_province, filters.desired_province]);
+  }, [debouncedSearch, filters.position, filters.current_province]);
 
   const fetchInitialData = async () => {
     try {
@@ -111,12 +110,11 @@ const Home = () => {
     setSearchQuery('');
     setFilters({
       position: '',
-      current_province: '',
-      desired_province: ''
+      current_province: ''
     });
   };
 
-  const hasActiveFilters = searchQuery || filters.position || filters.current_province || filters.desired_province;
+  const hasActiveFilters = searchQuery || filters.position || filters.current_province;
 
   return (
     <div className="min-h-screen bg-background">
@@ -138,7 +136,7 @@ const Home = () => {
             
             {/* Search Box - saffetcelik.com.tr style */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 md:p-6 shadow-2xl max-w-4xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Main Search Input */}
                 <div className="md:col-span-4 lg:col-span-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -165,30 +163,16 @@ const Home = () => {
                   </SelectContent>
                 </Select>
                 
-                {/* City Dropdown */}
+                {/* City Dropdown - Mevcut İl */}
                 <Select 
                   value={filters.current_province || "all"} 
                   onValueChange={(val) => setFilters({ ...filters, current_province: val === "all" ? "" : val })}
                 >
                   <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200" data-testid="filter-city">
-                    <SelectValue placeholder="Bulunduğu İl" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tüm İller</SelectItem>
-                    {provinces.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-                
-                {/* Target City Dropdown */}
-                <Select 
-                  value={filters.desired_province || "all"} 
-                  onValueChange={(val) => setFilters({ ...filters, desired_province: val === "all" ? "" : val })}
-                >
-                  <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200" data-testid="filter-target-city">
-                    <SelectValue placeholder="Hedef İl" />
+                    <SelectValue placeholder="İl Seçin" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
-                    <SelectItem value="all">Tüm Hedefler</SelectItem>
+                    <SelectItem value="all">Tüm İller</SelectItem>
                     {provinces.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
                   </SelectContent>
                 </Select>
@@ -216,12 +200,6 @@ const Home = () => {
                         <span className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs rounded-full">
                           {filters.current_province}
                           <button onClick={() => setFilters({...filters, current_province: ''})}><X className="w-3 h-3" /></button>
-                        </span>
-                      )}
-                      {filters.desired_province && (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-xs rounded-full">
-                          → {filters.desired_province}
-                          <button onClick={() => setFilters({...filters, desired_province: ''})}><X className="w-3 h-3" /></button>
                         </span>
                       )}
                       <button 

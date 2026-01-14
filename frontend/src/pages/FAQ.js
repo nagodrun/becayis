@@ -1,5 +1,7 @@
 import React from 'react';
 import { Card } from '../components/ui/card';
+import { Link } from 'react-router-dom';
+import { HelpCircle, FileText, Shield, MessageSquare } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -64,25 +66,47 @@ const FAQ = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <div className="min-h-screen bg-background py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
+          <HelpCircle className="w-16 h-16 text-slate-900 dark:text-slate-100 mx-auto mb-4" />
+          <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>
             Sıkça Sorulan Sorular
           </h1>
-          <p className="text-lg text-slate-600">
+          <p className="text-muted-foreground mt-2">
             Becayiş platformu hakkında merak ettiğiniz her şey
           </p>
         </div>
 
-        <Card className="p-8">
+        {/* Quick Links */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <Link to="/help" className="p-4 bg-card border border-border rounded-lg text-center hover:shadow-md transition-shadow">
+            <HelpCircle className="w-8 h-8 mx-auto mb-2 text-blue-600 dark:text-blue-400" />
+            <span className="text-sm font-medium text-foreground">Yardım Merkezi</span>
+          </Link>
+          <Link to="/register" className="p-4 bg-card border border-border rounded-lg text-center hover:shadow-md transition-shadow">
+            <MessageSquare className="w-8 h-8 mx-auto mb-2 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-sm font-medium text-foreground">Kayıt Ol</span>
+          </Link>
+          <Link to="/terms" className="p-4 bg-card border border-border rounded-lg text-center hover:shadow-md transition-shadow">
+            <FileText className="w-8 h-8 mx-auto mb-2 text-amber-600 dark:text-amber-400" />
+            <span className="text-sm font-medium text-foreground">Kullanım Şartları</span>
+          </Link>
+          <Link to="/privacy" className="p-4 bg-card border border-border rounded-lg text-center hover:shadow-md transition-shadow">
+            <Shield className="w-8 h-8 mx-auto mb-2 text-purple-600 dark:text-purple-400" />
+            <span className="text-sm font-medium text-foreground">Gizlilik</span>
+          </Link>
+        </div>
+
+        {/* FAQ Accordion */}
+        <Card className="p-6">
           <Accordion type="single" collapsible className="w-full">
             {faqs.map((faq, index) => (
               <AccordionItem key={index} value={`item-${index}`} data-testid={`faq-item-${index}`}>
-                <AccordionTrigger className="text-left font-semibold">
+                <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-slate-600">
+                <AccordionContent className="text-muted-foreground">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
@@ -90,14 +114,19 @@ const FAQ = () => {
           </Accordion>
         </Card>
 
-        <div className="mt-8 text-center">
-          <p className="text-slate-600 mb-4">
-            Başka sorularınız mı var?
-          </p>
-          <p className="text-sm text-slate-500">
-            Destek ekibimizle iletişime geçmek için info@becayis.gov.tr adresine e-posta gönderebilirsiniz.
-          </p>
-        </div>
+        {/* Contact Section */}
+        <Card className="p-6 mt-8 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+          <div className="text-center">
+            <h3 className="font-semibold text-foreground mb-2">Başka sorularınız mı var?</h3>
+            <p className="text-muted-foreground text-sm">
+              Destek ekibimizle iletişime geçmek için{' '}
+              <a href="mailto:info@becayis.gov.tr" className="text-blue-600 dark:text-blue-400 hover:underline">
+                info@becayis.gov.tr
+              </a>{' '}
+              adresine e-posta gönderebilirsiniz.
+            </p>
+          </div>
+        </Card>
       </div>
     </div>
   );
