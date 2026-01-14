@@ -148,10 +148,10 @@ const Home = () => {
       {/* Listings Section */}
       <div className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold" style={{ fontFamily: 'Manrope' }}>Son İlanlar</h2>
+          <h2 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>Son İlanlar</h2>
           {user && (
             <Link to="/listings/create">
-              <Button className="bg-slate-900 hover:bg-slate-800" data-testid="create-listing-button">
+              <Button className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200" data-testid="create-listing-button">
                 İlan Oluştur
               </Button>
             </Link>
@@ -159,7 +159,7 @@ const Home = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 mb-8">
+        <div className="bg-card rounded-xl border border-border p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Input
               placeholder="İlan başlığı ara..."
@@ -204,10 +204,10 @@ const Home = () => {
 
         {/* Listings Grid */}
         {loading ? (
-          <div className="text-center py-12 text-slate-500">Yüklüyor...</div>
+          <div className="text-center py-12 text-muted-foreground">Yüklüyor...</div>
         ) : listings.length === 0 ? (
-          <div className="text-center py-12 text-slate-500">
-            <MapPin className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+          <div className="text-center py-12 text-muted-foreground">
+            <MapPin className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
             <p>İlan bulunamadı. Filtreleri değiştirmeyi deneyin.</p>
           </div>
         ) : (
@@ -225,57 +225,57 @@ const Home = () => {
       </div>
 
       {/* FAQ Section */}
-      <div className="py-16 bg-white">
+      <div className="py-16 bg-card">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
+            <h2 className="text-3xl font-bold mb-4 text-foreground" style={{ fontFamily: 'Manrope' }}>
               Sıkça Sorulan Sorular
             </h2>
-            <p className="text-slate-600">Merak ettiğiniz soruların cevapları</p>
+            <p className="text-muted-foreground">Merak ettiğiniz soruların cevapları</p>
           </div>
 
           <Accordion type="single" collapsible className="w-full space-y-4">
-            <AccordionItem value="item-1" className="border rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold hover:no-underline">
+            <AccordionItem value="item-1" className="border border-border rounded-lg px-6 bg-background">
+              <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
                 Becayiş nedir?
               </AccordionTrigger>
-              <AccordionContent className="text-slate-600">
+              <AccordionContent className="text-muted-foreground">
                 Becayiş, kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla yer değiştirmesini kolaylaştıran bir platformdur. Güvenli ve kolay bir şekilde yer değişimi yapmanızı sağlar.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-2" className="border rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold hover:no-underline">
+            <AccordionItem value="item-2" className="border border-border rounded-lg px-6 bg-background">
+              <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
                 Platforma nasıl kayıt olabilirim?
               </AccordionTrigger>
-              <AccordionContent className="text-slate-600">
+              <AccordionContent className="text-muted-foreground">
                 Kayıt için kurumsal e-posta adresiniz (@gov.tr uzantılı) ve telefon numaranız gereklidir. Kayıt üç adımda tamamlanır: E-posta doğrulama, telefon doğrulama (OTP), profil oluşturma.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-3" className="border rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold hover:no-underline">
+            <AccordionItem value="item-3" className="border border-border rounded-lg px-6 bg-background">
+              <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
                 İletişim bilgilerim ne zaman paylaşılır?
               </AccordionTrigger>
-              <AccordionContent className="text-slate-600">
+              <AccordionContent className="text-muted-foreground">
                 İletişim bilgileriniz (telefon, e-posta) gizlidir ve sadece gönderdiğiniz veya aldığınız bir daveti KABUL ETTİĞİNİZDE karşı tarafla paylaşılır.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-4" className="border rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold hover:no-underline">
+            <AccordionItem value="item-4" className="border border-border rounded-lg px-6 bg-background">
+              <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
                 Kaç hesap oluşturabilirim?
               </AccordionTrigger>
-              <AccordionContent className="text-slate-600">
+              <AccordionContent className="text-muted-foreground">
                 Her kişi yalnızca BİR hesap oluşturabilir. Birden fazla hesap oluşturma durumunda hesaplarınız engellenebilir.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-5" className="border rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold hover:no-underline">
+            <AccordionItem value="item-5" className="border border-border rounded-lg px-6 bg-background">
+              <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
                 İlanımı nasıl silebilirim?
               </AccordionTrigger>
-              <AccordionContent className="text-slate-600">
+              <AccordionContent className="text-muted-foreground">
                 İlanlarınızı dashboard'dan 'Sil' butonuna tıklayarak silebilirsiniz. Silme işlemi için admin onayı gereklidir.
               </AccordionContent>
             </AccordionItem>
