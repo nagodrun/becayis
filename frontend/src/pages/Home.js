@@ -79,7 +79,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div
         className="relative h-[300px] bg-cover bg-center"
@@ -115,31 +115,31 @@ const Home = () => {
       </div>
 
       {/* Features Section */}
-      <div className="py-16 bg-white">
+      <div className="py-16 bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ShieldCheck className="w-8 h-8 text-blue-600" />
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <ShieldCheck className="w-8 h-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Manrope' }}>Güvenli</h3>
-              <p className="text-slate-600">Kurumsal e-posta ve telefon doğrulaması ile güvenli hesap sistemi</p>
+              <h3 className="text-xl font-bold mb-2 text-foreground" style={{ fontFamily: 'Manrope' }}>Güvenli</h3>
+              <p className="text-muted-foreground">Kurumsal e-posta ve telefon doğrulaması ile güvenli hesap sistemi</p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-amber-600" />
+              <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-amber-600 dark:text-amber-400" />
               </div>
-              <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Manrope' }}>Gizlilik</h3>
-              <p className="text-slate-600">Davet kabul edilene kadar iletişim bilgileriniz gizli kalır</p>
+              <h3 className="text-xl font-bold mb-2 text-foreground" style={{ fontFamily: 'Manrope' }}>Gizlilik</h3>
+              <p className="text-muted-foreground">Davet kabul edilene kadar iletişim bilgileriniz gizli kalır</p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="w-8 h-8 text-emerald-600" />
+              <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageSquare className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Manrope' }}>Kolay İletişim</h3>
-              <p className="text-slate-600">Kabul edilen davetler sonrası direkt mesajlaşma imkanı</p>
+              <h3 className="text-xl font-bold mb-2 text-foreground" style={{ fontFamily: 'Manrope' }}>Kolay İletişim</h3>
+              <p className="text-muted-foreground">Kabul edilen davetler sonrası direkt mesajlaşma imkanı</p>
             </div>
           </div>
         </div>
