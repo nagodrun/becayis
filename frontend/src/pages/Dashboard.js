@@ -705,9 +705,17 @@ const Dashboard = () => {
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t">
+                    <div className="pt-4 border-t flex justify-between items-center">
                       <Button onClick={() => setEditingProfile(true)} className="bg-blue-600 hover:bg-blue-700">
                         Profili Düzenle
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        onClick={handleDeleteAccount}
+                        data-testid="delete-account-button"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Hesabı Sil
                       </Button>
                     </div>
                   </>
