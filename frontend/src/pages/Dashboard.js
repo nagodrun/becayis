@@ -431,15 +431,15 @@ const Dashboard = () => {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="listings" className="space-y-6" onValueChange={(value) => {
+        <Tabs defaultValue="profile" className="space-y-6" onValueChange={(value) => {
           // Mark notifications as read when switching to notifications tab
           if (value === 'notifications' && unreadNotifications > 0) {
             handleMarkAllNotificationsRead();
           }
         }}>
           <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="listings" data-testid="tab-listings">İlanlarım</TabsTrigger>
             <TabsTrigger value="profile" data-testid="tab-profile">Profil</TabsTrigger>
+            <TabsTrigger value="listings" data-testid="tab-listings">İlanlarım</TabsTrigger>
             <TabsTrigger value="invitations" data-testid="tab-invitations">
               Davetler {invitations.received.filter(i => i.status === 'pending').length > 0 && (
                 <Badge className="ml-2 bg-amber-500">{invitations.received.filter(i => i.status === 'pending').length}</Badge>
