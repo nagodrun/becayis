@@ -209,7 +209,7 @@ const Dashboard = () => {
       setProfileData(prev => ({ ...prev, avatar_url: response.data.avatar_url }));
       
       // Refresh user data
-      if (refreshUser) refreshUser();
+      if (fetchUser) fetchUser();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Profil fotoğrafı yüklenemedi');
     } finally {
@@ -226,7 +226,7 @@ const Dashboard = () => {
       setProfileData(prev => ({ ...prev, avatar_url: null }));
       
       // Refresh user data
-      if (refreshUser) refreshUser();
+      if (fetchUser) fetchUser();
     } catch (error) {
       toast.error('Profil fotoğrafı silinemedi');
     }
