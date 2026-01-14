@@ -13,7 +13,6 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import CompleteProfile from './pages/CompleteProfile';
-import Profile from './pages/Profile';
 import CreateEditListing from './pages/CreateEditListing';
 import ChatPage from './pages/ChatPage';
 import AdminLogin from './pages/AdminLogin';
@@ -59,14 +58,6 @@ const AppContent = () => {
             }
           />
           <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
@@ -98,21 +89,14 @@ const AppContent = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/messages"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+          {/* Redirect /profile and /messages to dashboard */}
           <Route
             path="/profile"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
+            element={<Navigate to="/dashboard" replace />}
+          />
+          <Route
+            path="/messages"
+            element={<Navigate to="/dashboard" replace />}
           />
         </Routes>
       </main>
