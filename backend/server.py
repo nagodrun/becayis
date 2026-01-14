@@ -162,7 +162,7 @@ class RequestListingDeletion(BaseModel):
 # ============= AUTH ENDPOINTS =============
 @api_router.post("/auth/register/step1")
 async def register_step1(data: RegisterStep1):
-    """Step 1: Verify email domain uniqueness"""
+    """Step 1: Verify email and send verification code"""
     # Check email domain (must be government email)
     email_domain = data.email.split('@')[1]
     allowed_domains = ['adalet.gov.tr', 'meb.gov.tr', 'saglik.gov.tr', 'icisleri.gov.tr', 
@@ -177,64 +177,48 @@ async def register_step1(data: RegisterStep1):
     if existing:
         raise HTTPException(status_code=400, detail="Bu email ile zaten kayıtlı bir hesap var")
     
+    # Generate email verification code
+    verification_code = generate_otp()
+    code_expires = datetime.now(timezone.utc) + timedelta(minutes=15)
+    
     # Create verification record
     verification_id = str(uuid.uuid4())
     verification = {
         "id": verification_id,
         "email": data.email,
         "password_hash": get_password_hash(data.password),
-        "phone": None,
-        "otp": None,
-        "otp_expires": None,
+        "first_name": data.first_name,
+        "last_name": data.last_name,
+        "verification_code": verification_code,
+        "code_expires": code_expires.isoformat(),
         "verified": False,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     await db.verifications.insert_one(verification)
     
-    return {"verification_id": verification_id, "message": "1. adım tamamlandı"}
+    # TODO: In production, send email here
+    # send_email(data.email, "Doğrulama Kodu", f"Kodunuz: {verification_code}")
+    
+    # For MVP, return code in response (REMOVE IN PRODUCTION)
+    return {
+        "verification_id": verification_id, 
+        "message": "Doğrulama kodu e-posta adresinize gönderildi",
+        "email_code_mock": verification_code  # Remove in production
+    }
 
-@api_router.post("/auth/register/step2")
-async def register_step2(data: RegisterStep2):
-    """Step 2: Send OTP to phone"""
+@api_router.post("/auth/verify-email")
+async def verify_email(data: VerifyEmail):
+    """Step 2: Verify email code and create user"""
     verification = await db.verifications.find_one({"id": data.verification_id}, {"_id": 0})
     if not verification:
         raise HTTPException(status_code=404, detail="Doğrulama kaydı bulunamadı")
     
-    # Check phone uniqueness
-    existing_user = await db.users.find_one({"phone": data.phone})
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Bu telefon numarası zaten kullanılıyor")
+    if verification["verification_code"] != data.code:
+        raise HTTPException(status_code=400, detail="Doğrulama kodu hatalı")
     
-    # Generate OTP (mock for MVP)
-    otp = generate_otp()
-    otp_expires = datetime.now(timezone.utc) + timedelta(minutes=10)
-    
-    await db.verifications.update_one(
-        {"id": data.verification_id},
-        {"$set": {
-            "phone": data.phone,
-            "otp": otp,
-            "otp_expires": otp_expires.isoformat()
-        }}
-    )
-    
-    # In production, send SMS here
-    # For MVP, return OTP in response (REMOVE IN PRODUCTION)
-    return {"message": "OTP gönderildi", "otp_mock": otp}
-
-@api_router.post("/auth/verify-otp")
-async def verify_otp(data: VerifyOTP):
-    """Step 3: Verify OTP and create user"""
-    verification = await db.verifications.find_one({"id": data.verification_id}, {"_id": 0})
-    if not verification:
-        raise HTTPException(status_code=404, detail="Doğrulama kaydı bulunamadı")
-    
-    if verification["otp"] != data.otp:
-        raise HTTPException(status_code=400, detail="OTP hatalı")
-    
-    otp_expires = datetime.fromisoformat(verification["otp_expires"])
-    if datetime.now(timezone.utc) > otp_expires:
-        raise HTTPException(status_code=400, detail="OTP süresi dolmuş")
+    code_expires = datetime.fromisoformat(verification["code_expires"])
+    if datetime.now(timezone.utc) > code_expires:
+        raise HTTPException(status_code=400, detail="Doğrulama kodunun süresi dolmuş")
     
     # Create user
     user_id = str(uuid.uuid4())
@@ -242,10 +226,56 @@ async def verify_otp(data: VerifyOTP):
         "id": user_id,
         "email": verification["email"],
         "password_hash": verification["password_hash"],
-        "phone": verification["phone"],
+        "first_name": verification["first_name"],
+        "last_name": verification["last_name"],
         "verified": True,
         "profile_completed": False,
         "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.users.insert_one(user)
+    
+    # Clean up verification
+    await db.verifications.delete_one({"id": data.verification_id})
+    
+    # Generate token
+    access_token = create_access_token(data={"sub": user_id})
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {
+            "id": user_id,
+            "email": user["email"],
+            "first_name": user["first_name"],
+            "last_name": user["last_name"],
+            "profile_completed": False
+        }
+    }
+
+@api_router.post("/auth/resend-code")
+async def resend_verification_code(verification_id: str):
+    """Resend verification code"""
+    verification = await db.verifications.find_one({"id": verification_id}, {"_id": 0})
+    if not verification:
+        raise HTTPException(status_code=404, detail="Doğrulama kaydı bulunamadı")
+    
+    # Generate new code
+    new_code = generate_otp()
+    code_expires = datetime.now(timezone.utc) + timedelta(minutes=15)
+    
+    await db.verifications.update_one(
+        {"id": verification_id},
+        {"$set": {
+            "verification_code": new_code,
+            "code_expires": code_expires.isoformat()
+        }}
+    )
+    
+    # TODO: Send email in production
+    return {
+        "message": "Yeni doğrulama kodu gönderildi",
+        "email_code_mock": new_code  # Remove in production
+    }
     }
     await db.users.insert_one(user)
     
