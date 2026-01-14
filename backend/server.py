@@ -612,14 +612,28 @@ async def send_invitation(data: SendInvitation, current_user: dict = Depends(get
     if listing["user_id"] == current_user["id"]:
         raise HTTPException(status_code=400, detail="Kendi ilanınıza davet gönderemezsiniz")
     
-    # Check if already invited
+    # Check if user is blocked
+    block = await db.blocks.find_one({
+        "$or": [
+            {"blocker_id": listing["user_id"], "blocked_id": current_user["id"]},
+            {"blocker_id": current_user["id"], "blocked_id": listing["user_id"]}
+        ]
+    })
+    if block:
+        raise HTTPException(status_code=400, detail="Bu kullanıcıya davet gönderemezsiniz")
+    
+    # Check if already invited (any status - prevent duplicate invitations)
     existing = await db.invitations.find_one({
         "sender_id": current_user["id"],
-        "listing_id": data.listing_id,
-        "status": "pending"
+        "listing_id": data.listing_id
     })
     if existing:
-        raise HTTPException(status_code=400, detail="Bu ilana zaten davet gönderdiniz")
+        if existing["status"] == "pending":
+            raise HTTPException(status_code=400, detail="Bu ilana zaten bekleyen bir davetiniz var")
+        elif existing["status"] == "accepted":
+            raise HTTPException(status_code=400, detail="Bu davet zaten kabul edilmiş")
+        elif existing["status"] == "rejected":
+            raise HTTPException(status_code=400, detail="Bu ilana daha önce davet gönderdiniz ve reddedildi")
     
     # Create invitation
     invitation = {
