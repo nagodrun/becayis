@@ -294,8 +294,8 @@ const Dashboard = () => {
       }
       toast.success('Profil güncellendi');
       setEditingProfile(false);
-      // Refresh page to get updated data
-      window.location.reload();
+      // Refresh user data without page reload - stay on profile tab
+      if (fetchUser) await fetchUser();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Profil güncellenemedi');
     }
