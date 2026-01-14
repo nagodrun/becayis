@@ -3,224 +3,184 @@ Build a production-ready web app MVP for a “Public Employee Location Swap” p
 
 PRODUCT REQUIREMENTS:
 1.  **Authentication**: Unique account per person, verified by an official government email domain (e.g., @adalet.gov.tr). Registration requires First Name, Last Name, Email, and Password.
-2.  **User Dashboard**: A central hub for users to manage their profile, listings, invitations, and conversations. The profile editing functionality is merged into a tab here.
+2.  **User Dashboard**: A central hub for users to manage their profile, listings, invitations, and conversations.
 3.  **Home Page & Listings**: Show recent listings with a single search bar and dropdowns for filtering by institution, role, and location, similar to . Unregistered users see a Talep Gönder (Send Request) button that redirects them to the registration page.
-4.  **Swap Invitation & Privacy**: Users send invitations. Contact details are revealed only after mutual acceptance, which then opens a chat.
-5.  **Chat**: 1-on-1 chat for users with accepted invitations. Users should be able to delete their conversations.
-6.  **Account Deletion Flow**: Users must be able to request account deletion. This request must be approved by an admin before the account is deleted.
-7.  **Admin Panel**: An admin with credentials (becayis/1234) moderates listings and users. The admin must be able to approve/reject user account deletion requests, approve/reject listing deletion requests, and clear completed requests from the view.
-8.  **UI/UX**: Implement a site-wide dark/light theme, a unified profile button in the navbar, and static pages for Terms, Privacy, and Help.
-9.  **Listing Creation**: The Create Listing form should be pre-filled with the user's current institution, role, and location from their profile. These fields should be read-only on the form.
+4.  **Swap Invitation & Privacy**: Users send invitations. Contact details are revealed only after mutual acceptance, which then opens a chat. A user cannot send more than one invitation for the same listing.
+5.  **Chat**: 1-on-1 chat for users with accepted invitations, implemented with WebSockets for real-time communication. Users should be able to delete their conversations, which notifies the other user.
+6.  **User Blocking**: Users must be able to block each other.
+7.  **Account Deletion Flow**: Users must be able to request account deletion. This request must be approved by an admin before the account is deleted.
+8.  **Admin Panel**: An admin with credentials (becayis/1234) moderates listings and users. The admin must be able to approve/reject user account deletion requests, approve/reject listing deletion requests, and clear completed requests.
+9.  **UI/UX**: Implement a site-wide dark/light theme, a unified profile button in the navbar with a notification badge, an animated logo icon, and static pages for Terms, Privacy, and Help. The FAQ, institutions, and positions should be sourced from .
+10. **Listing Creation & Display**: The Create Listing form should be pre-filled with the user's current data. Listing cards should show the initials of the user who posted them.
+11. **Profile Picture**: Users must be able to upload a profile picture.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-A full-stack application with a React frontend and a FastAPI/MongoDB backend. Most core features have been implemented, including a new email-based registration flow, a unified user dashboard with a detailed profile editor, listing creation with pre-filled user data, and an admin panel. The UI has been significantly updated with a new navbar, instant search on the homepage, and improved dark mode consistency. Backend ObjectId serialization issues have been resolved across multiple endpoints.
+A feature-rich full-stack application with a React frontend and a FastAPI/MongoDB backend. The application includes user authentication, a comprehensive user dashboard (profile editing, avatar uploads, listing management), real-time chat via WebSockets, an admin panel with moderation tools, and a redesigned homepage with dynamic search filters. The backend now serves data (FAQs, institutions, positions) scraped from an external site, and key user-reported bugs, including recurring admin panel issues, have been resolved and tested.
 
 **Last working item**:
-- Last item agent was working: The agent started a major refactoring based on user feedback (message #415). It began modifying the backend to change the user account deletion process from direct deletion to an admin-approval flow. It also added a new endpoint to serve a list of job positions and started creating the new static pages (Terms, Privacy, Help).
-- Status: IN PROGRESS
+- Last item agent was working: The agent was about to start implementing a new batch of UI/UX and data consistency requests from the user (message #420). The agent had viewed the relevant files (, , ) in preparation for these changes.
+- Status: NOT STARTED
 - Agent Testing Done: N
 - Which testing method agent to use? both
 - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-- Issue 1: (P0) Admin panel user deletion is not working. The user has reported this multiple times. While the agent's tests (both manual  and ) showed the backend endpoint works and the UI updates, the user states it is still broken.
-- Issue 2: (P0) Admin cannot clear completed listing deletion requests. Similar to user deletion, the agent implemented and tested a feature to clear these requests with an 'X' button, but the user reports it is not working.
-- Issue 3: (P1) The user's profile information (name, surname) is not automatically populating their profile details upon registration. The agent implemented a fix, but the user has reported it again.
+- Issue 1: (P0) The homepage search has a redundant Tüm İller dropdown that needs to be removed.
+- Issue 2: (P0) The dark theme on the static pages (, , ) is inconsistent with the rest of the site.
+- Issue 3: (P1) The design of the static pages (, , ) needs to be updated to match the layout of the  page, which includes icons at the top.
 
 Issues Detail:
 - Issue 1:
-    - Attempted fixes: The agent has repeatedly verified the  endpoint works via . The frontend code in  has been checked and appears to correctly call this endpoint. The  also confirmed the feature works. The issue might be a subtle bug in the frontend state management after deletion, or a discrepancy in testing environments.
-    - Next debug checklist:
-        1.  Log in as admin (/).
-        2.  Go to the Kullanıcılar tab.
-        3.  Click the Sil button next to a user.
-        4.  Observe the network request in the browser's developer tools to see if the API call is being made correctly and what the response is.
-        5.  Check the browser console for any errors during the  execution in .
-    - Why fix this issue and what will be achieved with the fix?: Critical admin functionality for user management.
-    - Status: IN PROGRESS
-    - Is recurring issue? Y
-    - Should Test frontend/backend/both after fix? Both
-    - Blocked on other issue: None
-
-- Issue 2:
-    - Attempted fixes: The agent added a  endpoint and a corresponding X button and handler () in . Tests confirmed this worked.
-    - Next debug checklist: Similar to Issue 1, log in as admin, navigate to the Silme İstekleri tab, and click the 'X' button on a completed request. Monitor the network tab and console for errors.
-    - Why fix this issue and what will be achieved with the fix?: Allows admins to maintain a clean interface by clearing old, processed requests.
-    - Status: IN PROGRESS
-    - Is recurring issue? Y
+    - Attempted fixes: None.
+    - Next debug checklist: Edit  and remove the second İl (province) dropdown, which is likely labeled Hedef İl (Target Province).
+    - Why fix this issue and what will be achieved with the fix?: To correct a UI error and simplify the search interface as requested.
+    - Status: NOT STARTED
+    - Is recurring issue? N
     - Should Test frontend/backend/both after fix? Frontend
     - Blocked on other issue: None
-
-- Issue 3:
-    - Attempted fixes: The agent modified the  hook in  to set the  in the  state from the user's  and  upon initial load.
+- Issue 2 & 3:
+    - Attempted fixes: None.
     - Next debug checklist:
-        1.  Register a new user with a unique name.
-        2.  Log in as that user and navigate to the Dashboard's profile tab.
-        3.  Check if the Görünen Ad field in the profile view shows the correct full name.
-        4.  Click Profili Düzenle and verify the  input field is pre-filled correctly.
-    - Why fix this issue and what will be achieved with the fix?: Improves user experience by pre-filling profile information from registration data.
-    - Status: IN PROGRESS
-    - Is recurring issue? Y
+        1.  Analyze the CSS classes and structure of .
+        2.  Apply the same structure and styling (including dark theme classes) to , , and .
+    - Why fix this issue and what will be achieved with the fix?: To create a consistent and professional user experience across all static content pages.
+    - Status: NOT STARTED
+    - Is recurring issue? N
     - Should Test frontend/backend/both after fix? Frontend
     - Blocked on other issue: None
 
 **In progress Task List**:
-- Task 1: (P0) Implement Admin-Approved Account Deletion
-    - Where to resume: The agent has modified  to change  into , which creates a record in a new  collection. The frontend in  needs to be updated to call this new endpoint. The admin panel needs UI and endpoints to list, approve, and reject these requests.
-    - What will be achieved with this?: Fulfills the user's requirement for a safer, admin-moderated account deletion process.
-    - Status: IN PROGRESS
-    - Should Test frontend/backend/both after fix? Both
-    - Blocked on something: None
-
-- Task 2: (P1) Redesign Homepage Search
-    - Where to resume: The agent has added a  endpoint to  to provide a dynamic list of job titles. The next step is to refactor  to have one main search input and two dropdowns (for city and position), mimicking the layout of .
-    - What will be achieved with this?: A more user-friendly and powerful search interface on the landing page as requested by the user.
-    - Status: IN PROGRESS
-    - Should Test frontend/backend/both after fix? Frontend
-    - Blocked on something: None
-
-- Task 3: (P2) Create Static Content Pages
-    - Where to resume: The agent was about to create new files for , , and . These pages need to be created with placeholder content, and routes must be added in .
-    - What will be achieved with this?: Adds necessary legal and support pages to the application.
+- Task 1: (P0) Refactor Profile Editing Form
+    - Where to resume: Modify . The input fields for Kurum (Institution), Pozisyon (Position), and Şu anki il (Current Province) should be replaced with dropdowns ( components). These dropdowns should be populated with data fetched from the , , and  endpoints, respectively.
+    - What will be achieved with this?: Enforces data consistency by making users select from a predefined list, as sourced from .
     - Status: NOT STARTED
-    - Should Test frontend/backend/both after fix? Frontend
+    - Should Test frontend/backend/both after fix? Both
     - Blocked on something: None
 
 **Upcoming and Future Tasks**
 Upcoming Tasks:
 - (P1) Implement email notifications for key events (e.g., new message, approved deletion request) using an integration like SendGrid.
-- (P2) Implement real-time chat using WebSockets.
-- (P3) Add functionality to upload a profile picture/avatar.
+- (P2) Implement real OTP verification for phone numbers (currently mocked).
 
 Future Tasks:
-- Implement a scraper to dynamically fetch job positions from  instead of the current static list in the backend.
-- Implement real OTP verification for phone numbers (currently mocked).
+- None identified beyond the current backlog.
 
 **Completed work in this session**
-- **Bug Fixes**:
-  - Resolved  BSON/JSON serialization errors in all relevant backend endpoints (, , ).
-  - Fixed the  crash on the User Dashboard.
-- **Authentication**: Refactored the registration process from SMS OTP to email-based verification, including a new UI and backend logic.
-- **User Dashboard**:
-  - Significantly enhanced the Profile tab to allow detailed editing of all user information (institution, role, location, bio).
-  - Implemented the logic for a user to request account deletion.
-  - Ensured the user's  is correctly populated from their registration info.
-- **Homepage & Listings**:
-  - Redesigned the search functionality to be a single bar with live filtering.
-  - Updated listing cards to show a Talep Gönder button for logged-out users, which redirects to the registration page.
-- **Listing Creation**: The form now automatically and correctly pre-fills the user's current role and location from their profile.
-- **Admin Panel**:
-  - Implemented and verified functionality for admins to delete users and listings (though the user reports it as broken).
-  - Added a feature for admins to clear completed listing-deletion requests from the dashboard.
-- **UI/UX**:
-  - Merged the Profile and Dashboard buttons in the navbar into a single, unified user menu.
-  - Removed the redundant Messages button from the navbar.
-  - Improved dark theme consistency across multiple pages (, , , , ).
-  - Updated the homepage slogan to be more professional.
-- **Testing**: Ran comprehensive regression and feature tests using the  after each major batch of changes, with all tests passing.
+- **Admin Panel & Deletion Flow**:
+  - **Resolved recurring bugs**: Fixed admin user deletion and clearing of deletion requests, which were previously reported as broken by the user despite passing agent tests.
+  - **Implemented Admin-Approved Account Deletion**: Refactored the entire flow. Users now request deletion, and admins have a new dashboard section to approve/reject these requests.
+- **UI/UX & Frontend**:
+  - **Notification System**: Implemented a notification badge on the navbar profile icon that shows a count of unread notifications, messages, and invitations. The badge clears when the user visits the relevant tab in their dashboard.
+  - **Animated Logo**: Added an animated, interactive icon next to the site logo in the navbar.
+  - **Homepage Redesign**: Rebuilt the homepage search to feature a single search bar with dropdowns for position and location, mimicking the user's reference site ().
+  - **Theme & Style Fixes**: Corrected the dark theme on the Login page and refined the homepage title font and dropdown text colors based on user feedback.
+  - **Static Pages**: Created placeholder pages for Terms, Privacy, and Help, and added the necessary routes.
+- **Backend & Data Integration**:
+  - **Data Scraping**: Created a  file with institutions (105) and positions (220) scraped from . Created new backend endpoints (, , ) to serve this data and updated the frontend to consume it.
+  - **Profile Picture Upload**: Implemented a complete flow for users to upload, view, and delete their profile avatar.
+  - **Real-time Chat**: Integrated WebSockets for a real-time chat experience in .
+- **New Features & Logic**:
+  - **User Blocking**: Added backend endpoints and frontend logic for users to block and unblock each other.
+  - **Duplicate Invitation Prevention**: Updated backend logic to prevent a user from sending multiple invitations for the same listing.
+  - **Conversation Deletion Notification**: The backend now creates a notification for the other user when a conversation is deleted.
+  - **User Initials on Listings**: Listing cards now display the initials of the user who created the listing.
+- **Code Health & Bug Fixes**:
+  - **ESLint Errors Fixed**: Resolved multiple persistent ESLint errors related to  in  and .
+  - **File Cleanup**: Deleted the unused  file.
+  - **Database Issue Resolved**: Identified and fixed an issue where the agent was writing to the wrong database ( instead of ), which caused notification tests to fail.
+  - **Comprehensive Testing**: Successfully ran two full test suites using  (, ), confirming all new features and fixes work correctly.
 
 **Earlier issues found/mentioned but not fixed**
-- Issue 1: The user requested scraping a list of job positions from . The agent used a hardcoded static list instead.
-  - Debug checklist: Manually inspect the source code of the provided URL to find how the position data is loaded. Implement a scraper in the backend to fetch this data dynamically.
-  - Why to solve this issue and what will be achieved with this?: To use a dynamic, external data source for job positions as required.
-  - Should Test frontend/backend/both after fix: Backend
-  - Is recurring issue? N
+- All previously mentioned issues have been addressed in this session.
 
 **Known issue recurrence from previous fork**
-- Admin user deletion and clearing of deletion requests appear to be recurring. Despite successful tests by the agent, the user consistently reports them as non-functional. This suggests a potential gap between the agent's testing environment and the user's perception or environment.
+- The recurring admin panel issues (user deletion, clearing requests) were resolved by implementing the new admin-approval workflow. The  confirmed the fix. The next agent should be aware of this history in case the user reports similar problems.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- Backend: FastAPI, Pydantic
-- Frontend: React, React Router, Axios, TailwindCSS
+- Backend: FastAPI, Pydantic, WebSockets
+- Frontend: React, React Router, Axios, TailwindCSS, Shadcn/UI
 - Database: MongoDB
 - Authentication: JWT
 
 **key DB schema**
-- **users**: {email, password, first_name, last_name, phone, ...}
-- **profiles**: {user_id, display_name, institution, role, province, ...}
-- **listings**: {userId, title, description, current_institution, ...}
-- **deletion_requests**: {listingId, userId, reason, status}
+- **users**: {..., avatar_url: str, blocked_users: List[str]}
+- **profiles**: {...}
+- **listings**: {...}
 - **account_deletion_requests**: {userId, reason, status, created_at}
-- **conversations**: {participants, last_message}
+- **invitations**: {listingId, sender_id, receiver_id, status}
+- **conversations**: {participants, messages: [...]}
+- **notifications**: {user_id, title, read, created_at}
 
 **changes in tech stack**
-- None in this session. The project continues to use MongoDB instead of the initially requested PostgreSQL.
+- None.
 
 **All files of reference**
-- : The single source for all backend logic and API endpoints.
-- : User hub for profile management, listings, etc. Heavily modified.
-- : Admin interface for user and request management.
-- : Landing page with listing search. To be refactored.
-- : New user registration page.
-- : Form for creating listings.
-- : Site navigation, updated to a unified user menu.
-- : Main React router, updated to remove old routes.
-- : Project requirements document, created and updated by the agent.
+- : Heavily modified to add WebSockets, data scraping endpoints, avatar uploads, user blocking, and other features.
+- : New file containing scraped data for institutions and positions.
+- : Redesigned search; now fetches dynamic data for filters and FAQ.
+- : Updated with avatar upload functionality and notification read logic. Needs refactoring for profile editing dropdowns.
+- : Updated with the new account deletion approval workflow.
+- : Rewritten to use WebSockets for real-time messaging.
+- : Updated with an animated icon and notification badge logic.
+- : Updated to show user initials and avatar.
+- , , , : Static pages that need theme and layout fixes.
 
 **Areas that need refactoring**:
-- The static data for provinces, districts, and institutions is still hardcoded in arrays across multiple frontend components. It should be centralized in a constants file or fetched from a dedicated backend endpoint.
-- The  file is now unused after its functionality was merged into  and the corresponding route was removed. The file should be deleted to clean up the codebase.
+- The static data for provinces and districts is still hardcoded in frontend components. This should be moved to a constants file or served from the backend for consistency.
 
 **key api endpoints**
--  &  (New email registration)
-- 
-- 
--  (POST/PUT)
 -  (New)
--  (GET/POST)
+-  (New)
 -  (New)
 - 
--  &  (DELETE)
--  &  (DELETE)
--  (New endpoints needed for GET, POST approve/reject)
+-  (New)
+-  &  (New)
+-  (New WebSocket endpoint)
+-  (Updated logic)
+-  (Updated logic to send notification)
 
 **Critical Info for New Agent**
-- **User vs. Agent Reality Mismatch**: There is a significant disconnect between features the agent has tested and confirmed as working (admin user deletion, clearing requests) and the user's reports that they are broken. Prioritize re-verifying these recurring issues from the user's perspective. Do not assume previous fixes worked.
-- **Major Workflow Change**: The account deletion process is shifting from a direct user action to an admin-approval system. This requires significant changes in both the backend and frontend (user dashboard and admin panel).
-- **Homepage Refactor**: The user wants the homepage search to be redesigned to match  (single input + dropdowns). This is a high-priority UI task.
+- The immediate priority is to address the user's latest requests from message #420: fix the homepage search dropdown, unify the static page themes and layouts, and refactor the profile editing form to use dropdowns with dynamic data.
+- The project has undergone significant development. Many complex features like WebSockets and admin-approved deletion have been successfully implemented and tested.
+- The previous disconnect between agent testing and user reports seems to have been resolved, as the latest features were confirmed with comprehensive tests that covered the full user flow.
 
 **documents and test reports created in this job**
-- 
-- 
-- 
-- 
+-  (Updated multiple times)
 - 
 - 
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **user**: (msg #307) Reported that user and admin deletion features are broken, and admins can't clear deletion requests. (ATTEMPTED FIX)
-2.  **user**: (msg #373) Re-reported the same deletion issues from #307, and added a request to pre-fill user profile info from registration details. (ATTEMPTED FIX)
-3.  **user**: (msg #415) **Latest and highest priority.** Re-reported the admin panel deletion issues. Requested a complete overhaul of the user deletion process to be admin-approved. Requested a redesign of the homepage search to match a reference site. Requested new static pages (Terms, Privacy, Help). (IN PROGRESS)
-4.  **user**: (msg #255) Reported that profile updates and account deletion weren't working. Requested that the Create Listing form auto-fill from the user's profile. (FIXED)
-5.  **user**: (msg #184) Reported that admin user deletion, user account deletion, and profile updates are not working. Requested changing registration from SMS to email verification. (FIXED)
-6.  **user**: (msg #124) Requested merging navbar buttons, removing the message button, implementing instant search on the homepage, allowing non-logged-in users to see a redirecting CTA on listings, and enhancing the profile editing form. (FIXED)
-7.  **user**: (msg #79) Reported that admin deletion is not working, the homepage slogan is inappropriate, and the dark theme is incomplete. (FIXED)
-8.  **user**: (msg #5) Confirmed the agent's plan. (DONE)
-9.  **user**: (msg #128) continue. (DONE)
-10. **user**: (msg #358) CONTINUE (DONE)
+1.  **user**: (msg #421) start on the latest batch of requests. (IN PROGRESS)
+2.  **user**: (msg #420) **LATEST REQUEST**: Remove duplicate Tüm İller dropdown, make profile editing fields into dropdowns with scraped data, fix dark theme on , and unify the design of all static pages (, , ) to match . (PENDING)
+3.  **user**: (msg #397) Reported an ESLint error. (FIXED)
+4.  **user**: (msg #227) do all these features in order. - approved the plan to implement a large list of features. (DONE)
+5.  **user**: (msg #222) **MAJOR REQUEST**: Scrape FAQ/Institutions/Positions from a reference site, implement user blocking, conversation end notifications, duplicate invitation prevention, user initials on listings, profile photo uploads, and WebSocket chat. (DONE)
+6.  **user**: (msg #213) Requested UI tweaks for homepage: fix dropdown text color and adjust heading font/position. (DONE)
+7.  **user**: (msg #178) Reported an ESLint error and requested that the login page's dark theme match the rest of the site. (DONE)
+8.  **user**: (msg #86) Requested a notification badge on the profile icon and an animated icon next to the logo. (DONE)
+9.  **user**: (msg #5) continue with this plan. (DONE)
+10. **user**: (msg #238) continue. (DONE)
 
 **Project Health Check:**
-- Broken:
-    - Admin user deletion (according to user).
-    - Admin clearing of completed listing deletion requests (according to user).
+- Broken: None.
 - Mocked:
-    - Email notifications are not implemented (placeholders exist).
-    - Real-time chat is not implemented.
+    - Email notifications are not implemented.
+    - Real OTP verification for phone numbers is not implemented.
 
 **3rd Party Integrations**
 - No active integrations.
 - **SendGrid** has been proposed for future email integration.
 
 **Testing status**
-- Testing agent used after significant changes: YES. Multiple successful test runs were completed ( to ). However, the user's reports contradict the results for certain features.
+- Testing agent used after significant changes: YES.  was used twice (, ) to verify major feature implementations and bug fixes.
 - Troubleshoot agent used after agent stuck in loop: NO
-- Test files created: Test files were created and used by the  in the  directory.
-- Known regressions: Admin deletion features are considered regressions from the user's point of view.
+- Test files created: , 
+- Known regressions: None.
 
 **Credentials to test flow:**
 - Admin Login:
@@ -229,5 +189,4 @@ Future Tasks:
 - Regular user accounts can be created via the registration form at . Use a  email, e.g., .
 
 **What agent forgot to execute**
-- The agent has not deleted the now-redundant  file after merging its functionality into the dashboard.
-- The agent did not get to implement the content for the new static pages (Terms, Privacy, Help).</analysis>
+- The agent was about to begin the tasks from the user's latest request (message #420) when the session ended. No tasks were forgotten, but the new work is pending.</analysis>
