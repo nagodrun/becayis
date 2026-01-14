@@ -58,10 +58,7 @@ export const Navbar = () => {
 
   // Fetch unread counts when user is logged in
   useEffect(() => {
-    if (!user) {
-      setUnreadCount(0);
-      return;
-    }
+    if (!user) return;
 
     const fetchUnreadCounts = async () => {
       try {
@@ -98,6 +95,13 @@ export const Navbar = () => {
 
     return () => clearInterval(interval);
   }, [user, location.pathname]); // Re-fetch when location changes
+
+  // Reset unread count when user logs out
+  useEffect(() => {
+    if (!user) {
+      setUnreadCount(0);
+    }
+  }, [user]);
 
   const isActive = (path) => location.pathname === path;
 
