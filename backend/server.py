@@ -314,6 +314,8 @@ async def complete_profile(data: CompleteProfile, current_user: dict = Depends(g
     await db.profiles.insert_one(profile)
     await db.users.update_one({"id": current_user["id"]}, {"$set": {"profile_completed": True}})
     
+    # Remove MongoDB _id before returning
+    profile.pop("_id", None)
     return {"message": "Profil oluşturuldu", "profile": profile}
 
 @api_router.get("/profile")
