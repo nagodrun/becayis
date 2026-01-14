@@ -249,7 +249,7 @@ const Home = () => {
                 Platforma nasıl kayıt olabilirim?
               </AccordionTrigger>
               <AccordionContent className="text-slate-600">
-                Kayıt için kurumsal e-posta adresiniz (@gov.tr uzantılı), sicil numaranız ve telefon numaranız gereklidir. Kayıt üç adımda tamamlanır: Email ve sicil doğrulama, telefon doğrulama (OTP), profil oluşturma.
+                Kayıt için kurumsal e-posta adresiniz (@gov.tr uzantılı) ve telefon numaranız gereklidir. Kayıt üç adımda tamamlanır: E-posta doğrulama, telefon doğrulama (OTP), profil oluşturma.
               </AccordionContent>
             </AccordionItem>
 
