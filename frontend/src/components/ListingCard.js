@@ -7,12 +7,16 @@ import { MapPin, Briefcase, Building2, ArrowRight, Send } from 'lucide-react';
 import { formatDate } from '../lib/utils';
 
 export const ListingCard = ({ listing, onInvite, showInviteButton = true, showInviteForGuest = false }) => {
-  const { profile } = listing;
+  const { profile, user_initials } = listing;
   const navigate = useNavigate();
 
   const handleGuestInvite = () => {
     navigate('/register');
   };
+
+  // Get avatar URL or use initials
+  const avatarUrl = profile?.avatar_url;
+  const initials = user_initials || '??';
 
   return (
     <Card
@@ -28,8 +32,17 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
         
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-              <Building2 className="w-6 h-6 text-slate-600 dark:text-slate-300" />
+            {/* Avatar with initials fallback */}
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-md">
+              {avatarUrl ? (
+                <img 
+                  src={avatarUrl} 
+                  alt={profile?.display_name || 'Kullanıcı'} 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-white font-bold text-lg">{initials}</span>
+              )}
             </div>
             <div>
               <div className="font-semibold text-foreground">
