@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -8,7 +8,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
 import { ListingCard } from '../components/ListingCard';
-import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Trash2 } from 'lucide-react';
+import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Trash2, Camera, X } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -23,14 +23,16 @@ import { useAuth } from '../contexts/AuthContext';
 import { formatDate } from '../lib/utils';
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
   const [myListings, setMyListings] = useState([]);
   const [invitations, setInvitations] = useState({ sent: [], received: [] });
   const [conversations, setConversations] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [deletionRequests, setDeletionRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [deletionDialogOpen, setDeletionDialogOpen] = useState(false);
   const [selectedListing, setSelectedListing] = useState(null);
   const [deletionReason, setDeletionReason] = useState('');
