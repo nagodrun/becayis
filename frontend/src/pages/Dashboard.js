@@ -418,9 +418,26 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 text-foreground" style={{ fontFamily: 'Manrope' }}>Panel</h1>
-          <p className="text-muted-foreground">Hoş geldiniz, {user?.profile?.display_name || user?.email}</p>
+        {/* User Panel Header with Avatar */}
+        <div className="mb-8 flex items-center gap-4">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-lg flex-shrink-0">
+            {user?.profile?.avatar_url ? (
+              <img 
+                src={user.profile.avatar_url} 
+                alt="Profil" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-white font-bold text-xl">
+                {(user?.first_name?.[0] || '?').toUpperCase()}
+                {(user?.last_name?.[0] || '?').toUpperCase()}
+              </span>
+            )}
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>Panel</h1>
+            <p className="text-muted-foreground">Hoş geldiniz, {user?.profile?.display_name || user?.email}</p>
+          </div>
         </div>
 
         {/* Single Account Warning */}
