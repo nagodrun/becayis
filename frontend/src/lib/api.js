@@ -9,7 +9,11 @@ const api = axios.create({
 
 // Add token to requests
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  // Check for admin token first, then regular token
+  const adminToken = localStorage.getItem('admin_token');
+  const userToken = localStorage.getItem('token');
+  const token = adminToken || userToken;
+  
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -21,8 +25,15 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      const isAdmin = localStorage.getItem('is_admin');
+      if (isAdmin) {
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('is_admin');
+        window.location.href = '/admin/login';
+      } else {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }
