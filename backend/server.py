@@ -358,6 +358,8 @@ async def create_listing(data: CreateListing, current_user: dict = Depends(get_c
     }
     await db.listings.insert_one(listing)
     
+    # Remove MongoDB _id before returning
+    listing.pop("_id", None)
     return {"message": "İlan oluşturuldu", "listing": listing}
 
 @api_router.get("/listings")
