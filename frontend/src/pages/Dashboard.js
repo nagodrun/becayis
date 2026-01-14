@@ -781,30 +781,48 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <Label htmlFor="institution">Kurum</Label>
-                        <Input
-                          id="institution"
-                          value={profileData.institution}
-                          onChange={(e) => setProfileData({ ...profileData, institution: e.target.value })}
-                          placeholder="Çalıştığınız kurum"
-                        />
+                        <Select 
+                          value={profileData.institution || "none"} 
+                          onValueChange={(val) => setProfileData({ ...profileData, institution: val === "none" ? "" : val })}
+                        >
+                          <SelectTrigger className="w-full" data-testid="profile-institution-select">
+                            <SelectValue placeholder="Kurum Seçin" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[300px]">
+                            <SelectItem value="none">Kurum Seçin</SelectItem>
+                            {institutions.map(inst => <SelectItem key={inst} value={inst}>{inst}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div>
                         <Label htmlFor="role">Pozisyon</Label>
-                        <Input
-                          id="role"
-                          value={profileData.role}
-                          onChange={(e) => setProfileData({ ...profileData, role: e.target.value })}
-                          placeholder="Göreviniz"
-                        />
+                        <Select 
+                          value={profileData.role || "none"} 
+                          onValueChange={(val) => setProfileData({ ...profileData, role: val === "none" ? "" : val })}
+                        >
+                          <SelectTrigger className="w-full" data-testid="profile-position-select">
+                            <SelectValue placeholder="Pozisyon Seçin" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[300px]">
+                            <SelectItem value="none">Pozisyon Seçin</SelectItem>
+                            {positions.map(pos => <SelectItem key={pos} value={pos}>{pos}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div>
                         <Label htmlFor="current_province">Şu Anki İl</Label>
-                        <Input
-                          id="current_province"
-                          value={profileData.current_province}
-                          onChange={(e) => setProfileData({ ...profileData, current_province: e.target.value })}
-                          placeholder="Bulunduğunuz il"
-                        />
+                        <Select 
+                          value={profileData.current_province || "none"} 
+                          onValueChange={(val) => setProfileData({ ...profileData, current_province: val === "none" ? "" : val })}
+                        >
+                          <SelectTrigger className="w-full" data-testid="profile-province-select">
+                            <SelectValue placeholder="İl Seçin" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[300px]">
+                            <SelectItem value="none">İl Seçin</SelectItem>
+                            {provinces.map(prov => <SelectItem key={prov} value={prov}>{prov}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div>
                         <Label htmlFor="current_district">Şu Anki İlçe</Label>
