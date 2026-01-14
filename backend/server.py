@@ -276,24 +276,6 @@ async def resend_verification_code(verification_id: str):
         "message": "Yeni doğrulama kodu gönderildi",
         "email_code_mock": new_code  # Remove in production
     }
-    }
-    await db.users.insert_one(user)
-    
-    # Mark verification as complete
-    await db.verifications.update_one(
-        {"id": data.verification_id},
-        {"$set": {"verified": True}}
-    )
-    
-    # Create access token
-    access_token = create_access_token(data={"sub": user_id})
-    
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user_id": user_id,
-        "message": "Kayıt başarılı"
-    }
 
 @api_router.post("/auth/login")
 async def login(data: Login):
@@ -309,6 +291,8 @@ async def login(data: Login):
         "user": {
             "id": user["id"],
             "email": user["email"],
+            "first_name": user.get("first_name", ""),
+            "last_name": user.get("last_name", ""),
             "profile_completed": user.get("profile_completed", False)
         }
     }
@@ -319,11 +303,29 @@ async def get_me(current_user: dict = Depends(get_current_user)):
     return {
         "id": current_user["id"],
         "email": current_user["email"],
-        "phone": current_user["phone"],
+        "first_name": current_user.get("first_name", ""),
+        "last_name": current_user.get("last_name", ""),
         "profile_completed": current_user.get("profile_completed", False),
         "created_at": current_user.get("created_at"),
         "profile": profile
     }
+
+@api_router.delete("/auth/delete-account")
+async def delete_own_account(current_user: dict = Depends(get_current_user)):
+    """Delete user's own account and all related data"""
+    user_id = current_user["id"]
+    
+    # Delete all user data
+    await db.users.delete_one({"id": user_id})
+    await db.profiles.delete_many({"user_id": user_id})
+    await db.listings.delete_many({"user_id": user_id})
+    await db.notifications.delete_many({"user_id": user_id})
+    await db.invitations.delete_many({"$or": [{"sender_id": user_id}, {"receiver_id": user_id}]})
+    await db.conversations.delete_many({"participants": user_id})
+    await db.messages.delete_many({"sender_id": user_id})
+    await db.deletion_requests.delete_many({"user_id": user_id})
+    
+    return {"message": "Hesabınız başarıyla silindi"}
 
 # ============= PROFILE ENDPOINTS =============
 @api_router.post("/profile")
