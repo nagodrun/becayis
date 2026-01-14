@@ -40,7 +40,11 @@ const Dashboard = () => {
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileData, setProfileData] = useState({
     display_name: '',
-    bio: ''
+    bio: '',
+    institution: '',
+    role: '',
+    current_province: '',
+    current_district: ''
   });
 
   useEffect(() => {
@@ -48,7 +52,11 @@ const Dashboard = () => {
     if (user?.profile) {
       setProfileData({
         display_name: user.profile.display_name || '',
-        bio: user.profile.bio || ''
+        bio: user.profile.bio || '',
+        institution: user.profile.institution || '',
+        role: user.profile.role || '',
+        current_province: user.profile.current_province || '',
+        current_district: user.profile.current_district || ''
       });
     }
   }, [user]);
