@@ -541,10 +541,10 @@ async def get_listings(
     role: Optional[str] = None,
     current_province: Optional[str] = None,
     desired_province: Optional[str] = None,
-    status: str = "active",
+    listing_status: str = "active",
     limit: int = 50
 ):
-    query = {"status": status}
+    query = {"status": listing_status}
     if title:
         query["title"] = {"$regex": title, "$options": "i"}
     if institution:
@@ -558,10 +558,19 @@ async def get_listings(
     
     listings = await db.listings.find(query, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(limit)
     
-    # Enrich with profile data
+    # Enrich with profile data and user info for initials
     for listing in listings:
         profile = await db.profiles.find_one({"user_id": listing["user_id"]}, {"_id": 0})
         listing["profile"] = profile
+        
+        # Get user for initials
+        user = await db.users.find_one({"id": listing["user_id"]}, {"_id": 0, "first_name": 1, "last_name": 1})
+        if user:
+            first_initial = user.get("first_name", "?")[0].upper() if user.get("first_name") else "?"
+            last_initial = user.get("last_name", "?")[0].upper() if user.get("last_name") else "?"
+            listing["user_initials"] = f"{first_initial}{last_initial}"
+        else:
+            listing["user_initials"] = "??"
     
     return listings
 
