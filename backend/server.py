@@ -450,6 +450,66 @@ async def update_profile(data: UpdateProfile, current_user: dict = Depends(get_c
     
     return {"message": "Profil güncellendi"}
 
+@api_router.post("/profile/avatar")
+async def upload_avatar(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    """Upload profile avatar"""
+    # Validate file type
+    allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Sadece JPEG, PNG, WebP veya GIF dosyaları kabul edilir")
+    
+    # Validate file size (max 5MB)
+    content = await file.read()
+    if len(content) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Dosya boyutu 5MB'dan küçük olmalıdır")
+    
+    # Generate unique filename
+    file_ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    filename = f"{current_user['id']}_{uuid.uuid4().hex[:8]}.{file_ext}"
+    file_path = UPLOADS_DIR / filename
+    
+    # Delete old avatar if exists
+    profile = await db.profiles.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    if profile and profile.get("avatar_url"):
+        old_filename = profile["avatar_url"].split("/")[-1]
+        old_path = UPLOADS_DIR / old_filename
+        if old_path.exists():
+            old_path.unlink()
+    
+    # Save new file
+    with open(file_path, "wb") as f:
+        f.write(content)
+    
+    # Update profile with avatar URL
+    avatar_url = f"/api/uploads/avatars/{filename}"
+    await db.profiles.update_one(
+        {"user_id": current_user["id"]},
+        {"$set": {"avatar_url": avatar_url}}
+    )
+    
+    return {"message": "Profil fotoğrafı yüklendi", "avatar_url": avatar_url}
+
+@api_router.delete("/profile/avatar")
+async def delete_avatar(current_user: dict = Depends(get_current_user)):
+    """Delete profile avatar"""
+    profile = await db.profiles.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    if not profile or not profile.get("avatar_url"):
+        raise HTTPException(status_code=404, detail="Profil fotoğrafı bulunamadı")
+    
+    # Delete file
+    filename = profile["avatar_url"].split("/")[-1]
+    file_path = UPLOADS_DIR / filename
+    if file_path.exists():
+        file_path.unlink()
+    
+    # Update profile
+    await db.profiles.update_one(
+        {"user_id": current_user["id"]},
+        {"$set": {"avatar_url": None}}
+    )
+    
+    return {"message": "Profil fotoğrafı silindi"}
+
 # ============= LISTING ENDPOINTS =============
 @api_router.post("/listings")
 async def create_listing(data: CreateListing, current_user: dict = Depends(get_current_user)):
