@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { User, LogOut, Moon, Sun, ArrowLeftRight } from 'lucide-react';
@@ -55,37 +55,40 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
+  const prevUserRef = useRef(user);
+
+  const fetchUnreadCounts = useCallback(async () => {
+    if (!user) return;
+    
+    try {
+      const [notificationsRes, invitationsRes, conversationsRes] = await Promise.all([
+        api.get('/notifications'),
+        api.get('/invitations'),
+        api.get('/conversations')
+      ]);
+
+      // Count unread notifications
+      const unreadNotifications = notificationsRes.data.filter(n => !n.read).length;
+      
+      // Count pending received invitations
+      const pendingInvitations = invitationsRes.data.received?.filter(i => i.status === 'pending').length || 0;
+      
+      // Count unread messages (conversations with unread last message)
+      const unreadMessages = conversationsRes.data.filter(c => 
+        c.last_message && !c.last_message.read && c.last_message.sender_id !== user.id
+      ).length;
+
+      const total = unreadNotifications + pendingInvitations + unreadMessages;
+      setUnreadCount(total);
+    } catch (error) {
+      // Silently fail - don't show error for notification fetch
+      console.log('Failed to fetch notifications');
+    }
+  }, [user]);
 
   // Fetch unread counts when user is logged in
   useEffect(() => {
     if (!user) return;
-
-    const fetchUnreadCounts = async () => {
-      try {
-        const [notificationsRes, invitationsRes, conversationsRes] = await Promise.all([
-          api.get('/notifications'),
-          api.get('/invitations'),
-          api.get('/conversations')
-        ]);
-
-        // Count unread notifications
-        const unreadNotifications = notificationsRes.data.filter(n => !n.read).length;
-        
-        // Count pending received invitations
-        const pendingInvitations = invitationsRes.data.received?.filter(i => i.status === 'pending').length || 0;
-        
-        // Count unread messages (conversations with unread last message)
-        const unreadMessages = conversationsRes.data.filter(c => 
-          c.last_message && !c.last_message.read && c.last_message.sender_id !== user.id
-        ).length;
-
-        const total = unreadNotifications + pendingInvitations + unreadMessages;
-        setUnreadCount(total);
-      } catch (error) {
-        // Silently fail - don't show error for notification fetch
-        console.log('Failed to fetch notifications');
-      }
-    };
 
     // Fetch immediately
     fetchUnreadCounts();
@@ -94,14 +97,16 @@ export const Navbar = () => {
     const interval = setInterval(fetchUnreadCounts, 30000);
 
     return () => clearInterval(interval);
-  }, [user, location.pathname]); // Re-fetch when location changes
+  }, [user, location.pathname, fetchUnreadCounts]);
 
-  // Reset unread count when user logs out
+  // Handle user logout - reset count
   useEffect(() => {
-    if (!user) {
+    if (prevUserRef.current && !user) {
+      // User just logged out
       setUnreadCount(0);
     }
-  }, [user]);
+    prevUserRef.current = user;
+  });
 
   const isActive = (path) => location.pathname === path;
 
