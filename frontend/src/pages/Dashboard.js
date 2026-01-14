@@ -54,6 +54,7 @@ const Dashboard = () => {
   const [institutions, setInstitutions] = useState([]);
   const [positions, setPositions] = useState([]);
   const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -76,6 +77,15 @@ const Dashboard = () => {
     }
   }, [user]);
 
+  // Fetch districts when province changes
+  useEffect(() => {
+    if (profileData.current_province) {
+      fetchDistricts(profileData.current_province);
+    } else {
+      setDistricts([]);
+    }
+  }, [profileData.current_province]);
+
   const fetchDropdownData = async () => {
     try {
       const [institutionsRes, positionsRes, provincesRes] = await Promise.all([
@@ -88,6 +98,16 @@ const Dashboard = () => {
       setProvinces(provincesRes.data);
     } catch (error) {
       console.error('Failed to fetch dropdown data:', error);
+    }
+  };
+
+  const fetchDistricts = async (province) => {
+    try {
+      const response = await api.get(`/districts/${encodeURIComponent(province)}`);
+      setDistricts(response.data);
+    } catch (error) {
+      console.error('Failed to fetch districts:', error);
+      setDistricts([]);
     }
   };
 
