@@ -131,17 +131,17 @@ const Home = () => {
     <div className="min-h-screen bg-background">
       {/* Hero Section with Integrated Search */}
       <div
-        className="relative min-h-[420px] bg-cover bg-center"
+        className="relative min-h-[380px] bg-cover bg-center"
         style={{
           backgroundImage: `linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7)), url('https://images.unsplash.com/photo-1591911677374-5a6143b8ca3c?crop=entropy&cs=srgb&fm=jpg&q=85')`
         }}
       >
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white px-4 max-w-5xl w-full">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight" style={{ fontFamily: 'Manrope' }}>
-              Kamu Çalışanları için<br />Yer Değişim Platformu
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-3 tracking-tight" style={{ fontFamily: 'Manrope' }}>
+              Kamu Çalışanları için Yer Değişim Platformu
             </h1>
-            <p className="text-base md:text-lg mb-8 text-slate-200">
+            <p className="text-sm md:text-base mb-6 text-slate-300">
               Güvenli ve kolay bir şekilde aynı pozisyondaki diğer kamu çalışanlarıyla yer değiştirin
             </p>
             
@@ -155,7 +155,7 @@ const Home = () => {
                     placeholder="İlan veya kurum ara..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-foreground"
+                    className="pl-10 h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-500"
                     data-testid="search-input"
                   />
                 </div>
@@ -165,7 +165,7 @@ const Home = () => {
                   value={filters.position || "all"} 
                   onValueChange={(val) => setFilters({ ...filters, position: val === "all" ? "" : val })}
                 >
-                  <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600" data-testid="filter-position">
+                  <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200" data-testid="filter-position">
                     <SelectValue placeholder="Pozisyon Seçin" />
                   </SelectTrigger>
                   <SelectContent>
@@ -179,7 +179,7 @@ const Home = () => {
                   value={filters.current_province || "all"} 
                   onValueChange={(val) => setFilters({ ...filters, current_province: val === "all" ? "" : val })}
                 >
-                  <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600" data-testid="filter-city">
+                  <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200" data-testid="filter-city">
                     <SelectValue placeholder="Bulunduğu İl" />
                   </SelectTrigger>
                   <SelectContent>
@@ -193,7 +193,7 @@ const Home = () => {
                   value={filters.desired_province || "all"} 
                   onValueChange={(val) => setFilters({ ...filters, desired_province: val === "all" ? "" : val })}
                 >
-                  <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600" data-testid="filter-target-city">
+                  <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200" data-testid="filter-target-city">
                     <SelectValue placeholder="Hedef İl" />
                   </SelectTrigger>
                   <SelectContent>
