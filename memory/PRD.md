@@ -10,11 +10,13 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 
 ## Temel Gereksinimler
 
-### 1. Kimlik Doğrulama (Tamamlandı)
+### 1. Kimlik Doğrulama (Tamamlandı - Güncellendi)
 - [x] Kurumsal e-posta ile kayıt (@gov.tr uzantısı)
-- [x] OTP ile telefon doğrulaması (MOCKED - gerçek SMS gönderilmiyor)
+- [x] E-posta doğrulama kodu (MOCKED - gerçek e-posta gönderilmiyor)
+- [x] Ad ve Soyad alanları zorunlu
 - [x] JWT tabanlı oturum yönetimi
 - [x] Çıkış yapıldığında ana sayfaya yönlendirme
+- [x] Kullanıcı kendi hesabını silebilir
 
 ### 2. Kullanıcı Paneli (Tamamlandı)
 - [x] Profil tamamlanma durumu
@@ -25,6 +27,7 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 - [x] Profil sekmesi (Dashboard içinde, detaylı düzenleme)
 - [x] Kapatılabilir platform politikası uyarısı
 - [x] Konuşma silme (X butonu)
+- [x] **Hesap Silme butonu**
 
 ### 3. Ana Sayfa & İlanlar (Tamamlandı)
 - [x] Son ilanların listesi
@@ -32,43 +35,31 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 - [x] Filtreleme (kurum, pozisyon, il, hedef il)
 - [x] Aktif filtre etiketleri gösterimi
 - [x] "İlan Oluştur" CTA butonu
-- [x] Giriş yapmamış kullanıcılar için "Talep Gönder" butonu (kayıt sayfasına yönlendirme)
+- [x] Giriş yapmamış kullanıcılar için "Talep Gönder" butonu
 
-### 4. Navbar (Tamamlandı - Güncellendi)
+### 4. Navbar (Tamamlandı)
 - [x] Logo ve tema toggle
 - [x] Tek profil dropdown butonu (Profilim, Çıkış Yap)
 - [x] Mesaj butonu kaldırıldı
-- [x] Panel butonu kaldırıldı (profil dropdown'a taşındı)
+- [x] Panel butonu kaldırıldı
 
-### 5. Davet & Gizlilik Sistemi (Tamamlandı)
-- [x] Kullanıcılar ilan sahiplerine davet gönderebilir
-- [x] Davet kabul edildikten sonra iletişim bilgileri görünür
-- [x] Kabul sonrası mesajlaşma açılır
-
-### 6. Mesajlaşma (Tamamlandı)
-- [x] Davet kabul edildikten sonra 1-1 sohbet
-- [x] Konuşma listesi
-- [x] Konuşma silme özelliği
-
-### 7. Profil Yönetimi (Tamamlandı - Güncellendi)
+### 5. Profil Yönetimi (Tamamlandı)
 - [x] Profil düzenleme (Dashboard içinde, detaylı form)
 - [x] Düzenlenebilir alanlar: Ad, Kurum, Pozisyon, İl, İlçe, Bio
-- [x] Telefon numarası değiştirilemez (güvenlik)
-- [x] Ayrı profil sayfası kaldırıldı (Dashboard'a yönlendirme)
+- [x] Ayrı profil sayfası kaldırıldı
 - [ ] Profil fotoğrafı yükleme (Planlanıyor)
 
-### 8. Admin Paneli (Tamamlandı)
+### 6. Admin Paneli (Tamamlandı)
 - [x] Admin girişi (becayis/1234)
-- [x] Kullanıcı listesi ve silme
-- [x] İlan yönetimi ve silme
+- [x] **Kullanıcı silme çalışıyor**
+- [x] **İlan silme çalışıyor**
 - [x] İlan silme onayları
 - [x] Kullanıcı engelleme/kaldırma
 
-### 9. UI/UX (Tamamlandı)
+### 7. UI/UX (Tamamlandı)
 - [x] FAQ bölümü (ana sayfa)
 - [x] Kapatılabilir politika uyarısı
 - [x] Dark/Light tema (site genelinde)
-- [x] Geri bildirim butonu (işlevsellik bekliyor)
 - [x] Anlık arama (arama butonu yok)
 
 ## Tech Stack
@@ -80,27 +71,25 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 ## Son Güncelleme: Ocak 2026
 
 ### Bu Oturumda Tamamlanan İşler:
-1. ✅ Navbar'dan mesaj butonu kaldırıldı
-2. ✅ Profil ve Panel butonları tek dropdown'da birleştirildi
-3. ✅ Arama butonu kaldırıldı, anlık arama (debounce) eklendi
-4. ✅ Giriş yapmamış kullanıcılar için "Talep Gönder" butonu
-5. ✅ Profil düzenleme formu genişletildi (Kurum, Pozisyon, İl, İlçe)
-6. ✅ Konuşma silme özelliği tamamlandı
-7. ✅ Ayrı /profile sayfası kaldırıldı (Dashboard'a yönlendirme)
-8. ✅ Admin panel silme işlemleri düzeltildi
-9. ✅ Dark/Light tema tüm sayfalarda çalışıyor
-10. ✅ Ana sayfa sloganından TC Kimlik/sicil no kaldırıldı
+1. ✅ **Kayıt akışı yenilendi**: Ad, Soyad, Kurumsal E-posta, Şifre
+2. ✅ **SMS doğrulaması kaldırıldı**, E-posta doğrulaması eklendi
+3. ✅ **Admin kullanıcı silme** çalışır hale getirildi
+4. ✅ **Kullanıcı kendi hesabını silme** özelliği eklendi
+5. ✅ **Profil güncelleme** tam çalışır hale getirildi
+6. ✅ Navbar'dan mesaj butonu kaldırıldı
+7. ✅ Profil+Panel butonları tek dropdown'da birleştirildi
+8. ✅ Anlık arama (debounce) eklendi
+9. ✅ Giriş yapmamış kullanıcılar için "Talep Gönder" butonu
 
 ## Mocklanmış Özellikler
-- **OTP SMS Gönderimi**: Gerçek SMS gönderilmiyor, OTP response'da dönüyor
-- **E-posta Bildirimleri**: Henüz entegre edilmedi
+- **E-posta Doğrulama**: Gerçek e-posta gönderilmiyor, kod response'da dönüyor
 
 ## Sonraki Öncelikli Görevler
 1. Geri bildirim butonu işlevselliği
-2. E-posta bildirimleri (SendGrid entegrasyonu)
+2. Gerçek e-posta gönderimi (SendGrid entegrasyonu)
 3. Profil fotoğrafı yükleme
 
 ## Backlog
 - WebSocket ile gerçek zamanlı mesajlaşma
-- Gerçek OTP entegrasyonu
 - İlan detay sayfası
+- Bildirim tercihleri
