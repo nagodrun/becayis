@@ -689,6 +689,24 @@ async def send_message(data: SendMessage, current_user: dict = Depends(get_curre
     
     return message
 
+@api_router.delete("/conversations/{conversation_id}")
+async def delete_conversation(conversation_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a conversation and all its messages"""
+    conversation = await db.conversations.find_one({"id": conversation_id}, {"_id": 0})
+    if not conversation:
+        raise HTTPException(status_code=404, detail="Konuşma bulunamadı")
+    
+    if current_user["id"] not in conversation["participants"]:
+        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok")
+    
+    # Delete all messages in the conversation
+    await db.messages.delete_many({"conversation_id": conversation_id})
+    
+    # Delete the conversation
+    await db.conversations.delete_one({"id": conversation_id})
+    
+    return {"message": "Konuşma silindi"}
+
 # ============= NOTIFICATION ENDPOINTS =============
 @api_router.get("/notifications")
 async def get_notifications(current_user: dict = Depends(get_current_user)):
