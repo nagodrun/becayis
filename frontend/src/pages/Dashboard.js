@@ -127,6 +127,29 @@ const Dashboard = () => {
     }
   };
 
+  const handleMarkNotificationRead = async (notificationId) => {
+    try {
+      await api.post(`/notifications/${notificationId}/read`);
+      setNotifications(notifications.map(n => 
+        n.id === notificationId ? { ...n, read: true } : n
+      ));
+    } catch (error) {
+      // Silently fail
+    }
+  };
+
+  const handleMarkAllNotificationsRead = async () => {
+    try {
+      const unreadNotifications = notifications.filter(n => !n.read);
+      await Promise.all(unreadNotifications.map(n => 
+        api.post(`/notifications/${n.id}/read`)
+      ));
+      setNotifications(notifications.map(n => ({ ...n, read: true })));
+    } catch (error) {
+      // Silently fail
+    }
+  };
+
   const handleDeleteNotification = async (notificationId) => {
     try {
       await api.delete(`/notifications/${notificationId}`);
