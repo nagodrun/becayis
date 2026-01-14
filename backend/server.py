@@ -691,6 +691,8 @@ async def send_message(data: SendMessage, current_user: dict = Depends(get_curre
         "message"
     )
     
+    # Remove MongoDB _id before returning
+    message.pop("_id", None)
     return message
 
 @api_router.delete("/conversations/{conversation_id}")
