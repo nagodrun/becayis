@@ -96,6 +96,52 @@ async def create_notification(user_id: str, title: str, message: str, notificati
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     await db.notifications.insert_one(notification)
+    
+    # Send via WebSocket if user is connected
+    await ws_manager.send_to_user(user_id, {
+        "type": "notification",
+        "data": notification
+    })
+
+# ============= WEBSOCKET MANAGER =============
+class ConnectionManager:
+    def __init__(self):
+        # user_id -> list of websocket connections
+        self.active_connections: Dict[str, List[WebSocket]] = defaultdict(list)
+    
+    async def connect(self, websocket: WebSocket, user_id: str):
+        await websocket.accept()
+        self.active_connections[user_id].append(websocket)
+        logger.info(f"WebSocket connected: user {user_id}")
+    
+    def disconnect(self, websocket: WebSocket, user_id: str):
+        if user_id in self.active_connections:
+            if websocket in self.active_connections[user_id]:
+                self.active_connections[user_id].remove(websocket)
+            if not self.active_connections[user_id]:
+                del self.active_connections[user_id]
+        logger.info(f"WebSocket disconnected: user {user_id}")
+    
+    async def send_to_user(self, user_id: str, message: dict):
+        """Send message to all connections of a specific user"""
+        if user_id in self.active_connections:
+            disconnected = []
+            for connection in self.active_connections[user_id]:
+                try:
+                    await connection.send_json(message)
+                except Exception:
+                    disconnected.append(connection)
+            
+            # Remove disconnected connections
+            for conn in disconnected:
+                self.active_connections[user_id].remove(conn)
+    
+    async def broadcast_to_conversation(self, conversation_id: str, participants: List[str], message: dict):
+        """Send message to all participants of a conversation"""
+        for user_id in participants:
+            await self.send_to_user(user_id, message)
+
+ws_manager = ConnectionManager()
 
 # ============= MODELS =============
 class RegisterStep1(BaseModel):
