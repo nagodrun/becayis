@@ -153,10 +153,35 @@ const Dashboard = () => {
       await api.put('/profile', profileData);
       toast.success('Profil güncellendi');
       setEditingProfile(false);
-      // Refresh user data
+      // Refresh page to get updated data
       window.location.reload();
     } catch (error) {
-      toast.error('Profil güncellenemedi');
+      toast.error(error.response?.data?.detail || 'Profil güncellenemedi');
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      'Hesabınızı silmek istediğinizden emin misiniz?\n\n' +
+      'Bu işlem geri alınamaz ve şunlar silinecektir:\n' +
+      '- Tüm ilanlarınız\n' +
+      '- Tüm mesajlarınız\n' +
+      '- Tüm davetleriniz\n' +
+      '- Profil bilgileriniz'
+    );
+
+    if (!confirmed) return;
+
+    const doubleConfirmed = window.confirm('Bu işlem GERİ ALINAMAZ. Devam etmek istediğinizden emin misiniz?');
+    if (!doubleConfirmed) return;
+
+    try {
+      await api.delete('/auth/delete-account');
+      localStorage.removeItem('token');
+      toast.success('Hesabınız başarıyla silindi');
+      navigate('/');
+    } catch (error) {
+      toast.error('Hesap silinemedi');
     }
   };
 
