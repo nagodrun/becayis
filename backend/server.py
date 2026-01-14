@@ -1185,83 +1185,29 @@ async def delete_notification(notification_id: str, current_user: dict = Depends
 
 # ============= UTILITY ENDPOINTS =============
 @api_router.get("/utility/institutions")
-async def get_institutions():
-    """Return Turkish public institutions"""
-    institutions = [
-        "ADALET BAKANLIĞI",
-        "MİLLİ EĞİTİM BAKANLIĞI",
-        "SAĞLIK BAKANLIĞI",
-        "İÇİŞLERİ BAKANLIĞI",
-        "MALİYE VE HAZİNE BAKANLIĞI",
-        "ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞI",
-        "TARIM VE ORMAN BAKANLIĞI",
-        "ULAŞTIRMA VE ALTYAPI BAKANLIĞI",
-        "TİCARET BAKANLIĞI",
-        "ENERJİ VE TABİİ KAYNAKLAR BAKANLIĞI",
-        "ÇALIŞMA VE SOSYAL GÜVENLİK BAKANLIĞI",
-        "AİLE VE SOSYAL HİZMETLER BAKANLIĞI",
-        "KÜLTÜR VE TURİZM BAKANLIĞI",
-        "GENÇLİK VE SPOR BAKANLIĞI",
-        "SANAYİ VE TEKNOLOJİ BAKANLIĞI"
-    ]
-    return institutions
+async def get_institutions_list():
+    """Return Turkish public institutions from constants"""
+    return INSTITUTIONS
+
+@api_router.get("/institutions")
+async def get_institutions_alt():
+    """Return Turkish public institutions (alternative endpoint)"""
+    return INSTITUTIONS
 
 @api_router.get("/utility/positions")
-async def get_positions():
-    """Return common public sector positions"""
-    positions = [
-        # Adalet Bakanlığı
-        "Zabıt Katibi",
-        "İcra Katibi",
-        "Mübaşir",
-        "İnfaz ve Koruma Memuru",
-        "Adli Tıp Uzmanı",
-        # Milli Eğitim
-        "Öğretmen",
-        "Okul Müdürü",
-        "Müdür Yardımcısı",
-        "Rehber Öğretmen",
-        # Sağlık
-        "Hemşire",
-        "Ebe",
-        "Sağlık Teknikeri",
-        "Laborant",
-        "Anestezi Teknisyeni",
-        "Ameliyathane Teknisyeni",
-        "Tıbbi Sekreter",
-        "Doktor",
-        "Uzman Doktor",
-        # Genel Pozisyonlar
-        "Memur",
-        "Şef",
-        "Müdür",
-        "Teknisyen",
-        "Mühendis",
-        "Uzman",
-        "Avukat",
-        "Mali Hizmetler Uzmanı",
-        "İdari Personel",
-        "Bilgisayar İşletmeni",
-        "Veri Hazırlama ve Kontrol İşletmeni"
-    ]
-    return sorted(positions)
+async def get_positions_list():
+    """Return common public sector positions from constants"""
+    return sorted(POSITIONS)
 
 @api_router.get("/provinces")
 async def get_provinces():
-    """Return Turkish provinces"""
-    provinces = [
-        "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Aksaray", "Amasya", "Ankara", "Antalya", 
-        "Ardahan", "Artvin", "Aydın", "Balıkesir", "Bartın", "Batman", "Bayburt", "Bilecik", 
-        "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", 
-        "Denizli", "Diyarbakır", "Düzce", "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir",
-        "Gaziantep", "Giresun", "Gümüşhane", "Hakkari", "Hatay", "Iğdır", "Isparta", "İstanbul",
-        "İzmir", "Kahramanmaraş", "Karabük", "Karaman", "Kars", "Kastamonu", "Kayseri", "Kilis",
-        "Kırıkkale", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", "Kütahya", "Malatya", "Manisa",
-        "Mardin", "Mersin", "Muğla", "Muş", "Nevşehir", "Niğde", "Ordu", "Osmaniye", "Rize",
-        "Sakarya", "Samsun", "Şanlıurfa", "Siirt", "Sinop", "Şırnak", "Sivas", "Tekirdağ", "Tokat",
-        "Trabzon", "Tunceli", "Uşak", "Van", "Yalova", "Yozgat", "Zonguldak"
-    ]
-    return provinces
+    """Return Turkish provinces from constants"""
+    return PROVINCES
+
+@api_router.get("/faq")
+async def get_faq():
+    """Return FAQ data from constants"""
+    return FAQ_DATA
 
 # Include the router in the main app
 app.include_router(api_router)
