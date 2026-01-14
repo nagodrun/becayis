@@ -28,13 +28,15 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 - [x] Konuşma silme (X butonu)
 - [x] **Admin onaylı hesap silme talebi**
 
-### 3. Ana Sayfa & İlanlar (Tamamlandı)
+### 3. Ana Sayfa & İlanlar (Tamamlandı - Güncellendi)
 - [x] Son ilanların listesi
+- [x] **Hero bölümüne entegre arama kutusu** (saffetcelik.com.tr benzeri)
+- [x] **Tek arama input'u** + **3 dropdown** (Pozisyon, Bulunduğu İl, Hedef İl)
 - [x] Anlık arama (debounce ile live search)
-- [x] Filtreleme (kurum, pozisyon, il, hedef il)
 - [x] Aktif filtre etiketleri gösterimi
-- [x] "İlan Oluştur" CTA butonu
+- [x] "Hemen Başla" CTA butonu
 - [x] Giriş yapmamış kullanıcılar için "Talep Gönder" butonu
+- [x] Koyu temada tutarlı görünüm
 
 ### 4. Navbar (Tamamlandı)
 - [x] Logo ve tema toggle
