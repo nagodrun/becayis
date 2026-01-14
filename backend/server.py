@@ -156,7 +156,6 @@ class UpdateProfile(BaseModel):
     avatar_url: Optional[str] = None
 
 class RequestListingDeletion(BaseModel):
-    listing_id: str
     reason: str
 
 # ============= AUTH ENDPOINTS =============
