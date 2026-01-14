@@ -112,22 +112,32 @@ const CreateEditListing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="p-8">
           <div className="text-center mb-8">
-            <FileText className="w-12 h-12 text-slate-900 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold" style={{ fontFamily: 'Manrope' }}>
+            <FileText className="w-12 h-12 text-slate-900 dark:text-slate-100 mx-auto mb-4" />
+            <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>
               {isEdit ? 'İlanı Düzenle' : 'Yeni İlan Oluştur'}
             </h1>
-            <p className="text-slate-600 mt-2">Yer değişimi için ilan bilgilerinizi girin</p>
+            <p className="text-muted-foreground mt-2">Yer değişimi için ilan bilgilerinizi girin</p>
           </div>
+
+          {/* Profile Warning */}
+          {!user?.profile?.institution && (
+            <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+              <p className="text-sm text-red-800 dark:text-red-200">
+                <strong>Uyarı:</strong> İlan oluşturmak için önce profilinizi tamamlamanız gerekiyor. 
+                <Link to="/dashboard" className="underline ml-1">Profil sekmesine git</Link>
+              </p>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Temel Bilgiler */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-slate-900">Temel Bilgiler</h3>
-              <p className="text-sm text-slate-500">İlanınızın başlığı ve açıklaması</p>
+              <h3 className="text-lg font-semibold text-foreground">Temel Bilgiler</h3>
+              <p className="text-sm text-muted-foreground">İlanınızın başlığı ve açıklaması</p>
               
               <div>
                 <Label htmlFor="title">İlan Başlığı *</Label>
@@ -155,51 +165,51 @@ const CreateEditListing = () => {
             </div>
 
             {/* Sunulan Pozisyon */}
-            <div className="space-y-4 bg-slate-50 p-6 rounded-lg border border-slate-200">
+            <div className="space-y-4 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-slate-900">Sunulan Pozisyon</h3>
-                  <p className="text-sm text-slate-500">Şu anda bulunduğunuz ve sunduğunuz pozisyon bilgileri</p>
-                  <p className="text-xs text-blue-600 mt-1">
-                    <Link to="/profile" className="underline">Profil sayfasından düzenleyebilirsiniz</Link>
+                  <h3 className="text-lg font-semibold text-foreground">Sunulan Pozisyon</h3>
+                  <p className="text-sm text-muted-foreground">Profilinizden alınan bilgiler</p>
+                  <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                    <Link to="/dashboard" className="underline">Dashboard → Profil sekmesinden düzenleyebilirsiniz</Link>
                   </p>
                 </div>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Kurum *</Label>
+                  <Label>Kurum</Label>
                   <Input
-                    value={profileData.institution}
+                    value={profileData.institution || 'Belirtilmemiş'}
                     disabled
-                    className="bg-white"
+                    className="bg-white dark:bg-slate-900"
                   />
                 </div>
 
                 <div>
-                  <Label>Pozisyon *</Label>
+                  <Label>Pozisyon</Label>
                   <Input
-                    value={profileData.role}
+                    value={profileData.role || 'Belirtilmemiş'}
                     disabled
-                    className="bg-white"
+                    className="bg-white dark:bg-slate-900"
                   />
                 </div>
 
                 <div>
-                  <Label>Şehir *</Label>
+                  <Label>Şehir</Label>
                   <Input
-                    value={profileData.current_province}
+                    value={profileData.current_province || 'Belirtilmemiş'}
                     disabled
-                    className="bg-white"
+                    className="bg-white dark:bg-slate-900"
                   />
                 </div>
 
                 <div>
                   <Label>İlçe</Label>
                   <Input
-                    value={profileData.current_district}
+                    value={profileData.current_district || 'Belirtilmemiş'}
                     disabled
-                    className="bg-white"
+                    className="bg-white dark:bg-slate-900"
                   />
                 </div>
               </div>
@@ -207,25 +217,25 @@ const CreateEditListing = () => {
 
             {/* İstenen Pozisyon */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-slate-900">İstenen Pozisyon</h3>
-              <p className="text-sm text-slate-500">Becayiş yapmak istediğiniz pozisyon bilgileri</p>
+              <h3 className="text-lg font-semibold text-foreground">İstenen Pozisyon</h3>
+              <p className="text-sm text-muted-foreground">Becayiş yapmak istediğiniz konum</p>
 
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+              <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-4">
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0 mt-0.5">
-                    <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-amber-600 dark:text-amber-400" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                     </svg>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-amber-900">
-                      <strong>Kurum:</strong> {profileData.institution}
+                    <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
+                      <strong>Kurum:</strong> {profileData.institution || 'Belirtilmemiş'}
                     </p>
-                    <p className="text-xs text-amber-800 mt-1">Becayiş sadece aynı kurum içinde yapılabilir</p>
-                    <p className="text-sm font-medium text-amber-900 mt-2">
-                      <strong>Pozisyon:</strong> {profileData.role}
+                    <p className="text-xs text-amber-800 dark:text-amber-300 mt-1">Becayiş sadece aynı kurum içinde yapılabilir</p>
+                    <p className="text-sm font-medium text-amber-900 dark:text-amber-200 mt-2">
+                      <strong>Pozisyon:</strong> {profileData.role || 'Belirtilmemiş'}
                     </p>
-                    <p className="text-xs text-amber-800 mt-1">Becayiş sadece aynı pozisyon için yapılabilir</p>
+                    <p className="text-xs text-amber-800 dark:text-amber-300 mt-1">Becayiş sadece aynı pozisyon için yapılabilir</p>
                   </div>
                 </div>
               </div>
@@ -268,8 +278,8 @@ const CreateEditListing = () => {
               </Button>
               <Button
                 type="submit"
-                className="flex-1 bg-slate-900 hover:bg-slate-800"
-                disabled={loading}
+                className="flex-1 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
+                disabled={loading || !profileData.institution}
                 data-testid="listing-submit-button"
               >
                 {loading ? 'Kaydediliyor...' : isEdit ? 'İlanı Güncelle' : 'İlan Oluştur'}
