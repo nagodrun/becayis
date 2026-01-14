@@ -1378,6 +1378,128 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# ============= WEBSOCKET ENDPOINT =============
+@app.websocket("/ws/{token}")
+async def websocket_endpoint(websocket: WebSocket, token: str):
+    """WebSocket endpoint for real-time messaging"""
+    try:
+        # Verify token
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")
+        if not user_id:
+            await websocket.close(code=4001)
+            return
+    except JWTError:
+        await websocket.close(code=4001)
+        return
+    
+    await ws_manager.connect(websocket, user_id)
+    
+    try:
+        while True:
+            data = await websocket.receive_json()
+            
+            # Handle different message types
+            if data.get("type") == "message":
+                conversation_id = data.get("conversation_id")
+                content = data.get("content")
+                
+                if not conversation_id or not content:
+                    continue
+                
+                # Get conversation
+                conversation = await db.conversations.find_one({"id": conversation_id}, {"_id": 0})
+                if not conversation or user_id not in conversation["participants"]:
+                    continue
+                
+                # Check if blocked
+                other_user_id = [p for p in conversation["participants"] if p != user_id][0]
+                block = await db.blocks.find_one({
+                    "blocker_id": other_user_id,
+                    "blocked_id": user_id
+                })
+                if block:
+                    await websocket.send_json({
+                        "type": "error",
+                        "message": "Bu kullanıcıya mesaj gönderemezsiniz"
+                    })
+                    continue
+                
+                # Create message
+                message = {
+                    "id": str(uuid.uuid4()),
+                    "conversation_id": conversation_id,
+                    "sender_id": user_id,
+                    "content": content,
+                    "read": False,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                }
+                await db.messages.insert_one(message)
+                
+                # Update conversation last message
+                await db.conversations.update_one(
+                    {"id": conversation_id},
+                    {"$set": {
+                        "last_message": {
+                            "content": content[:50] + "..." if len(content) > 50 else content,
+                            "sender_id": user_id,
+                            "created_at": message["created_at"],
+                            "read": False
+                        }
+                    }}
+                )
+                
+                # Get sender profile
+                sender_profile = await db.profiles.find_one({"user_id": user_id}, {"_id": 0})
+                
+                # Broadcast to all participants
+                await ws_manager.broadcast_to_conversation(
+                    conversation_id,
+                    conversation["participants"],
+                    {
+                        "type": "new_message",
+                        "conversation_id": conversation_id,
+                        "message": {
+                            **message,
+                            "sender_profile": sender_profile
+                        }
+                    }
+                )
+            
+            elif data.get("type") == "typing":
+                conversation_id = data.get("conversation_id")
+                conversation = await db.conversations.find_one({"id": conversation_id}, {"_id": 0})
+                if conversation and user_id in conversation["participants"]:
+                    other_user_id = [p for p in conversation["participants"] if p != user_id][0]
+                    await ws_manager.send_to_user(other_user_id, {
+                        "type": "typing",
+                        "conversation_id": conversation_id,
+                        "user_id": user_id
+                    })
+            
+            elif data.get("type") == "read":
+                conversation_id = data.get("conversation_id")
+                # Mark messages as read
+                await db.messages.update_many(
+                    {
+                        "conversation_id": conversation_id,
+                        "sender_id": {"$ne": user_id},
+                        "read": False
+                    },
+                    {"$set": {"read": True}}
+                )
+                # Update conversation last message read status
+                await db.conversations.update_one(
+                    {"id": conversation_id, "last_message.sender_id": {"$ne": user_id}},
+                    {"$set": {"last_message.read": True}}
+                )
+                
+    except WebSocketDisconnect:
+        ws_manager.disconnect(websocket, user_id)
+    except Exception as e:
+        logger.error(f"WebSocket error: {e}")
+        ws_manager.disconnect(websocket, user_id)
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
