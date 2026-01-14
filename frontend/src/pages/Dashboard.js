@@ -123,6 +123,18 @@ const Dashboard = () => {
     }
   };
 
+  const handleDeleteConversation = async (conversationId) => {
+    if (!window.confirm('Bu konuşmayı silmek istediğinizden emin misiniz?')) return;
+    
+    try {
+      await api.delete(`/conversations/${conversationId}`);
+      setConversations(conversations.filter(c => c.id !== conversationId));
+      toast.success('Konuşma silindi');
+    } catch (error) {
+      toast.error('Konuşma silinemedi');
+    }
+  };
+
   const handleCloseWarning = () => {
     setShowWarning(false);
     localStorage.setItem('hideWarning', 'true');
