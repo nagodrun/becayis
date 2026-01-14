@@ -1004,6 +1004,16 @@ async def admin_reject_deletion(request_id: str, admin = Depends(verify_admin)):
     
     return {"message": "Silme isteği reddedildi"}
 
+@api_router.delete("/admin/deletion-requests/{request_id}")
+async def admin_delete_deletion_request(request_id: str, admin = Depends(verify_admin)):
+    """Delete a deletion request (for cleanup purposes)"""
+    request = await db.deletion_requests.find_one({"id": request_id}, {"_id": 0})
+    if not request:
+        raise HTTPException(status_code=404, detail="Silme isteği bulunamadı")
+    
+    await db.deletion_requests.delete_one({"id": request_id})
+    return {"message": "Silme isteği temizlendi"}
+
 @api_router.delete("/notifications/{notification_id}")
 async def delete_notification(notification_id: str, current_user: dict = Depends(get_current_user)):
     result = await db.notifications.delete_one({
