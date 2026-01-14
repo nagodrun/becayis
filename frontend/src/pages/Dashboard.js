@@ -154,8 +154,8 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-slate-500">Yüklüyor...</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-muted-foreground">Yüklüyor...</div>
       </div>
     );
   }
@@ -163,11 +163,11 @@ const Dashboard = () => {
   const unreadNotifications = notifications.filter(n => !n.read).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Manrope' }}>Panel</h1>
-          <p className="text-slate-600">Hoş geldiniz, {user?.profile?.display_name || user?.email}</p>
+          <h1 className="text-3xl font-bold mb-2 text-foreground" style={{ fontFamily: 'Manrope' }}>Panel</h1>
+          <p className="text-muted-foreground">Hoş geldiniz, {user?.profile?.display_name || user?.email}</p>
         </div>
 
         {/* Single Account Warning */}
