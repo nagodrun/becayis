@@ -465,6 +465,96 @@ const AdminDashboard = () => {
               )}
             </Card>
           </TabsContent>
+
+          {/* Account Deletion Requests Tab */}
+          <TabsContent value="account-deletions">
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
+                Hesap Silme Talepleri ({accountDeletionRequests.length})
+              </h2>
+              {accountDeletionRequests.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                  <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <p>Henüz hesap silme talebi yok</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {accountDeletionRequests.map((request) => (
+                    <div key={request.id} className="border rounded-lg p-4" data-testid="admin-account-deletion-request">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="font-semibold">{request.profile?.display_name || request.user?.email}</div>
+                            <Badge variant={
+                              request.status === 'pending' ? 'default' : 
+                              request.status === 'approved' ? 'outline' : 
+                              'destructive'
+                            }>
+                              {request.status === 'pending' ? 'Bekliyor' : 
+                               request.status === 'approved' ? 'Onaylandı' : 
+                               'Reddedildi'}
+                            </Badge>
+                          </div>
+                          
+                          <div className="text-sm text-slate-600 mb-2">
+                            <strong>E-posta:</strong> {request.user?.email}
+                          </div>
+                          
+                          {request.profile && (
+                            <div className="text-sm text-slate-600 mb-2">
+                              <strong>Kurum:</strong> {request.profile.institution} - {request.profile.role}
+                              <br />
+                              <strong>Konum:</strong> {request.profile.current_province}/{request.profile.current_district}
+                            </div>
+                          )}
+                          
+                          <div className="text-sm text-slate-700 bg-slate-50 dark:bg-slate-800 p-3 rounded mt-2">
+                            <strong>Silme Sebebi:</strong> {request.reason}
+                          </div>
+                          
+                          <div className="text-xs text-slate-400 mt-2">{formatDate(request.created_at)}</div>
+                        </div>
+                        
+                        {request.status === 'pending' && (
+                          <div className="flex gap-2 ml-4">
+                            <Button
+                              size="sm"
+                              className="bg-emerald-500 hover:bg-emerald-600"
+                              onClick={() => handleApproveAccountDeletion(request.id)}
+                              data-testid={`approve-account-deletion-${request.id}`}
+                            >
+                              Onayla
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleRejectAccountDeletion(request.id)}
+                              data-testid={`reject-account-deletion-${request.id}`}
+                            >
+                              Reddet
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* X button to clear processed requests */}
+                        {request.status !== 'pending' && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="ml-4 text-slate-400 hover:text-red-500 hover:bg-red-50"
+                            onClick={() => handleClearAccountDeletionRequest(request.id)}
+                            data-testid={`clear-account-deletion-${request.id}`}
+                          >
+                            <X className="w-5 h-5" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
