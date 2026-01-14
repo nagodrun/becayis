@@ -211,7 +211,7 @@ const Home = () => {
                       <span className="text-sm text-slate-500 dark:text-slate-400">Filtreler:</span>
                       {searchQuery && (
                         <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs rounded-full">
-                          "{searchQuery}"
+                          {searchQuery}
                           <button onClick={() => setSearchQuery('')}><X className="w-3 h-3" /></button>
                         </span>
                       )}
@@ -390,7 +390,7 @@ const Home = () => {
                 İlanımı nasıl silebilirim?
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground">
-                İlanlarınızı dashboard'dan 'Sil' butonuna tıklayarak silebilirsiniz. Silme işlemi için admin onayı gereklidir.
+                İlanlarınızı dashboard&apos;dan Sil butonuna tıklayarak silebilirsiniz. Silme işlemi için admin onayı gereklidir.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
