@@ -120,6 +120,7 @@ const ChatPage = () => {
 
   // Fetch initial messages
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchMessages();
   }, [conversationId, fetchMessages]);
 
