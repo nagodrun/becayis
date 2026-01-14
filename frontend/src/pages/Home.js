@@ -340,50 +340,16 @@ const Home = () => {
           </div>
 
           <Accordion type="single" collapsible className="w-full space-y-4">
-            <AccordionItem value="item-1" className="border border-border rounded-lg px-6 bg-background">
-              <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
-                Becayiş nedir?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                Becayiş, kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla yer değiştirmesini kolaylaştıran bir platformdur. Güvenli ve kolay bir şekilde yer değişimi yapmanızı sağlar.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-2" className="border border-border rounded-lg px-6 bg-background">
-              <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
-                Platforma nasıl kayıt olabilirim?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                Kayıt için kurumsal e-posta adresiniz (@gov.tr uzantılı) ve telefon numaranız gereklidir. Kayıt üç adımda tamamlanır: E-posta doğrulama, telefon doğrulama (OTP), profil oluşturma.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-3" className="border border-border rounded-lg px-6 bg-background">
-              <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
-                İletişim bilgilerim ne zaman paylaşılır?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                İletişim bilgileriniz (telefon, e-posta) gizlidir ve sadece gönderdiğiniz veya aldığınız bir daveti KABUL ETTİĞİNİZDE karşı tarafla paylaşılır.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-4" className="border border-border rounded-lg px-6 bg-background">
-              <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
-                Kaç hesap oluşturabilirim?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                Her kişi yalnızca BİR hesap oluşturabilir. Birden fazla hesap oluşturma durumunda hesaplarınız engellenebilir.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-5" className="border border-border rounded-lg px-6 bg-background">
-              <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
-                İlanımı nasıl silebilirim?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                İlanlarınızı dashboard&apos;dan Sil butonuna tıklayarak silebilirsiniz. Silme işlemi için admin onayı gereklidir.
-              </AccordionContent>
-            </AccordionItem>
+            {faqData.map((faq, index) => (
+              <AccordionItem key={index} value={`item-${index}`} className="border border-border rounded-lg px-6 bg-background">
+                <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
           </Accordion>
         </div>
       </div>
