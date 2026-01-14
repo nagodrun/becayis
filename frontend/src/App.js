@@ -18,6 +18,9 @@ import ChatPage from './pages/ChatPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import FAQ from './pages/FAQ';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import Help from './pages/Help';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
