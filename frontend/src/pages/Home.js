@@ -81,7 +81,6 @@ const Home = () => {
       if (debouncedSearch) params.append('title', debouncedSearch);
       if (filters.position) params.append('role', filters.position);
       if (filters.current_province) params.append('current_province', filters.current_province);
-      if (filters.desired_province) params.append('desired_province', filters.desired_province);
       
       const response = await api.get(`/listings?${params.toString()}`);
       setListings(response.data);
