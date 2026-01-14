@@ -51,20 +51,27 @@ const Home = () => {
   const debouncedSearch = useDebounce(searchQuery, 300);
 
   useEffect(() => {
-    fetchProvinces();
+    fetchInitialData();
   }, []);
 
   // Live search effect
   useEffect(() => {
     fetchListings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch, filters.position, filters.current_province, filters.desired_province]);
 
-  const fetchProvinces = async () => {
+  const fetchInitialData = async () => {
     try {
-      const response = await api.get('/provinces');
-      setProvinces(response.data);
+      const [provincesRes, positionsRes, faqRes] = await Promise.all([
+        api.get('/provinces'),
+        api.get('/utility/positions'),
+        api.get('/faq')
+      ]);
+      setProvinces(provincesRes.data);
+      setPositions(positionsRes.data);
+      setFaqData(faqRes.data);
     } catch (error) {
-      console.error('Failed to fetch provinces:', error);
+      console.error('Failed to fetch initial data:', error);
     }
   };
 
