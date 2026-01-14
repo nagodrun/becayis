@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -10,7 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '../components/ui/accordion';
-import { MapPin, Users, ShieldCheck, MessageSquare, Search, X, ChevronDown } from 'lucide-react';
+import { MapPin, Users, ShieldCheck, MessageSquare, Search, X } from 'lucide-react';
 import api from '../lib/api';
 import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
@@ -32,30 +32,14 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-// Positions list
-const POSITIONS = [
-  "Zabıt Katibi",
-  "Mübaşir", 
-  "Memur",
-  "Şoför",
-  "Hizmetli",
-  "Teknisyen",
-  "Mühendis",
-  "Doktor",
-  "Hemşire",
-  "Öğretmen",
-  "Uzman",
-  "Şef",
-  "Müdür",
-  "Diğer"
-];
-
 const Home = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [provinces, setProvinces] = useState([]);
+  const [positions, setPositions] = useState([]);
+  const [faqData, setFaqData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     position: '',
