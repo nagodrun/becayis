@@ -424,25 +424,48 @@ const Dashboard = () => {
             ) : (
               <div className="space-y-4">
                 {conversations.map((conv) => (
-                  <Link key={conv.id} to={`/messages/${conv.id}`}>
-                    <Card className="p-6 hover:shadow-lg transition-all cursor-pointer" data-testid="conversation-card">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center">
-                            <MessageSquare className="w-6 h-6 text-slate-600" />
-                          </div>
-                          <div>
-                            <div className="font-semibold">{conv.other_user?.display_name}</div>
-                            <div className="text-sm text-slate-500">{conv.other_user?.institution}</div>
+                  <Card key={conv.id} className="p-6 hover:shadow-lg transition-all relative" data-testid="conversation-card">
+                    <button
+                      onClick={() => handleDeleteConversation(conv.id)}
+                      className="absolute top-4 right-4 text-slate-400 hover:text-red-600 transition-colors"
+                      data-testid={`delete-conversation-${conv.id}`}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                    
+                    <Link to={`/messages/${conv.id}`} className="block pr-8">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold text-lg">
+                            {conv.other_user?.display_name?.charAt(0) || '?'}
+                          </span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="font-semibold text-lg text-foreground truncate">
+                              {conv.other_user?.display_name || 'Bilinmeyen Kullanıcı'}
+                            </h3>
                             {conv.last_message && (
-                              <div className="text-sm text-slate-400 mt-1">{conv.last_message.content?.substring(0, 50)}...</div>
+                              <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">
+                                {formatDate(conv.last_message.created_at)}
+                              </span>
                             )}
                           </div>
+                          <div className="text-sm text-muted-foreground mb-2">
+                            {conv.other_user?.institution} • {conv.other_user?.role}
+                          </div>
+                          {conv.last_message && (
+                            <div className="text-sm text-slate-600 dark:text-slate-400 truncate">
+                              <span className="font-medium">Son mesaj:</span> {conv.last_message.content?.substring(0, 80)}
+                              {conv.last_message.content?.length > 80 && '...'}
+                            </div>
+                          )}
                         </div>
-                        <div className="text-sm text-slate-400">{conv.last_message && formatDate(conv.last_message.created_at)}</div>
                       </div>
-                    </Card>
-                  </Link>
+                    </Link>
+                  </Card>
                 ))}
               </div>
             )}
