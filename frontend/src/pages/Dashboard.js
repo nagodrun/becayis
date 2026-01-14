@@ -960,10 +960,17 @@ const Dashboard = () => {
                       />
                     </div>
                     <div className="flex gap-2 pt-4">
-                      <Button onClick={handleUpdateProfile} className="bg-emerald-600 hover:bg-emerald-700">
-                        Değişiklikleri Kaydet
+                      <Button 
+                        onClick={handleUpdateProfile} 
+                        className="bg-emerald-600 hover:bg-emerald-700"
+                        disabled={uploadingAvatar}
+                      >
+                        {uploadingAvatar ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
                       </Button>
-                      <Button variant="outline" onClick={() => setEditingProfile(false)}>İptal</Button>
+                      <Button variant="outline" onClick={() => {
+                        setEditingProfile(false);
+                        handleCancelAvatarSelect();
+                      }}>İptal</Button>
                     </div>
                   </>
                 ) : (
