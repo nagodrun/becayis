@@ -293,6 +293,7 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "email": current_user["email"],
         "phone": current_user["phone"],
         "profile_completed": current_user.get("profile_completed", False),
+        "created_at": current_user.get("created_at"),
         "profile": profile
     }
 
