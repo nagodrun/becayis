@@ -312,6 +312,32 @@ const Dashboard = () => {
 
   const handleUpdateProfile = async () => {
     try {
+      // Upload pending avatar first if exists
+      if (pendingAvatarFile) {
+        setUploadingAvatar(true);
+        try {
+          const formData = new FormData();
+          formData.append('file', pendingAvatarFile);
+          
+          const avatarResponse = await api.post('/profile/avatar', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+          
+          setProfileData(prev => ({ ...prev, avatar_url: avatarResponse.data.avatar_url }));
+          
+          // Clear pending avatar
+          if (pendingAvatarPreview) {
+            URL.revokeObjectURL(pendingAvatarPreview);
+          }
+          setPendingAvatarFile(null);
+          setPendingAvatarPreview(null);
+        } catch (avatarError) {
+          toast.error('Profil fotoğrafı yüklenemedi');
+        } finally {
+          setUploadingAvatar(false);
+        }
+      }
+
       // Check if profile exists, if not create, otherwise update
       if (!user?.profile) {
         // Create profile
