@@ -150,12 +150,14 @@ const ChatPage = () => {
     } else {
       // Fallback to HTTP
       try {
-        await api.post('/messages', {
+        const response = await api.post('/messages', {
           conversation_id: conversationId,
           content: newMessage
         });
         setNewMessage('');
-        fetchMessages();
+        // Fetch updated messages
+        const messagesRes = await api.get(`/conversations/${conversationId}/messages`);
+        setMessages(messagesRes.data.messages);
       } catch (error) {
         toast.error(error.response?.data?.detail || 'Mesaj gönderilemedi');
       }
