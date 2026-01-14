@@ -1085,6 +1085,82 @@ async def admin_delete_deletion_request(request_id: str, admin = Depends(verify_
     await db.deletion_requests.delete_one({"id": request_id})
     return {"message": "Silme isteği temizlendi"}
 
+# ============= ADMIN ACCOUNT DELETION REQUESTS =============
+@api_router.get("/admin/account-deletion-requests")
+async def get_account_deletion_requests(admin = Depends(verify_admin)):
+    """Get all account deletion requests"""
+    requests = await db.account_deletion_requests.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    
+    # Attach user info
+    for req in requests:
+        user = await db.users.find_one({"id": req["user_id"]}, {"_id": 0})
+        profile = await db.profiles.find_one({"user_id": req["user_id"]}, {"_id": 0})
+        req["user"] = user
+        req["profile"] = profile
+    
+    return requests
+
+@api_router.post("/admin/account-deletion-requests/{request_id}/approve")
+async def approve_account_deletion(request_id: str, admin = Depends(verify_admin)):
+    """Approve account deletion request and delete user"""
+    request = await db.account_deletion_requests.find_one({"id": request_id}, {"_id": 0})
+    if not request:
+        raise HTTPException(status_code=404, detail="Silme talebi bulunamadı")
+    
+    if request["status"] != "pending":
+        raise HTTPException(status_code=400, detail="Bu talep zaten işlenmiş")
+    
+    user_id = request["user_id"]
+    
+    # Delete all user data
+    await db.users.delete_one({"id": user_id})
+    await db.profiles.delete_many({"user_id": user_id})
+    await db.listings.delete_many({"user_id": user_id})
+    await db.notifications.delete_many({"user_id": user_id})
+    await db.invitations.delete_many({"$or": [{"sender_id": user_id}, {"receiver_id": user_id}]})
+    await db.conversations.delete_many({"participants": user_id})
+    await db.messages.delete_many({"sender_id": user_id})
+    await db.deletion_requests.delete_many({"user_id": user_id})
+    
+    # Update request status
+    await db.account_deletion_requests.update_one(
+        {"id": request_id},
+        {"$set": {"status": "approved", "approved_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    return {"message": "Hesap silme talebi onaylandı ve kullanıcı silindi"}
+
+@api_router.post("/admin/account-deletion-requests/{request_id}/reject")
+async def reject_account_deletion(request_id: str, admin = Depends(verify_admin)):
+    """Reject account deletion request"""
+    request = await db.account_deletion_requests.find_one({"id": request_id}, {"_id": 0})
+    if not request:
+        raise HTTPException(status_code=404, detail="Silme talebi bulunamadı")
+    
+    if request["status"] != "pending":
+        raise HTTPException(status_code=400, detail="Bu talep zaten işlenmiş")
+    
+    await db.account_deletion_requests.update_one(
+        {"id": request_id},
+        {"$set": {"status": "rejected", "rejected_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # Notify user
+    await create_notification(
+        request["user_id"],
+        "Hesap Silme Reddedildi",
+        "Hesap silme talebiniz reddedildi.",
+        "account_deletion_rejected"
+    )
+    
+    return {"message": "Hesap silme talebi reddedildi"}
+
+@api_router.delete("/admin/account-deletion-requests/{request_id}")
+async def clear_account_deletion_request(request_id: str, admin = Depends(verify_admin)):
+    """Clear an account deletion request"""
+    await db.account_deletion_requests.delete_one({"id": request_id})
+    return {"message": "Hesap silme talebi temizlendi"}
+
 @api_router.delete("/notifications/{notification_id}")
 async def delete_notification(notification_id: str, current_user: dict = Depends(get_current_user)):
     result = await db.notifications.delete_one({
