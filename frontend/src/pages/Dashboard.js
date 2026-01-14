@@ -796,9 +796,9 @@ const Dashboard = () => {
                           alt="Önizleme" 
                           className="w-full h-full object-cover"
                         />
-                      ) : profileData.avatar_url ? (
+                      ) : (user?.profile?.avatar_url || profileData.avatar_url) ? (
                         <img 
-                          src={profileData.avatar_url} 
+                          src={user?.profile?.avatar_url || profileData.avatar_url} 
                           alt="Profil" 
                           className="w-full h-full object-cover"
                         />
@@ -824,42 +824,50 @@ const Dashboard = () => {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-foreground mb-1">Profil Fotoğrafı</h3>
-                    <p className="text-sm text-muted-foreground mb-3">JPEG, PNG, WebP veya GIF. Max 5MB.</p>
-                    <div className="flex gap-2 flex-wrap">
-                      <Button 
-                        size="sm" 
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={uploadingAvatar}
-                        className="bg-amber-500 hover:bg-amber-600"
-                      >
-                        <Camera className="w-4 h-4 mr-2" />
-                        {pendingAvatarPreview ? 'Fotoğrafı Değiştir' : 'Fotoğraf Seç'}
-                      </Button>
-                      {pendingAvatarPreview && (
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={handleCancelAvatarSelect}
-                        >
-                          <X className="w-4 h-4 mr-2" />
-                          İptal
-                        </Button>
-                      )}
-                      {profileData.avatar_url && !pendingAvatarPreview && (
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={handleDeleteAvatar}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          <X className="w-4 h-4 mr-2" />
-                          Kaldır
-                        </Button>
-                      )}
-                    </div>
-                    {pendingAvatarPreview && (
-                      <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
-                        Fotoğraf seçildi. Kaydetmek için aşağıdaki &quot;Değişiklikleri Kaydet&quot; butonuna tıklayın.
+                    {editingProfile ? (
+                      <>
+                        <p className="text-sm text-muted-foreground mb-3">JPEG, PNG, WebP veya GIF. Max 5MB.</p>
+                        <div className="flex gap-2 flex-wrap">
+                          <Button 
+                            size="sm" 
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={uploadingAvatar}
+                            className="bg-amber-500 hover:bg-amber-600"
+                          >
+                            <Camera className="w-4 h-4 mr-2" />
+                            {pendingAvatarPreview ? 'Fotoğrafı Değiştir' : (user?.profile?.avatar_url || profileData.avatar_url) ? 'Fotoğrafı Değiştir' : 'Fotoğraf Seç'}
+                          </Button>
+                          {pendingAvatarPreview && (
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={handleCancelAvatarSelect}
+                            >
+                              <X className="w-4 h-4 mr-2" />
+                              İptal
+                            </Button>
+                          )}
+                          {(user?.profile?.avatar_url || profileData.avatar_url) && !pendingAvatarPreview && (
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={handleDeleteAvatar}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <X className="w-4 h-4 mr-2" />
+                              Kaldır
+                            </Button>
+                          )}
+                        </div>
+                        {pendingAvatarPreview && (
+                          <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                            Fotoğraf seçildi. Kaydetmek için aşağıdaki &quot;Değişiklikleri Kaydet&quot; butonuna tıklayın.
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        {(user?.profile?.avatar_url || profileData.avatar_url) ? 'Fotoğrafı değiştirmek için "Profili Düzenle" butonuna tıklayın.' : 'Fotoğraf eklemek için "Profili Düzenle" butonuna tıklayın.'}
                       </p>
                     )}
                   </div>
