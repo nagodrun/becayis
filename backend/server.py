@@ -1314,6 +1314,9 @@ async def get_faq():
 # Include the router in the main app
 app.include_router(api_router)
 
+# Mount static files for avatar uploads
+app.mount("/api/uploads", StaticFiles(directory=str(ROOT_DIR / "uploads")), name="uploads")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
