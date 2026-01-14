@@ -790,7 +790,13 @@ const Dashboard = () => {
                 <div className="flex items-center gap-6 pb-6 border-b border-border">
                   <div className="relative">
                     <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-lg">
-                      {profileData.avatar_url ? (
+                      {pendingAvatarPreview ? (
+                        <img 
+                          src={pendingAvatarPreview} 
+                          alt="Önizleme" 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : profileData.avatar_url ? (
                         <img 
                           src={profileData.avatar_url} 
                           alt="Profil" 
@@ -803,18 +809,23 @@ const Dashboard = () => {
                         </span>
                       )}
                     </div>
+                    {pendingAvatarPreview && (
+                      <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                        Yeni
+                      </div>
+                    )}
                     <input
                       ref={fileInputRef}
                       type="file"
                       accept="image/jpeg,image/png,image/webp,image/gif"
                       className="hidden"
-                      onChange={handleAvatarUpload}
+                      onChange={handleAvatarSelect}
                     />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-foreground mb-1">Profil Fotoğrafı</h3>
                     <p className="text-sm text-muted-foreground mb-3">JPEG, PNG, WebP veya GIF. Max 5MB.</p>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
                       <Button 
                         size="sm" 
                         onClick={() => fileInputRef.current?.click()}
@@ -822,9 +833,19 @@ const Dashboard = () => {
                         className="bg-amber-500 hover:bg-amber-600"
                       >
                         <Camera className="w-4 h-4 mr-2" />
-                        {uploadingAvatar ? 'Yükleniyor...' : 'Fotoğraf Yükle'}
+                        {pendingAvatarPreview ? 'Fotoğrafı Değiştir' : 'Fotoğraf Seç'}
                       </Button>
-                      {profileData.avatar_url && (
+                      {pendingAvatarPreview && (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={handleCancelAvatarSelect}
+                        >
+                          <X className="w-4 h-4 mr-2" />
+                          İptal
+                        </Button>
+                      )}
+                      {profileData.avatar_url && !pendingAvatarPreview && (
                         <Button 
                           size="sm" 
                           variant="outline"
@@ -836,6 +857,11 @@ const Dashboard = () => {
                         </Button>
                       )}
                     </div>
+                    {pendingAvatarPreview && (
+                      <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                        Fotoğraf seçildi. Kaydetmek için aşağıdaki "Değişiklikleri Kaydet" butonuna tıklayın.
+                      </p>
+                    )}
                   </div>
                 </div>
 
