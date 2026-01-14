@@ -134,6 +134,41 @@ const AdminDashboard = () => {
     }
   };
 
+  // Account Deletion Request Handlers
+  const handleApproveAccountDeletion = async (requestId) => {
+    if (!window.confirm('Bu hesap silme talebini onaylamak istediğinizden emin misiniz? Kullanıcının tüm verileri kalıcı olarak silinecektir.')) return;
+    
+    try {
+      await api.post(`/admin/account-deletion-requests/${requestId}/approve`);
+      toast.success('Hesap silme talebi onaylandı ve kullanıcı silindi');
+      fetchData();
+    } catch (error) {
+      toast.error('İşlem başarısız');
+    }
+  };
+
+  const handleRejectAccountDeletion = async (requestId) => {
+    try {
+      await api.post(`/admin/account-deletion-requests/${requestId}/reject`);
+      toast.success('Hesap silme talebi reddedildi');
+      fetchData();
+    } catch (error) {
+      toast.error('İşlem başarısız');
+    }
+  };
+
+  const handleClearAccountDeletionRequest = async (requestId) => {
+    if (!window.confirm('Bu hesap silme talebini temizlemek istediğinizden emin misiniz?')) return;
+    
+    try {
+      await api.delete(`/admin/account-deletion-requests/${requestId}`);
+      toast.success('Hesap silme talebi temizlendi');
+      fetchData();
+    } catch (error) {
+      toast.error('İşlem başarısız');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
     localStorage.removeItem('is_admin');
