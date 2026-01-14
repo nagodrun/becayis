@@ -334,7 +334,12 @@ const Dashboard = () => {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="listings" className="space-y-6">
+        <Tabs defaultValue="listings" className="space-y-6" onValueChange={(value) => {
+          // Mark notifications as read when switching to notifications tab
+          if (value === 'notifications' && unreadNotifications > 0) {
+            handleMarkAllNotificationsRead();
+          }
+        }}>
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="listings" data-testid="tab-listings">İlanlarım</TabsTrigger>
             <TabsTrigger value="profile" data-testid="tab-profile">Profil</TabsTrigger>
