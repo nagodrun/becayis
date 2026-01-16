@@ -102,7 +102,7 @@ const Home = () => {
 
     // Check if user has completed their profile
     if (!user.profile_completed || !user.profile?.institution || !user.profile?.role || !user.profile?.current_province) {
-      toast.error('Davet göndermek için önce profilinizi tamamlamanız gerekiyor');
+      toast.error('Davet göndermek için önce profilinizi tamamlamanız gerekiyor.');
       navigate('/dashboard');
       return;
     }
@@ -117,9 +117,9 @@ const Home = () => {
 
     try {
       await api.post('/invitations', { listing_id: listing.id });
-      toast.success('Davet başarıyla gönderildi');
+      toast.success('Davet başarıyla gönderildi.');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Davet gönderilemedi');
+      toast.error(error.response?.data?.detail || 'Davet gönderilemedi.');
     }
   };
 
@@ -143,7 +143,7 @@ const Home = () => {
         }}
       >
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white px-4 max-w-5xl w-full">
+          <div className="text-center text-white px-4 max-w-7xl w-full">
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-3 tracking-tight" style={{ fontFamily: 'Manrope' }}>
               Kamu Çalışanları İçin Yer Değişim Platformu.
             </h1>
@@ -152,7 +152,7 @@ const Home = () => {
             </p>
             
             {/* Search Box */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 md:p-6 shadow-2xl max-w-5xl mx-auto w-full">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 md:p-6 shadow-2xl max-w-7xl mx-auto w-full">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {/* Main Search Input */}
                 <div className="sm:col-span-2 lg:col-span-1 relative">
@@ -327,7 +327,7 @@ const Home = () => {
 
       {/* FAQ Section */}
       <div className="py-16 bg-card">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-foreground" style={{ fontFamily: 'Manrope' }}>
               Sıkça Sorulan Sorular

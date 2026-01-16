@@ -13,7 +13,15 @@ const FAQ = () => {
   const faqs = [
     {
       question: "Becayiş nedir?",
-      answer: "Becayiş, kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla yer değiştirmesini kolaylaştıran bir platformdur. Güvenli ve kolay bir şekilde yer değişimi yapmanızı sağlar."
+      answer: "Becayiş, tanım olarak karşılıklı olarak yer değiştirmektir. Becayişin tanımı, 657 sayılı Kanunun 73'üncü maddesinde yapılmıştır.
+
+Becayiş : "Aynı kurumun başka başka yerlerde bulunan aynı sınıftaki memurları, karşılıklı olarak yer değiştirme suretiyle atanmalarını isteyebilirler. Bu isteğin yerine getirilmesi atamaya yetkili amirlerince uygun bulunmasına bağlıdır."
+
+Bu tanıma göre;
+
+Becayiş aynı kurum personeli arasında yapılır. Yani Sağlık Personeli ile Maliye Bakanlığı personeli karşılıklı olarak yer değiştiremez. Sadece Sağlık Bakanlığının örneğin Van ile Erzurum illerinde çalışan personeli karşılıklı olarak yer değiştirebilir.
+Becayişte, sınıf ve ünvan aynı olmalıdır. Örneğin Bilgisayar mühendisleri kendi aralarında, hemşireler kendi aralarında becayiş yapabilirler.
+Becayiş'in atamaya yetkili amirce uygun bulunması gerekmektedir. Örneğin Mersin ile Adana arasında becayiş yapacak Sağlık Bakanlığı personelinin bir dilekçe ile bölge, il veya ilçe müdürlükleri aracılığı ile Bakanlığa başvurması ve Bakanlığın da bunu uygun görmesi gerekmektedir."
     },
     {
       question: "Platforma nasıl kayıt olabilirim?",
@@ -67,7 +75,7 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen bg-background py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <HelpCircle className="w-16 h-16 text-slate-900 dark:text-slate-100 mx-auto mb-4" />
           <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>
