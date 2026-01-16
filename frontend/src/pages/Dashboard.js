@@ -57,12 +57,29 @@ const Dashboard = () => {
     confirm_password: ''
   });
   const [changingPassword, setChangingPassword] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
   
   // Dropdown data
   const [institutions, setInstitutions] = useState([]);
   const [positions, setPositions] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
+
+  const handlePasswordKeyDown = (e) => {
+    if (e.getModifierState('CapsLock')) {
+      setCapsLockOn(true);
+    } else {
+      setCapsLockOn(false);
+    }
+  };
+
+  const handlePasswordKeyUp = (e) => {
+    if (e.getModifierState('CapsLock')) {
+      setCapsLockOn(true);
+    } else {
+      setCapsLockOn(false);
+    }
+  };
 
   useEffect(() => {
     fetchDashboardData();
