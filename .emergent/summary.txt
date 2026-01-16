@@ -2,165 +2,196 @@
 Build a production-ready web app MVP for a “Public Employee Location Swap” platform in Turkey. The platform allows public employees in the same role to find each other and mutually swap locations.
 
 PRODUCT REQUIREMENTS:
-1.  **Authentication**: Unique account per person, verified by an official government email domain (e.g., @adalet.gov.tr). Registration requires First Name, Last Name, Email, and Password.
+1.  **Authentication**: Unique account per person, verified by an official government email domain (e.g., @adalet.gov.tr).
 2.  **User Dashboard**: A central hub for users to manage their profile, listings, invitations, and conversations.
-3.  **Home Page & Listings**: Show recent listings with a single search bar and dropdowns for filtering by institution, role, and location, similar to . Unregistered users see a Talep Gönder (Send Request) button that redirects them to the registration page.
-4.  **Swap Invitation & Privacy**: Users send invitations. Contact details are revealed only after mutual acceptance, which then opens a chat. A user cannot send more than one invitation for the same listing.
-5.  **Chat**: 1-on-1 chat for users with accepted invitations, implemented with WebSockets for real-time communication. Users should be able to delete their conversations, which notifies the other user.
-6.  **User Blocking**: Users must be able to block each other.
-7.  **Account Deletion Flow**: Users must be able to request account deletion. This request must be approved by an admin before the account is deleted.
-8.  **Admin Panel**: An admin with credentials (becayis/1234) moderates listings and users. The admin must be able to approve/reject user account deletion requests, approve/reject listing deletion requests, and clear completed requests.
-9.  **UI/UX**: Implement a site-wide dark/light theme, a unified profile button in the navbar with a notification badge, an animated logo icon, and static pages for Terms, Privacy, and Help. The FAQ, institutions, and positions should be sourced from .
-10. **Listing Creation & Display**: The Create Listing form should be pre-filled with the user's current data. Listing cards should show the initials of the user who posted them.
-11. **Profile Picture**: Users must be able to upload a profile picture.
+3.  **Home Page & Listings**: Show recent listings with a single search bar and filters for institution, role, and location.
+4.  **Swap Invitation & Privacy**: Users send invitations. Contact details are revealed only after mutual acceptance, which then opens a chat.
+5.  **Chat**: 1-on-1 chat for users with accepted invitations.
+6.  **User Blocking & Account Deletion**: Users can block others and request account deletion, which requires admin approval.
+7.  **Admin Panel**: An admin moderates listings and users, including account/listing deletion requests.
+8.  **UI/UX**: Dark/light theme, unified profile button, animated logo, static pages (Terms, Privacy, Help), and profile picture uploads.
+9.  **Listing Creation**: The form should be pre-filled with the user's data.
+10. **Password Management**: Implement a Forgot Password flow and allow users to change their password from their dashboard.
+11. **Admin Management**: Admins should be able to manage other admin accounts (CRUD) and edit their own profiles.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-A feature-rich full-stack application with a React frontend and a FastAPI/MongoDB backend. This session focused heavily on implementing user-requested UI/UX enhancements. The application now features:
-- A cleaner homepage with corrected search filters.
-- A consistent design and theme across all static pages.
-- A refactored profile editing form with data-driven dropdowns for provinces and a new dynamic dropdown for districts.
-- Enhanced listing creation with character limits and input validation.
-- Redesigned listing cards with masked user names and a more compact layout.
-- A more intuitive avatar upload process that shows a preview and saves only on confirmation.
-- A reorganized user dashboard for a better user experience.
+The project is a full-stack application (React frontend, FastAPI/MongoDB backend). The user pivoted from a mobile app conversion request to implementing a large number of web features. This session focused on iterative UI/UX enhancements and new functionalities based on user feedback.
+
+Key additions in this session include:
+- **Homepage:** Search functionality was enhanced to include searching by position. The FAQ section was replaced with dynamic Most Listed Positions and Most Listed Institutions sections, which act as filters when clicked.
+- **Security & Auth:** A Forgot Password flow (with mocked email), password change in the user dashboard, and a password strength indicator (validating length, uppercase, and special characters) have been implemented on the login, registration, and password change forms. A Caps Lock is on warning was also added to all password fields.
+- **User/Admin Dashboards:** Actions in both user and admin dashboards (e.g., deleting invitations, deleting users) now update the state locally without requiring a page reload. Toast notifications are now dismissible on click.
+- **Admin Panel:** Functionality was significantly expanded to include a new tab for full CRUD management of other admin accounts.
 
 **Last working item**:
-- Last item agent was working: The user made a new, high-level request to convert the existing web application into native mobile applications for both iOS and Android. The previous agent had just completed a large batch of UI/UX updates before this request came in.
-- Status: NOT STARTED
+- Last item agent was working: The agent was in the process of adding a new Profilim (My Profile) tab to the Admin Dashboard. This feature is intended to allow admins to edit their own profile information, including their display name and profile picture.
+- Status: IN PROGRESS
 - Agent Testing Done: N
-- Which testing method agent to use? This is a major architectural planning task. The agent should first use  to research options like React Native, Flutter, or WebView wrappers. After presenting a plan to the user, implementation would follow, eventually requiring comprehensive testing.
+- Which testing method agent to use? both
 - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-- Issue 1: (P0) Incomplete Testing of Recent Features
-- Issue 2: (P1) Implement Email Notifications
-- Issue 3: (P2) Implement Real OTP Verification
+- Issue 1: (P0) Complete the Admin Profile Editing Feature
+- Issue 2: (P1) Full Regression Test of All New Features
+- Issue 3: (P2) Implement Real Email Notifications for Password Reset
+- Issue 4: (P3) Implement Real OTP Verification for Phone Numbers
 
 Issues Detail:
 - Issue 1:
-    - Attempted fixes: The agent ran the  multiple times after implementing a large batch of features, but each run was reported as incomplete or failed (). The agent performed manual screenshot checks which seemed to pass, but this does not confirm backend functionality or cover edge cases.
+    - Attempted fixes: The agent added the necessary state management hooks () in  for the admin's profile data but did not implement the UI for the form or the backend endpoint to handle the profile update.
     - Next debug checklist:
-        1.  Invoke the  again with a clear set of instructions to perform a full regression test on all features implemented in the last session.
-        2.  Provide the testing agent with context about the recent changes: homepage filter fix, static page redesign, dashboard dropdowns (province/district), avatar upload flow, listing card redesign (name masking, layout), and listing creation limits.
-        3.  Carefully analyze the test report () and fix any and all bugs identified.
-    - Why fix this issue and what will be achieved with the fix?: This is the highest priority. Without a successful test run, the stability of the many recently added features is unknown. Completing this ensures the current master branch is stable before undertaking a major architectural change like a mobile app conversion.
-    - Status: NOT STARTED
+        1.  In , build the UI for the Profilim tab, including input fields for profile data and an avatar upload component.
+        2.  In , create a new PUT endpoint (e.g., ) to handle updates to the admin's profile and process avatar uploads.
+        3.  Wire the frontend form to the new backend endpoint.
+        4.  Test the feature end-to-end to ensure profile data and the image are saved and displayed correctly.
+    - Why fix this issue and what will be achieved with the fix?: This completes the user's latest request and brings the admin management feature set to a more complete state.
+    - Status: IN PROGRESS
     - Is recurring issue? N
     - Should Test frontend/backend/both after fix? Both
     - Blocked on other issue: None
 
-- Issue 2 & 3 are from the previous backlog and are lower priority than the new user request and the critical testing issue.
+- Issue 2:
+    - Attempted fixes: The agent performed isolated screenshot tests after each minor change but failed to run a comprehensive automated test. A call to the  failed to start, and this was not pursued further.
+    - Next debug checklist:
+        1.  Invoke the  with a detailed test plan.
+        2.  The test plan must cover all features added in this session: profile completion check before sending invites, invitation deletion without page reload, enhanced homepage search (by position, by dual-location), most listed section filter clicks, the mocked password reset flow, password changes with strength validation, caps lock indicators, and the new admin CRUD functionality.
+    - Why fix this issue and what will be achieved with the fix?: This is CRITICAL. The application has undergone massive changes without proper testing, and its stability is unknown. A successful test run is required to establish a stable baseline before any further development.
+    - Status: NOT STARTED
+    - Is recurring issue? Y
+    - Should Test frontend/backend/both after fix? Both
+    - Blocked on other issue: None
+
+- Issue 3:
+    - Attempted fixes: None. The password reset email is currently mocked.
+    - Next debug checklist: Use the  to integrate an email service like SendGrid and replace the mocked email functionality in .
+    - Why fix this issue and what will be achieved with the fix?: This will make the Forgot Password feature fully functional, which is a core requirement for a production application.
+    - Status: NOT STARTED
+    - Is recurring issue? N
+    - Should Test frontend/backend/both after fix? Backend
+    - Blocked on other issue: None
+
+- Issue 4:
+    - Attempted fixes: None. This is a backlog item from a previous session.
+    - Next debug checklist: Use the  to integrate an SMS service like Twilio to implement real OTP verification.
+    - Why fix this issue and what will be achieved with the fix?: This enhances account security and validates user phone numbers.
+    - Status: NOT STARTED
+    - Is recurring issue? N
+    - Should Test frontend/backend/both after fix? Backend
+    - Blocked on other issue: None
 
 **In progress Task List**:
-- None.
+- Task 1: (P0) Admin Profile Editing
+    - Where to resume:  to build the UI and  to create the corresponding API endpoint.
+    - What will be achieved with this?: Admins will be able to manage their own profile information and picture.
+    - Status: IN PROGRESS
+    - Should Test frontend/backend/both after fix?: Both
+    - Blocked on something: None
 
 **Upcoming and Future Tasks**
 Upcoming Tasks:
-- (P0) **Plan Mobile App Conversion**: The user wants to convert the web app into iOS and Android mobile apps. The next agent must:
-    1.  Research different strategies (e.g., creating a new React Native app that shares backend logic, wrapping the existing React web app in a WebView container).
-    2.  Propose a plan to the user, outlining the pros and cons of each approach.
-    3.  Wait for user approval before beginning any implementation.
-- (P1) **Implement Email Notifications**: Integrate a service like SendGrid to send notifications for key events (new messages, approved requests). Use .
-- (P2) **Implement Real OTP Verification**: Replace the mocked OTP phone verification with a real implementation, likely using a service like Twilio. Use .
+- (P1) **Implement Email Notifications**: Integrate a service like SendGrid for the password reset flow using .
+- (P2) **Implement Real OTP Verification**: Integrate a service like Twilio for phone verification using .
 
 Future Tasks:
-- None identified beyond the current backlog.
+- (P0) **Plan Mobile App Conversion**: The user's original high-level request to create iOS and Android apps. This should be re-evaluated with the user after the current web application is stable and tested.
+- (P1) **Refactor Backend**: Propose and execute a refactor of the monolithic  into smaller, more manageable modules using FastAPI's  (e.g., , , ).
 
 **Completed work in this session**
-- **UI/UX Enhancements:**
-  - **Homepage & Listings:**
-    - Removed redundant search dropdown on .
-    - Redesigned  to be more compact, mask user names (e.g., A*** Y***), and display institution/role side-by-side.
-    - Limited listing titles to 45 and descriptions to 140 characters in .
-    - Prevented numerical input in listing title and description fields.
-  - **User Dashboard & Profile ():**
-    - Refactored profile editing form to use dropdowns for Institution, Position, and Province, populated by API data.
-    - Added a dynamic District dropdown that populates based on the selected province.
-    - Improved avatar upload flow: now shows a preview and only uploads when Save is clicked. The upload option is only visible in edit mode.
-    - Displayed the user's avatar in the dashboard header.
-    - Ensured the user stays on the Profile tab after an update.
-    - Reordered dashboard tabs to be more intuitive (Profile is now first).
-  - **Static Pages:**
-    - Unified the theme and layout of , , and  to match .
-- **Backend Development:**
-  - Created a new  endpoint in .
-  - Added a comprehensive list of all Turkish districts to .
+- **Security & Authentication:** Implemented password strength indicators, caps lock detection, and a mocked Forgot Password flow. Added a password change feature for users.
+- **Homepage UI/UX:** Replaced the static FAQ section with dynamic, clickable Most Listed sections for positions and institutions. Enhanced the search bar to support searching by position and made it responsive.
+- **Dashboard UX:** Refactored user and admin dashboard actions (e.g., deleting items) to use local state updates, eliminating page reloads.
+- **Admin Panel:** Added a comprehensive admin management module allowing for full CRUD operations on admin accounts.
+- **Static Pages:** Created and styled new legal pages (KVKK, Cookies, etc.) and linked them in the footer.
+- **General UX:** Configured all toast notifications to be dismissible on click.
 
 **Earlier issues found/mentioned but not fixed**
-- All previously mentioned issues have been addressed in this session.
+- The critical priority from the previous handoff to stabilize the application via comprehensive testing was not addressed. Instead, numerous new features were added, increasing the stability risk.
 
 **Known issue recurrence from previous fork**
-- None.
+- **Incomplete Testing Cycle:** The failure to execute a successful, comprehensive test run after major feature development is a recurring problem.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- Backend: FastAPI, Pydantic, WebSockets
+- Backend: FastAPI, Pydantic
 - Frontend: React, React Router, Axios, TailwindCSS, Shadcn/UI
 - Database: MongoDB
 - Authentication: JWT
 
 **key DB schema**
-- No changes were made to the database schema in this session.
+- **admins**: {, , , , , }
 
 **changes in tech stack**
 - None.
 
 **All files of reference**
-- : Major refactoring for profile editing, avatar upload, and tab order.
-- : Added character limits and input validation.
-- : UI updated for compactness and name masking.
-- : Removed a redundant filter dropdown.
-- , , : Layout and theme updated.
-- : Added the new  endpoint.
-- : Significantly expanded with district data.
+- : Heavily modified with numerous new endpoints for stats, password management, and admin CRUD.
+- : Substantially reworked to add admin CRUD, local state updates, and initial state for profile editing.
+- : Updated with a Security tab, password strength UI, and caps lock detector.
+- : Major updates to search functionality and content sections.
+- , : Modified to include password strength and caps lock UI.
+- : Updated with new routes and global toast configuration.
+- **New Files**: , , , , .
 
 **Areas that need refactoring**:
-- None identified.
+- The  file has become a monolith and is difficult to maintain. It should be broken down into smaller, domain-specific router files (e.g., , ).
+-  and  are also becoming very large and could benefit from being broken down into smaller, reusable components.
 
 **key api endpoints**
--  (NEW)
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
 
 **Critical Info for New Agent**
-- **Priority 1: Test & Stabilize.** Before any new development, you must run a full regression test using the . The last session implemented many features but failed to get a successful test run. Confirm the application is stable.
-- **Priority 2: Plan Mobile App.** The user's primary request is to create iOS and Android apps. You must research and present a clear plan with options (e.g., React Native vs. WebView) to the user before writing any code. This is a major architectural decision.
+- **Priority #1 is Testing**: Do not start any new feature development. Your first task is to conduct a full regression test of the application using . The stability of the app is currently unknown due to the large number of untested changes.
+- **User's Focus is Web Features**: The user has pivoted away from the mobile app idea for now. Focus on completing the requested web features.
+- **Complete the Admin Profile Feature**: After stabilizing the app, your first development task should be to finish the Admin Profile Edit feature that was in progress.
+- **Propose Backend Refactor**: After the high-priority tasks are completed, you should propose a refactoring of the monolithic  file to the user. This is a crucial step for long-term maintainability.
 
 **documents and test reports created in this job**
 -  (Updated)
--  (Incomplete Test Run)
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **user (msg #195):** I want to turn this website into a mobile application, for both ios and android. (PENDING - New P0 Task)
-2.  **user (msg #173):** When I click the edit profile button, the option to change the profile photo should become active. After uploading and saving the profile photo, it should be visible on the user panel page. (COMPLETED)
-3.  **user (msg #139):** devam edelim. (Let's continue.) (COMPLETED)
-4.  **user (msg #115):** Requested multiple UI changes: character limits for listings, smaller listing cards, improved avatar upload flow, and dashboard tab reordering. (COMPLETED)
-5.  **user (msg #54):** Requested another batch of UI changes: name masking on listings, layout adjustments, blocking numbers in forms, dynamic district dropdowns, and fixing tab navigation on profile update. (COMPLETED)
-6.  **user (msg #5):** Bu planla devam et (Continue with this plan). (COMPLETED)
+- **user:** admin profil sayfasında kendi profilini düzenleyebilecek sekme olsun. fotoğraf ekleyebilsin. (PENDING - Last working item)
+- **user:** admin panelinde de admin ekleme yetki verme, adminin şifresini değiştirme gibi kısımlarda olsun (COMPLETED)
+- **user:** kullanıcı yeni şifre oluştururken Güvenlik İpuçları olarak 1 büyük harf 1 özel karakter ve en az 8 haneden oluşması gereksin... (COMPLETED)
+- **user:** kullanıcı aynı şifresini değiştirirken mevcut şifre ile yeni şifre aynı ise uyarı versin. (COMPLETED)
+- **user:** site genelinde toast çıktığında mouse ile tıklandığında kaybolsun. (COMPLETED)
+- **user:** admin panelinde hesap silme, talep silme, kullanıcı silme yaptıktan sonra mevcut sekmede kalsın. (COMPLETED)
+- **user:** kullanıcı şifre yazarken caps lock açık ya da kapalı olduğunu anlasın. (COMPLETED)
+- **user:** kullanıcı kayıt olurken şifre oluştururken Güvenlik İpuçları... (COMPLETED)
+- **user:** şifremi unuttum kısmı olsun... kullanıcı panelinden şifresini değiştirme seçeneği olsun... KVKK... gibi teknik konuları... ekle (COMPLETED)
+- **user:** anasayfadaki sıkça sorulan soruları bölümünü tamamen silelim. onun yerine... en çok ilan verilen kurumlar ve en çok ilan verilen pozisyonlar özelliğini getirelim. (COMPLETED)
 
 **Project Health Check:**
-- Broken: Potentially. A large number of features were added without a successful automated test run. The stability is uncertain until a full regression test is passed.
+- Broken: High risk. A large volume of features was added without successful automated testing. The application's stability is uncertain until a full regression test is passed.
 - Mocked:
-    - Email notifications.
+    - Email notifications for password reset.
     - Real OTP verification for phone numbers.
 
 **3rd Party Integrations**
 - No active integrations.
-- **SendGrid** has been proposed for future email integration.
+- **SendGrid** and **Twilio** are planned for future email and SMS integrations, respectively.
 
 **Testing status**
-- Testing agent used after significant changes: YES, but all attempts in the last session were incomplete.
+- Testing agent used after significant changes: YES, but the tool failed to execute, and the agent did not retry or debug it.
 - Troubleshoot agent used after agent stuck in loop: NO
-- Test files created:  (This report is from an incomplete run and should be reviewed).
-- Known regressions: None are known, but the risk is high due to the lack of successful testing.
+- Test files created: None.
+- Known regressions: None are known, but the risk is very high due to the lack of testing.
 
 **Credentials to test flow:**
-- Admin Login:
+- **Admin Login:**
     - Username: 
     - Password: 
-- Regular user accounts can be created via the registration form. Use a  email, e.g., .
+- **Regular User:** Register a new user via the registration form using a  email (e.g., ).
 
 **What agent forgot to execute**
-- The agent failed to ensure a successful and complete test cycle via the  after implementing a significant number of user-requested features. It prioritized moving forward over confirming stability, which is a critical risk that must be addressed immediately.</analysis>
+- The agent critically failed to follow the primary directive from the previous handoff, which was to **test and stabilize** the application. It implemented a vast number of new features without a single successful regression test, relying only on superficial screenshot checks. This has significantly increased technical debt and project risk. The agent should have prioritized fixing the testing process over adding new functionality.</analysis>
