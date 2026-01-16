@@ -546,22 +546,34 @@ async def get_listings(
     limit: int = 50
 ):
     query = {"status": listing_status}
+    
+    # Build search conditions
+    or_conditions = []
+    
     if title:
-        query["title"] = {"$regex": title, "$options": "i"}
+        or_conditions.append({"title": {"$regex": title, "$options": "i"}})
+        or_conditions.append({"institution": {"$regex": title, "$options": "i"}})
+        or_conditions.append({"role": {"$regex": title, "$options": "i"}})  # Also search in role/position
+    
     if institution:
         query["institution"] = {"$regex": institution, "$options": "i"}
     if role:
-        query["role"] = {"$regex": role, "$options": "i"}
+        or_conditions.append({"role": {"$regex": role, "$options": "i"}})
     if current_province:
         query["current_province"] = current_province
     if desired_province:
         query["desired_province"] = desired_province
     # Search both current and desired province
     if province:
-        query["$or"] = [
-            {"current_province": province},
-            {"desired_province": province}
-        ]
+        or_conditions.append({"current_province": province})
+        or_conditions.append({"desired_province": province})
+    
+    # Combine OR conditions if any
+    if or_conditions:
+        if "$or" in query:
+            query["$and"] = [{"$or": query.pop("$or")}, {"$or": or_conditions}]
+        else:
+            query["$or"] = or_conditions
     
     listings = await db.listings.find(query, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(limit)
     
