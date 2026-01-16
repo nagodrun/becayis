@@ -104,6 +104,14 @@ const Home = () => {
       return;
     }
 
+    // Check if user's current location matches listing's desired location
+    if (user.profile?.current_province && listing.desired_province && 
+        user.profile.current_province !== listing.desired_province) {
+      toast.warning('Dikkat: Davet göndermek istediğiniz ilanın hedef konumu ile mevcut konumunuz örtüşmemektedir. Yine de devam etmek istiyor musunuz?', {
+        duration: 5000
+      });
+    }
+
     try {
       await api.post('/invitations', { listing_id: listing.id });
       toast.success('Davet başarıyla gönderildi');
@@ -141,16 +149,16 @@ const Home = () => {
             </p>
             
             {/* Search Box */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 md:p-6 shadow-2xl max-w-4xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 md:p-6 shadow-2xl max-w-4xl mx-auto w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {/* Main Search Input */}
-                <div className="md:col-span-4 lg:col-span-1 relative">
+                <div className="sm:col-span-2 lg:col-span-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <Input
                     placeholder="İlan veya kurum ara..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-500"
+                    className="pl-10 h-11 sm:h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-500 text-sm sm:text-base"
                     data-testid="search-input"
                   />
                 </div>
@@ -160,7 +168,7 @@ const Home = () => {
                   value={filters.position || "all"} 
                   onValueChange={(val) => setFilters({ ...filters, position: val === "all" ? "" : val })}
                 >
-                  <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200" data-testid="filter-position">
+                  <SelectTrigger className="h-11 sm:h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm sm:text-base" data-testid="filter-position">
                     <SelectValue placeholder="Pozisyon Seçin" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
@@ -174,7 +182,7 @@ const Home = () => {
                   value={filters.province || "all"} 
                   onValueChange={(val) => setFilters({ ...filters, province: val === "all" ? "" : val })}
                 >
-                  <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200" data-testid="filter-city">
+                  <SelectTrigger className="h-11 sm:h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm sm:text-base" data-testid="filter-city">
                     <SelectValue placeholder="İl Seçin" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
@@ -316,7 +324,7 @@ const Home = () => {
 
       {/* FAQ Section */}
       <div className="py-16 bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-foreground" style={{ fontFamily: 'Manrope' }}>
               Sıkça Sorulan Sorular
@@ -324,13 +332,13 @@ const Home = () => {
             <p className="text-muted-foreground">Merak ettiğiniz soruların cevapları.</p>
           </div>
 
-          <Accordion type="single" collapsible className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Accordion type="single" collapsible className="w-full space-y-3">
             {faqData.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border border-border rounded-lg px-4 md:px-6 bg-background">
-                <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground text-sm md:text-base py-3 md:py-4">
+              <AccordionItem key={index} value={`item-${index}`} className="border border-border rounded-lg px-4 sm:px-6 bg-background">
+                <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground text-sm sm:text-base py-3 sm:py-4">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground text-sm pb-3 md:pb-4">
+                <AccordionContent className="text-muted-foreground text-sm pb-3 sm:pb-4">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
