@@ -18,7 +18,7 @@ const FAQ = () => {
       'Bu tanıma göre;
       'Becayiş aynı kurum personeli arasında yapılır. Yani Sağlık Personeli ile Maliye Bakanlığı personeli karşılıklı olarak yer değiştiremez. Sadece Sağlık Bakanlığının örneğin Van ile Erzurum illerinde çalışan personeli karşılıklı olarak yer değiştirebilir.
       'Becayişte, sınıf ve ünvan aynı olmalıdır. Örneğin Bilgisayar mühendisleri kendi aralarında, hemşireler kendi aralarında becayiş yapabilirler.
-Becayiş'in atamaya yetkili amirce uygun bulunması gerekmektedir. Örneğin Mersin ile Adana arasında becayiş yapacak Sağlık Bakanlığı personelinin bir dilekçe ile bölge, il veya ilçe müdürlükleri aracılığı ile Bakanlığa başvurması ve Bakanlığın da bunu uygun görmesi gerekmektedir."
+      'Becayişin atamaya yetkili amirce uygun bulunması gerekmektedir. Örneğin Mersin ile Adana arasında becayiş yapacak Sağlık Bakanlığı personelinin bir dilekçe ile bölge, il veya ilçe müdürlükleri aracılığı ile Bakanlığa başvurması ve Bakanlığın da bunu uygun görmesi gerekmektedir."
     },
     {
       question: "Platforma nasıl kayıt olabilirim?",
