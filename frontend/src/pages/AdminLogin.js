@@ -6,7 +6,7 @@ import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
 import { toast } from 'sonner';
 import api from '../lib/api';
-import { Shield } from 'lucide-react';
+import { Shield, AlertTriangle } from 'lucide-react';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -15,6 +15,11 @@ const AdminLogin = () => {
     password: ''
   });
   const [loading, setLoading] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
+
+  const handleKeyEvent = (e) => {
+    setCapsLockOn(e.getModifierState('CapsLock'));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,9 +73,17 @@ const AdminLogin = () => {
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onKeyDown={handleKeyEvent}
+              onKeyUp={handleKeyEvent}
               required
               data-testid="admin-password-input"
             />
+            {capsLockOn && (
+              <div className="mt-2 flex items-center gap-2 text-amber-600 text-xs">
+                <AlertTriangle className="w-4 h-4" />
+                <span>Caps Lock açık</span>
+              </div>
+            )}
           </div>
 
           <Button
