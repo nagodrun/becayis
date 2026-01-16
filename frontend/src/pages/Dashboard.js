@@ -1196,64 +1196,89 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <form onSubmit={handleChangePassword} className="space-y-4 max-w-md">
-                <div className="space-y-2">
-                  <Label htmlFor="current_password">Mevcut Şifre</Label>
-                  <Input
-                    id="current_password"
-                    type="password"
-                    value={passwordData.current_password}
-                    onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })}
-                    placeholder="Mevcut şifrenizi girin"
-                    required
-                    data-testid="current-password-input"
-                  />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <form onSubmit={handleChangePassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="current_password">Mevcut Şifre</Label>
+                    <Input
+                      id="current_password"
+                      type="password"
+                      value={passwordData.current_password}
+                      onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })}
+                      placeholder="Mevcut şifrenizi girin"
+                      required
+                      data-testid="current-password-input"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="new_password">Yeni Şifre</Label>
+                    <Input
+                      id="new_password"
+                      type="password"
+                      value={passwordData.new_password}
+                      onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
+                      placeholder="Güçlü bir şifre oluşturun"
+                      required
+                      data-testid="new-password-input"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm_password">Yeni Şifre (Tekrar)</Label>
+                    <Input
+                      id="confirm_password"
+                      type="password"
+                      value={passwordData.confirm_password}
+                      onChange={(e) => setPasswordData({ ...passwordData, confirm_password: e.target.value })}
+                      placeholder="Yeni şifrenizi tekrar girin"
+                      required
+                      data-testid="confirm-password-input"
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                    disabled={changingPassword || !passwordIsValid}
+                    data-testid="change-password-btn"
+                  >
+                    {changingPassword ? 'Değiştiriliyor...' : 'Şifreyi Değiştir'}
+                  </Button>
+                </form>
+
+                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-5">
+                  <h4 className="font-semibold text-foreground mb-4">Şifre Gereksinimleri</h4>
+                  <ul className="space-y-3">
+                    <li className={`flex items-center gap-2 text-sm ${passwordHasMinLength ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+                      <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${passwordHasMinLength ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                        {passwordHasMinLength ? '✓' : '✗'}
+                      </span>
+                      En az 8 karakter uzunluğunda olmalı
+                    </li>
+                    <li className={`flex items-center gap-2 text-sm ${passwordHasUppercase ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+                      <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${passwordHasUppercase ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                        {passwordHasUppercase ? '✓' : '✗'}
+                      </span>
+                      En az 1 büyük harf içermeli (A-Z)
+                    </li>
+                    <li className={`flex items-center gap-2 text-sm ${passwordHasSpecialChar ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+                      <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${passwordHasSpecialChar ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                        {passwordHasSpecialChar ? '✓' : '✗'}
+                      </span>
+                      En az 1 özel karakter içermeli (!@#$%^&* vb.)
+                    </li>
+                  </ul>
+
+                  <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+                    <h5 className="font-medium text-foreground text-sm mb-2">Güvenlik İpuçları</h5>
+                    <ul className="text-xs text-muted-foreground space-y-1.5">
+                      <li>• Şifrenizi kimseyle paylaşmayın</li>
+                      <li>• Farklı platformlarda aynı şifreyi kullanmaktan kaçının</li>
+                      <li>• Kişisel bilgilerinizi (doğum tarihi, isim vb.) şifrenizde kullanmayın</li>
+                    </ul>
+                  </div>
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="new_password">Yeni Şifre</Label>
-                  <Input
-                    id="new_password"
-                    type="password"
-                    value={passwordData.new_password}
-                    onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
-                    placeholder="En az 6 karakter"
-                    required
-                    data-testid="new-password-input"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="confirm_password">Yeni Şifre (Tekrar)</Label>
-                  <Input
-                    id="confirm_password"
-                    type="password"
-                    value={passwordData.confirm_password}
-                    onChange={(e) => setPasswordData({ ...passwordData, confirm_password: e.target.value })}
-                    placeholder="Yeni şifrenizi tekrar girin"
-                    required
-                    data-testid="confirm-password-input"
-                  />
-                </div>
-
-                <Button 
-                  type="submit" 
-                  className="bg-emerald-600 hover:bg-emerald-700"
-                  disabled={changingPassword}
-                  data-testid="change-password-btn"
-                >
-                  {changingPassword ? 'Değiştiriliyor...' : 'Şifreyi Değiştir'}
-                </Button>
-              </form>
-
-              <div className="mt-8 pt-6 border-t">
-                <h4 className="font-semibold text-foreground mb-3">Güvenlik İpuçları</h4>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li>• En az 6 karakter uzunluğunda şifre kullanın</li>
-                  <li>• Büyük-küçük harf, rakam ve özel karakter kombinasyonu tercih edin</li>
-                  <li>• Şifrenizi kimseyle paylaşmayın</li>
-                  <li>• Farklı platformlarda aynı şifreyi kullanmaktan kaçının</li>
-                </ul>
               </div>
             </Card>
           </TabsContent>
