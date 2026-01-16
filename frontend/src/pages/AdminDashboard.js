@@ -947,7 +947,7 @@ const AdminDashboard = () => {
                         <Shield className="w-16 h-16 text-slate-400" />
                       </div>
                     )}
-                    {(currentAdmin?.role === 'main_admin' || currentAdmin?.username === 'becayis') && (
+                    {currentAdmin?.role === 'main_admin' && (
                       <Crown className="w-8 h-8 text-amber-500 absolute -top-2 -right-2" />
                     )}
                     <button
