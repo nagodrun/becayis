@@ -291,8 +291,83 @@ const Home = () => {
         )}
       </div>
 
-      {/* Features Section */}
+      {/* Top Positions & Institutions Section */}
       <div className="py-16 bg-card">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* En Çok İlan Verilen Pozisyonlar */}
+            <div className="bg-background rounded-xl border border-border p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
+                  <Briefcase className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>
+                  En Çok İlan Verilen Pozisyonlar
+                </h3>
+              </div>
+              
+              {topPositions.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">Henüz veri yok</p>
+              ) : (
+                <div className="space-y-2">
+                  {topPositions.map((item, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setFilters({ ...filters, position: item.position })}
+                      className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-left group"
+                      data-testid={`top-position-${index}`}
+                    >
+                      <span className="text-foreground group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                        {item.position}
+                      </span>
+                      <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-sm font-semibold px-2.5 py-1 rounded-full">
+                        {item.count}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* En Çok İlan Verilen Kurumlar */}
+            <div className="bg-background rounded-xl border border-border p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                  <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>
+                  En Çok İlan Verilen Kurumlar
+                </h3>
+              </div>
+              
+              {topInstitutions.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">Henüz veri yok</p>
+              ) : (
+                <div className="space-y-2">
+                  {topInstitutions.map((item, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSearchQuery(item.institution)}
+                      className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-left group"
+                      data-testid={`top-institution-${index}`}
+                    >
+                      <span className="text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate pr-2">
+                        {item.institution}
+                      </span>
+                      <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-semibold px-2.5 py-1 rounded-full flex-shrink-0">
+                        {item.count}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Features Section */}
+      <div className="py-16 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
@@ -319,31 +394,6 @@ const Home = () => {
               <p className="text-muted-foreground">Kabul edilen davetler sonrası direkt mesajlaşma imkanı.</p>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* FAQ Section */}
-      <div className="py-16 bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-foreground" style={{ fontFamily: 'Manrope' }}>
-              Sıkça Sorulan Sorular
-            </h2>
-            <p className="text-muted-foreground">Merak ettiğiniz soruların cevapları.</p>
-          </div>
-
-          <Accordion type="single" collapsible className="w-full space-y-3">
-            {faqData.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border border-border rounded-lg px-4 sm:px-6 bg-background">
-                <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground text-sm sm:text-base py-3 sm:py-4">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground text-sm pb-3 sm:pb-4">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
         </div>
       </div>
     </div>
