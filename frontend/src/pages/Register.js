@@ -228,7 +228,7 @@ const Register = () => {
                 />
               </div>
 
-              <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200" disabled={loading} data-testid="register-step1-button">
+              <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200" disabled={loading || !passwordIsValid} data-testid="register-step1-button">
                 {loading ? 'İşleniyor...' : 'Devam Et'}
               </Button>
             </form>
