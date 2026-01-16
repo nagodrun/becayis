@@ -171,13 +171,24 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeleteInvitation = async (invitationId) => {
+  const handleDeleteInvitation = async (invitationId, type) => {
     if (!window.confirm('Bu daveti silmek istediğinizden emin misiniz?')) return;
     
     try {
       await api.delete(`/invitations/${invitationId}`);
+      // Update state locally without fetching all data again
+      if (type === 'sent') {
+        setInvitations(prev => ({
+          ...prev,
+          sent: prev.sent.filter(inv => inv.id !== invitationId)
+        }));
+      } else {
+        setInvitations(prev => ({
+          ...prev,
+          received: prev.received.filter(inv => inv.id !== invitationId)
+        }));
+      }
       toast.success('Davet silindi');
-      fetchDashboardData();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Davet silinemedi');
     }
@@ -639,7 +650,7 @@ const Dashboard = () => {
                   {invitations.received.map((invitation) => (
                     <Card key={invitation.id} className="p-6 relative" data-testid="received-invitation">
                       <button
-                        onClick={() => handleDeleteInvitation(invitation.id)}
+                        onClick={() => handleDeleteInvitation(invitation.id, 'received')}
                         className="absolute top-4 right-4 text-slate-400 hover:text-red-600 transition-colors"
                         data-testid={`delete-received-invitation-${invitation.id}`}
                         title="Daveti Sil"
@@ -693,7 +704,7 @@ const Dashboard = () => {
                   {invitations.sent.map((invitation) => (
                     <Card key={invitation.id} className="p-6 relative" data-testid="sent-invitation">
                       <button
-                        onClick={() => handleDeleteInvitation(invitation.id)}
+                        onClick={() => handleDeleteInvitation(invitation.id, 'sent')}
                         className="absolute top-4 right-4 text-slate-400 hover:text-red-600 transition-colors"
                         data-testid={`delete-sent-invitation-${invitation.id}`}
                         title="Daveti Sil"
