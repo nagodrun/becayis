@@ -184,10 +184,35 @@ const Register = () => {
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  placeholder="En az 8 karakter"
+                  placeholder="Güçlü bir şifre oluşturun"
                   required
                   data-testid="register-password-input"
                 />
+                
+                {/* Password Requirements */}
+                <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                  <p className="text-xs font-medium text-foreground mb-2">Şifre Gereksinimleri:</p>
+                  <ul className="space-y-1.5">
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasMinLength ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasMinLength ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                        {passwordHasMinLength ? '✓' : '✗'}
+                      </span>
+                      En az 8 karakter
+                    </li>
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasUppercase ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasUppercase ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                        {passwordHasUppercase ? '✓' : '✗'}
+                      </span>
+                      En az 1 büyük harf (A-Z)
+                    </li>
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasSpecialChar ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasSpecialChar ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                        {passwordHasSpecialChar ? '✓' : '✗'}
+                      </span>
+                      En az 1 özel karakter (!@#$%^&* vb.)
+                    </li>
+                  </ul>
+                </div>
               </div>
 
               <div>
