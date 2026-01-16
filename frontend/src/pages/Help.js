@@ -55,7 +55,7 @@ const Help = () => {
             Yardım Merkezi
           </h1>
           <p className="text-muted-foreground mt-2">
-            Becayiş platformu hakkında sık sorulan sorular ve cevapları
+            Becayiş platformu hakkında sık sorulan sorular ve cevapları.
           </p>
         </div>
 

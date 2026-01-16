@@ -17,7 +17,7 @@ const FAQ = () => {
     },
     {
       question: "Platforma nasıl kayıt olabilirim?",
-      answer: "Kayıt için kurumsal e-posta adresiniz (@gov.tr uzantılı), sicil numaranız ve telefon numaranız gereklidir. Kayıt üç adımda tamamlanır: Email ve sicil doğrulama, telefon doğrulama (OTP), profil oluşturma."
+      answer: "Kayıt için kurumsal e-posta adresiniz (@gov.tr uzantılı) gereklidir. Kayıt olurken mail adresinize gönderilecek doğrulama kodu ile doğrulama yaptıktan sonra kayıt olabilirsiniz."
     },
     {
       question: "Sadece kurumsal e-posta ile mi kayıt olabilirim?",
@@ -25,7 +25,7 @@ const FAQ = () => {
     },
     {
       question: "Kaç hesap oluşturabilirim?",
-      answer: "Her kişi yalnızca BİR hesap oluşturabilir. Sicil numarası, telefon numarası ve e-posta adresi ile kontrol edilir. Birden fazla hesap oluşturma durumunda hesaplarınız engellenebilir."
+      answer: "Her kişi yalnızca tek hesap oluşturabilir. Kurumsal e-posta adresi ile kontrol edilir."
     },
     {
       question: "İlan nasıl oluştururum?",
@@ -33,7 +33,7 @@ const FAQ = () => {
     },
     {
       question: "İletişim bilgilerim ne zaman paylaşılır?",
-      answer: "İletişim bilgileriniz (telefon, e-posta) gizlidir ve sadece gönderdiğiniz veya aldığınız bir daveti KABUL ETTİĞİNİZDE karşı tarafla paylaşılır. Davet reddedilirse hiçbir bilgi paylaşılmaz."
+      answer: "İletişim bilgileriniz (telefon, e-posta) gizlidir ve sadece gönderdiğiniz veya aldığınız bir daveti kabul ettiğinizde karşı tarafla paylaşılır. Davet reddedilirse hiçbir bilgi paylaşılmaz."
     },
     {
       question: "Davet sistemi nasıl çalışır?",
@@ -74,7 +74,7 @@ const FAQ = () => {
             Sıkça Sorulan Sorular
           </h1>
           <p className="text-muted-foreground mt-2">
-            Becayiş platformu hakkında merak ettiğiniz her şey
+            Becayiş platformu hakkında merak ettiğiniz her şey.
           </p>
         </div>
 

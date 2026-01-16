@@ -47,17 +47,17 @@ export const FeedbackButton = () => {
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="feedback_email">E-posta (Opsiyonel)</Label>
+              <Label htmlFor="feedback_email">E-posta (Zorunlu)</Label>
               <Input
                 id="feedback_email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ornek@email.com"
+                placeholder="ornek@adalet.gov.tr"
               />
             </div>
             <div>
-              <Label htmlFor="feedback_text">Mesajınız</Label>
+              <Label htmlFor="feedback_text">Mesajınız (Zorunlu)</Label>
               <Textarea
                 id="feedback_text"
                 value={feedback}

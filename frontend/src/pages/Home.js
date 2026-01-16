@@ -121,19 +121,19 @@ const Home = () => {
       <div
         className="relative min-h-[380px] bg-cover bg-center"
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7)), url('https://images.unsplash.com/photo-1591911677374-5a6143b8ca3c?crop=entropy&cs=srgb&fm=jpg&q=85')`
+          backgroundImage: `linear-gradient(to top, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7)), url('https://images.unsplash.com/photo-1591911677374-5a6143b8ca3c?crop=entropy&cs=srgb&fm=jpg&q=85')`
         }}
       >
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white px-4 max-w-5xl w-full">
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-3 tracking-tight" style={{ fontFamily: 'Manrope' }}>
-              Kamu Çalışanları için Yer Değişim Platformu
+              Kamu Çalışanları İçin Yer Değişim Platformu.
             </h1>
             <p className="text-sm md:text-base mb-6 text-slate-300">
-              Güvenli ve kolay bir şekilde aynı pozisyondaki diğer kamu çalışanlarıyla yer değiştirin
+              Güvenli ve kolay bir şekilde aynı pozisyondaki diğer kamu çalışanlarıyla yer değiştirin.
             </p>
             
-            {/* Search Box - saffetcelik.com.tr style */}
+            {/* Search Box */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 md:p-6 shadow-2xl max-w-4xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Main Search Input */}
@@ -210,7 +210,7 @@ const Home = () => {
                     </>
                   ) : (
                     <span className="text-sm text-slate-400 dark:text-slate-500">
-                      {listings.length} ilan bulundu
+                      {listings.length} İlan bulundu
                     </span>
                   )}
                 </div>
@@ -228,36 +228,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Features Section */}
-      <div className="py-16 bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ShieldCheck className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-foreground" style={{ fontFamily: 'Manrope' }}>Güvenli</h3>
-              <p className="text-muted-foreground">Kurumsal e-posta ve telefon doğrulaması ile güvenli hesap sistemi</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-amber-600 dark:text-amber-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-foreground" style={{ fontFamily: 'Manrope' }}>Gizlilik</h3>
-              <p className="text-muted-foreground">Davet kabul edilene kadar iletişim bilgileriniz gizli kalır</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-foreground" style={{ fontFamily: 'Manrope' }}>Kolay İletişim</h3>
-              <p className="text-muted-foreground">Kabul edilen davetler sonrası direkt mesajlaşma imkanı</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Listings Section */}
       <div className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -283,7 +253,7 @@ const Home = () => {
         ) : listings.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground bg-card rounded-xl border border-border">
             <MapPin className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
-            <h3 className="text-lg font-semibold mb-2 text-foreground">İlan Bulunamadı</h3>
+            <h3 className="text-lg font-semibold mb-2 text-foreground">İlan Bulunamadı.</h3>
             <p>Henüz hiç ilan yayınlanmamış veya filtrelere uygun ilan yok.</p>
             {!user && (
               <Link to="/register">
@@ -306,6 +276,37 @@ const Home = () => {
         )}
       </div>
 
+      {/* Features Section */}
+      <div className="py-16 bg-card">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <ShieldCheck className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h3 className="text-xl font-bold mb-2 text-foreground" style={{ fontFamily: 'Manrope' }}>Güvenli</h3>
+              <p className="text-muted-foreground">Kurumsal e-posta doğrulaması ile güvenli hesap sistemi.</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-amber-600 dark:text-amber-400" />
+              </div>
+              <h3 className="text-xl font-bold mb-2 text-foreground" style={{ fontFamily: 'Manrope' }}>Gizlilik</h3>
+              <p className="text-muted-foreground">Davet kabul edilene kadar iletişim bilgileriniz gizli kalır.</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageSquare className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <h3 className="text-xl font-bold mb-2 text-foreground" style={{ fontFamily: 'Manrope' }}>Kolay İletişim</h3>
+              <p className="text-muted-foreground">Kabul edilen davetler sonrası direkt mesajlaşma imkanı.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* FAQ Section */}
       <div className="py-16 bg-card">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -313,7 +314,7 @@ const Home = () => {
             <h2 className="text-3xl font-bold mb-4 text-foreground" style={{ fontFamily: 'Manrope' }}>
               Sıkça Sorulan Sorular
             </h2>
-            <p className="text-muted-foreground">Merak ettiğiniz soruların cevapları</p>
+            <p className="text-muted-foreground">Merak ettiğiniz soruların cevapları.</p>
           </div>
 
           <Accordion type="single" collapsible className="w-full space-y-4">

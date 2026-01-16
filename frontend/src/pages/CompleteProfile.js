@@ -82,7 +82,7 @@ const CompleteProfile = () => {
         <div className="text-center mb-8">
           <UserIcon className="w-12 h-12 text-slate-900 mx-auto mb-4" />
           <h1 className="text-3xl font-bold" style={{ fontFamily: 'Manrope' }}>Profilinizi Tamamlayın</h1>
-          <p className="text-slate-600 mt-2">Bu bilgiler ilan oluşturmak için gereklidir</p>
+          <p className="text-slate-600 mt-2">Bu bilgiler ilan oluşturmak için gereklidir.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

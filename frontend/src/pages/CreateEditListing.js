@@ -155,7 +155,7 @@ const CreateEditListing = () => {
             <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>
               {isEdit ? 'İlanı Düzenle' : 'Yeni İlan Oluştur'}
             </h1>
-            <p className="text-muted-foreground mt-2">Yer değişimi için ilan bilgilerinizi girin</p>
+            <p className="text-muted-foreground mt-2">Yer değişimi için ilan bilgilerinizi girin.</p>
           </div>
 
           {/* Profile Warning */}
@@ -185,7 +185,6 @@ const CreateEditListing = () => {
                   maxLength={45}
                   data-testid="listing-title-input"
                 />
-                <p className="text-xs text-muted-foreground mt-1">Telefon numarası yazmak yasaktır</p>
               </div>
 
               <div>
@@ -199,7 +198,6 @@ const CreateEditListing = () => {
                   maxLength={140}
                   data-testid="listing-notes-input"
                 />
-                <p className="text-xs text-muted-foreground mt-1">Telefon numarası yazmak yasaktır</p>
               </div>
             </div>
 
@@ -208,9 +206,9 @@ const CreateEditListing = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-foreground">Sunulan Pozisyon</h3>
-                  <p className="text-sm text-muted-foreground">Profilinizden alınan bilgiler</p>
+                  <p className="text-sm text-muted-foreground">Profilinizden alınan bilgiler.</p>
                   <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                    <Link to="/dashboard" className="underline">Dashboard → Profil sekmesinden düzenleyebilirsiniz</Link>
+                    <Link to="/dashboard" className="underline">Panel → Profil sekmesinden düzenleyebilirsiniz.</Link>
                   </p>
                 </div>
               </div>
@@ -270,11 +268,11 @@ const CreateEditListing = () => {
                     <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
                       <strong>Kurum:</strong> {profileData.institution || 'Belirtilmemiş'}
                     </p>
-                    <p className="text-xs text-amber-800 dark:text-amber-300 mt-1">Becayiş sadece aynı kurum içinde yapılabilir</p>
+                    <p className="text-xs text-amber-800 dark:text-amber-300 mt-1">Becayiş sadece aynı kurum içinde yapılabilir!</p>
                     <p className="text-sm font-medium text-amber-900 dark:text-amber-200 mt-2">
                       <strong>Pozisyon:</strong> {profileData.role || 'Belirtilmemiş'}
                     </p>
-                    <p className="text-xs text-amber-800 dark:text-amber-300 mt-1">Becayiş sadece aynı pozisyon için yapılabilir</p>
+                    <p className="text-xs text-amber-800 dark:text-amber-300 mt-1">Becayiş sadece aynı pozisyon için yapılabilir!</p>
                   </div>
                 </div>
               </div>
