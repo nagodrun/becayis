@@ -72,6 +72,12 @@ const Login = () => {
             />
           </div>
 
+          <div className="flex justify-end">
+            <Link to="/forgot-password" className="text-sm text-emerald-600 hover:text-emerald-700 hover:underline" data-testid="forgot-password-link">
+              Şifremi Unuttum
+            </Link>
+          </div>
+
           <Button
             type="submit"
             className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
