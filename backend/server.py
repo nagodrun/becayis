@@ -1489,6 +1489,14 @@ async def get_admins(admin = Depends(verify_admin)):
     admins = await db.admins.find({}, {"_id": 0, "password_hash": 0}).to_list(100)
     return admins
 
+@api_router.get("/admin/me")
+async def get_current_admin(admin = Depends(verify_admin)):
+    """Get current admin's profile"""
+    current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0, "password_hash": 0})
+    if not current_admin:
+        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+    return current_admin
+
 @api_router.post("/admin/admins")
 async def create_admin(data: CreateAdmin, admin = Depends(verify_admin)):
     """Create a new admin"""
