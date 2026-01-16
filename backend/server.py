@@ -1162,34 +1162,30 @@ async def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(secur
 
 @api_router.post("/admin/login")
 async def admin_login(username: str, password: str):
-    # First check hardcoded admin
+    # First check hardcoded admin (fallback for initial setup)
     if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-        # Ensure main admin exists in admins collection
+        # Ensure admin exists in admins collection
         existing = await db.admins.find_one({"username": ADMIN_USERNAME})
         if not existing:
             await db.admins.insert_one({
                 "id": str(uuid.uuid4()),
                 "username": ADMIN_USERNAME,
                 "password_hash": get_password_hash(ADMIN_PASSWORD),
-                "display_name": "Ana Admin",
-                "role": "main_admin",
+                "display_name": "Becayiş Admin",
+                "role": "admin",  # Default to regular admin, can be promoted later
                 "avatar_url": None,
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "created_by": "system"
             })
-        else:
-            # Update existing admin to have main_admin role if not set
-            if existing.get("role") != "main_admin":
-                await db.admins.update_one(
-                    {"username": ADMIN_USERNAME},
-                    {"$set": {"role": "main_admin"}}
-                )
+            existing = await db.admins.find_one({"username": ADMIN_USERNAME})
         
+        # Get actual role from database
+        actual_role = existing.get("role", "admin")
         access_token = create_access_token(data={"sub": "admin", "is_admin": True, "username": username})
         return {
             "access_token": access_token,
             "token_type": "bearer",
-            "user": {"username": username, "role": "main_admin"}
+            "user": {"username": username, "role": actual_role}
         }
     
     # Check admins collection
