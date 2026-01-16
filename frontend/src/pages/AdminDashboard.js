@@ -992,7 +992,7 @@ const AdminDashboard = () => {
                   <div>
                     <Label className="text-sm text-slate-600">Yetki</Label>
                     <div className="mt-1 p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                      {(currentAdmin?.role === 'main_admin' || currentAdmin?.username === 'becayis') ? (
+                      {currentAdmin?.role === 'main_admin' ? (
                         <Badge className="bg-amber-500 text-white">
                           <Crown className="w-3 h-3 mr-1" />
                           Ana Admin
