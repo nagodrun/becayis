@@ -4,13 +4,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { ListingCard } from '../components/ListingCard';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '../components/ui/accordion';
-import { MapPin, Users, ShieldCheck, MessageSquare, Search, X } from 'lucide-react';
+import { MapPin, Users, ShieldCheck, MessageSquare, Search, X, Building2, Briefcase } from 'lucide-react';
 import api from '../lib/api';
 import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
@@ -39,7 +33,8 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [provinces, setProvinces] = useState([]);
   const [positions, setPositions] = useState([]);
-  const [faqData, setFaqData] = useState([]);
+  const [topPositions, setTopPositions] = useState([]);
+  const [topInstitutions, setTopInstitutions] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     position: '',
@@ -61,14 +56,16 @@ const Home = () => {
 
   const fetchInitialData = async () => {
     try {
-      const [provincesRes, positionsRes, faqRes] = await Promise.all([
+      const [provincesRes, positionsRes, topPositionsRes, topInstitutionsRes] = await Promise.all([
         api.get('/provinces'),
         api.get('/utility/positions'),
-        api.get('/faq')
+        api.get('/stats/top-positions'),
+        api.get('/stats/top-institutions')
       ]);
       setProvinces(provincesRes.data);
       setPositions(positionsRes.data);
-      setFaqData(faqRes.data);
+      setTopPositions(topPositionsRes.data);
+      setTopInstitutions(topInstitutionsRes.data);
     } catch (error) {
       console.error('Failed to fetch initial data:', error);
     }
