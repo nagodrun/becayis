@@ -1576,13 +1576,13 @@ async def delete_admin(admin_id: str, admin = Depends(verify_admin)):
     if not target_admin:
         raise HTTPException(status_code=404, detail="Admin bulunamadı")
     
-    # Prevent deleting the main admin
-    if target_admin["username"] == "becayis" or target_admin.get("role") == "main_admin":
+    # Prevent deleting the main admin (check role only, not username)
+    if target_admin.get("role") == "main_admin":
         raise HTTPException(status_code=400, detail="Ana admin silinemez")
     
     # Only main admin can delete other admins
     current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
-    if current_admin and current_admin.get("role") != "main_admin" and admin["username"] != "becayis":
+    if not current_admin or current_admin.get("role") != "main_admin":
         raise HTTPException(status_code=403, detail="Sadece ana admin diğer adminleri silebilir")
     
     # Prevent self-deletion
@@ -1595,9 +1595,9 @@ async def delete_admin(admin_id: str, admin = Depends(verify_admin)):
 @api_router.put("/admin/admins/{admin_id}/role")
 async def update_admin_role(admin_id: str, data: UpdateAdminRole, admin = Depends(verify_admin)):
     """Update admin role - only main admin can do this"""
-    # Only main admin (becayis) can change roles
+    # Only main admin can change roles (check role from database)
     current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
-    is_main_admin = admin["username"] == "becayis" or (current_admin and current_admin.get("role") == "main_admin")
+    is_main_admin = current_admin and current_admin.get("role") == "main_admin"
     
     if not is_main_admin:
         raise HTTPException(status_code=403, detail="Sadece ana admin yetki değiştirebilir")
