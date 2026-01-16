@@ -296,7 +296,7 @@ const AdminDashboard = () => {
   };
 
   // Check if current user is main admin
-  const isMainAdmin = currentAdmin?.role === 'main_admin' || currentAdmin?.username === 'becayis';
+  const isMainAdmin = currentAdmin?.role === 'main_admin';
 
   const handleBlockUser = async (userId, isBlocked) => {
     try {
