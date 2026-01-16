@@ -396,6 +396,9 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* Thin border before footer */}
+      <div className="border-t border-slate-200 dark:border-slate-700"></div>
     </div>
   );
 };
