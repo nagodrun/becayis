@@ -43,7 +43,7 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     position: '',
-    current_province: ''
+    province: ''  // Changed: now searches both current and desired province
   });
 
   // Debounce search query
@@ -57,7 +57,7 @@ const Home = () => {
   useEffect(() => {
     fetchListings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch, filters.position, filters.current_province]);
+  }, [debouncedSearch, filters.position, filters.province]);
 
   const fetchInitialData = async () => {
     try {
@@ -80,7 +80,7 @@ const Home = () => {
       const params = new URLSearchParams();
       if (debouncedSearch) params.append('title', debouncedSearch);
       if (filters.position) params.append('role', filters.position);
-      if (filters.current_province) params.append('current_province', filters.current_province);
+      if (filters.province) params.append('province', filters.province);  // Changed: searches both current and desired
       
       const response = await api.get(`/listings?${params.toString()}`);
       setListings(response.data);
@@ -109,11 +109,11 @@ const Home = () => {
     setSearchQuery('');
     setFilters({
       position: '',
-      current_province: ''
+      province: ''
     });
   };
 
-  const hasActiveFilters = searchQuery || filters.position || filters.current_province;
+  const hasActiveFilters = searchQuery || filters.position || filters.province;
 
   return (
     <div className="min-h-screen bg-background">
@@ -162,10 +162,10 @@ const Home = () => {
                   </SelectContent>
                 </Select>
                 
-                {/* City Dropdown - Mevcut İl */}
+                {/* City Dropdown - searches both current and desired province */}
                 <Select 
-                  value={filters.current_province || "all"} 
-                  onValueChange={(val) => setFilters({ ...filters, current_province: val === "all" ? "" : val })}
+                  value={filters.province || "all"} 
+                  onValueChange={(val) => setFilters({ ...filters, province: val === "all" ? "" : val })}
                 >
                   <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200" data-testid="filter-city">
                     <SelectValue placeholder="İl Seçin" />
@@ -195,10 +195,10 @@ const Home = () => {
                           <button onClick={() => setFilters({...filters, position: ''})}><X className="w-3 h-3" /></button>
                         </span>
                       )}
-                      {filters.current_province && (
+                      {filters.province && (
                         <span className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs rounded-full">
-                          {filters.current_province}
-                          <button onClick={() => setFilters({...filters, current_province: ''})}><X className="w-3 h-3" /></button>
+                          {filters.province}
+                          <button onClick={() => setFilters({...filters, province: ''})}><X className="w-3 h-3" /></button>
                         </span>
                       )}
                       <button 
