@@ -2,9 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
-import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut, X } from 'lucide-react';
+import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut, X, UserPlus, KeyRound, Trash2 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '../components/ui/dialog';
 import api from '../lib/api';
 import { toast } from 'sonner';
 import { formatDate } from '../lib/utils';
@@ -17,7 +27,26 @@ const AdminDashboard = () => {
   const [reports, setReports] = useState([]);
   const [deletionRequests, setDeletionRequests] = useState([]);
   const [accountDeletionRequests, setAccountDeletionRequests] = useState([]);
+  const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Admin management state
+  const [showAddAdminDialog, setShowAddAdminDialog] = useState(false);
+  const [showChangePasswordDialog, setShowChangePasswordDialog] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
+  const [newAdminData, setNewAdminData] = useState({ username: '', password: '', display_name: '' });
+  const [newPassword, setNewPassword] = useState('');
+  const [capsLockOn, setCapsLockOn] = useState(false);
+
+  // Password validation helpers
+  const passwordHasMinLength = (pwd) => pwd.length >= 8;
+  const passwordHasUppercase = (pwd) => /[A-Z]/.test(pwd);
+  const passwordHasSpecialChar = (pwd) => /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/]/.test(pwd);
+  const passwordIsValid = (pwd) => passwordHasMinLength(pwd) && passwordHasUppercase(pwd) && passwordHasSpecialChar(pwd);
+
+  const handlePasswordKeyEvent = (e) => {
+    setCapsLockOn(e.getModifierState('CapsLock'));
+  };
 
   useEffect(() => {
     const isAdmin = localStorage.getItem('is_admin');
@@ -38,13 +67,14 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [statsRes, usersRes, listingsRes, reportsRes, deletionReqRes, accountDeletionReqRes] = await Promise.all([
+      const [statsRes, usersRes, listingsRes, reportsRes, deletionReqRes, accountDeletionReqRes, adminsRes] = await Promise.all([
         api.get('/admin/stats'),
         api.get('/admin/users'),
         api.get('/admin/listings'),
         api.get('/admin/reports'),
         api.get('/admin/deletion-requests'),
-        api.get('/admin/account-deletion-requests')
+        api.get('/admin/account-deletion-requests'),
+        api.get('/admin/admins')
       ]);
 
       setStats(statsRes.data);
