@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Badge } from '../components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { ListingCard } from '../components/ListingCard';
-import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Trash2, Camera, X } from 'lucide-react';
+import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Trash2, Camera, X, KeyRound } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -49,6 +49,14 @@ const Dashboard = () => {
     current_province: '',
     current_district: ''
   });
+  
+  // Password change state
+  const [passwordData, setPasswordData] = useState({
+    current_password: '',
+    new_password: '',
+    confirm_password: ''
+  });
+  const [changingPassword, setChangingPassword] = useState(false);
   
   // Dropdown data
   const [institutions, setInstitutions] = useState([]);
