@@ -13,15 +13,10 @@ const FAQ = () => {
   const faqs = [
     {
       question: "Becayiş nedir?",
-      answer: `Becayiş, tanım olarak karşılıklı olarak yer değiştirmektir. Becayişin tanımı, 657 sayılı Kanunun 73'üncü maddesinde yapılmıştır.
-
-Becayiş: Aynı kurumun başka başka yerlerde bulunan aynı sınıftaki memurları, karşılıklı olarak yer değiştirme suretiyle atanmalarını isteyebilirler. Bu isteğin yerine getirilmesi atamaya yetkili amirlerince uygun bulunmasına bağlıdır.
-
-Bu tanıma göre; Becayiş aynı kurum personeli arasında yapılır. Yani Sağlık Personeli ile Maliye Bakanlığı personeli karşılıklı olarak yer değiştiremez. Sadece Sağlık Bakanlığının örneğin Van ile Erzurum illerinde çalışan personeli karşılıklı olarak yer değiştirebilir.
-
-Becayişte, sınıf ve ünvan aynı olmalıdır. Örneğin Bilgisayar mühendisleri kendi aralarında, hemşireler kendi aralarında becayiş yapabilirler.
-
-Becayişin atamaya yetkili amirce uygun bulunması gerekmektedir.`
+      answer: `Becayiş, tanım olarak karşılıklı olarak yer değiştirmektir. Becayişin tanımı, 657 sayılı Kanunun 73'üncü maddesinde yapılmıştır. Becayiş: Aynı kurumun başka başka yerlerde bulunan aynı sınıftaki memurları, karşılıklı olarak yer değiştirme suretiyle atanmalarını isteyebilirler. Bu isteğin yerine getirilmesi atamaya yetkili amirlerince uygun bulunmasına bağlıdır.
+      Bu tanıma göre; Becayiş aynı kurum personeli arasında yapılır. Yani Sağlık Personeli ile Maliye Bakanlığı personeli karşılıklı olarak yer değiştiremez. Sadece Sağlık Bakanlığının örneğin Van ile Erzurum illerinde çalışan personeli karşılıklı olarak yer değiştirebilir.
+      Becayişte, sınıf ve ünvan aynı olmalıdır. Örneğin Bilgisayar mühendisleri kendi aralarında, hemşireler kendi aralarında becayiş yapabilirler.
+      Becayişin atamaya yetkili amirce uygun bulunması gerekmektedir.`
     },
     {
       question: "Platforma nasıl kayıt olabilirim?",
