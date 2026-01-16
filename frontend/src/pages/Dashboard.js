@@ -1222,6 +1222,8 @@ const Dashboard = () => {
                       type="password"
                       value={passwordData.current_password}
                       onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })}
+                      onKeyDown={handlePasswordKeyDown}
+                      onKeyUp={handlePasswordKeyUp}
                       placeholder="Mevcut şifrenizi girin"
                       required
                       data-testid="current-password-input"
@@ -1235,6 +1237,8 @@ const Dashboard = () => {
                       type="password"
                       value={passwordData.new_password}
                       onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
+                      onKeyDown={handlePasswordKeyDown}
+                      onKeyUp={handlePasswordKeyUp}
                       placeholder="Güçlü bir şifre oluşturun"
                       required
                       data-testid="new-password-input"
@@ -1248,10 +1252,20 @@ const Dashboard = () => {
                       type="password"
                       value={passwordData.confirm_password}
                       onChange={(e) => setPasswordData({ ...passwordData, confirm_password: e.target.value })}
+                      onKeyDown={handlePasswordKeyDown}
+                      onKeyUp={handlePasswordKeyUp}
                       placeholder="Yeni şifrenizi tekrar girin"
                       required
                       data-testid="confirm-password-input"
                     />
+                    
+                    {/* Caps Lock Warning */}
+                    {capsLockOn && (
+                      <div className="mt-2 flex items-center gap-2 text-amber-600 dark:text-amber-400 text-xs">
+                        <AlertTriangle className="w-4 h-4" />
+                        <span>Caps Lock açık</span>
+                      </div>
+                    )}
                   </div>
 
                   <Button 
