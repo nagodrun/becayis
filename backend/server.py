@@ -1465,10 +1465,23 @@ class CreateAdmin(BaseModel):
     username: str
     password: str
     display_name: Optional[str] = None
+    role: Optional[str] = "admin"  # "main_admin" or "admin"
 
 class UpdateAdminPassword(BaseModel):
     admin_id: str
     new_password: str
+
+class UpdateAdminRole(BaseModel):
+    admin_id: str
+    new_role: str  # "main_admin" or "admin"
+
+class TransferMainAdmin(BaseModel):
+    new_main_admin_id: str
+    password: str  # Current main admin's password for confirmation
+
+class UpdateAdminProfile(BaseModel):
+    display_name: Optional[str] = None
+    avatar_url: Optional[str] = None
 
 @api_router.get("/admin/admins")
 async def get_admins(admin = Depends(verify_admin)):
