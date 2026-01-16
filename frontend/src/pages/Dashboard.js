@@ -1171,6 +1171,81 @@ const Dashboard = () => {
               </div>
             </Card>
           </TabsContent>
+
+          {/* Security Tab - Password Change */}
+          <TabsContent value="security" className="space-y-6">
+            <Card className="p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                  <KeyRound className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>Şifre Değiştir</h3>
+                  <p className="text-sm text-muted-foreground">Hesap güvenliğiniz için şifrenizi düzenli olarak değiştirin</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleChangePassword} className="space-y-4 max-w-md">
+                <div className="space-y-2">
+                  <Label htmlFor="current_password">Mevcut Şifre</Label>
+                  <Input
+                    id="current_password"
+                    type="password"
+                    value={passwordData.current_password}
+                    onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })}
+                    placeholder="Mevcut şifrenizi girin"
+                    required
+                    data-testid="current-password-input"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="new_password">Yeni Şifre</Label>
+                  <Input
+                    id="new_password"
+                    type="password"
+                    value={passwordData.new_password}
+                    onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
+                    placeholder="En az 6 karakter"
+                    required
+                    data-testid="new-password-input"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirm_password">Yeni Şifre (Tekrar)</Label>
+                  <Input
+                    id="confirm_password"
+                    type="password"
+                    value={passwordData.confirm_password}
+                    onChange={(e) => setPasswordData({ ...passwordData, confirm_password: e.target.value })}
+                    placeholder="Yeni şifrenizi tekrar girin"
+                    required
+                    data-testid="confirm-password-input"
+                  />
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="bg-emerald-600 hover:bg-emerald-700"
+                  disabled={changingPassword}
+                  data-testid="change-password-btn"
+                >
+                  {changingPassword ? 'Değiştiriliyor...' : 'Şifreyi Değiştir'}
+                </Button>
+              </form>
+
+              <div className="mt-8 pt-6 border-t">
+                <h4 className="font-semibold text-foreground mb-3">Güvenlik İpuçları</h4>
+                <ul className="text-sm text-muted-foreground space-y-2">
+                  <li>• En az 8 karakter uzunluğunda şifre kullanın</li>
+                  <li>• Büyük-küçük harf, rakam ve özel karakter kombinasyonu tercih edin</li>
+                  <li>• Şifrenizi kimseyle paylaşmayın</li>
+                  <li>• Farklı platformlarda aynı şifreyi kullanmaktan kaçının</li>
+                </ul>
+              </div>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
       
