@@ -1162,15 +1162,38 @@ async def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(secur
 
 @api_router.post("/admin/login")
 async def admin_login(username: str, password: str):
-    if username != ADMIN_USERNAME or password != ADMIN_PASSWORD:
-        raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı")
+    # First check hardcoded admin
+    if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+        # Ensure main admin exists in admins collection
+        existing = await db.admins.find_one({"username": ADMIN_USERNAME})
+        if not existing:
+            await db.admins.insert_one({
+                "id": str(uuid.uuid4()),
+                "username": ADMIN_USERNAME,
+                "password_hash": get_password_hash(ADMIN_PASSWORD),
+                "display_name": "Ana Admin",
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "created_by": "system"
+            })
+        
+        access_token = create_access_token(data={"sub": "admin", "is_admin": True, "username": username})
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {"username": username, "role": "admin"}
+        }
     
-    access_token = create_access_token(data={"sub": "admin", "is_admin": True})
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user": {"username": username, "role": "admin"}
-    }
+    # Check admins collection
+    admin = await db.admins.find_one({"username": username}, {"_id": 0})
+    if admin and verify_password(password, admin.get("password_hash", "")):
+        access_token = create_access_token(data={"sub": "admin", "is_admin": True, "username": username})
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {"username": username, "role": "admin"}
+        }
+    
+    raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı")
 
 @api_router.get("/admin/users")
 async def admin_get_users(admin = Depends(verify_admin)):
