@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -6,7 +6,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
-import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut, X, UserPlus, KeyRound, Trash2 } from 'lucide-react';
+import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut, X, UserPlus, KeyRound, Trash2, Camera, User } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -21,6 +21,7 @@ import { formatDate } from '../lib/utils';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
   const [stats, setStats] = useState({});
   const [users, setUsers] = useState([]);
   const [listings, setListings] = useState([]);
@@ -29,6 +30,14 @@ const AdminDashboard = () => {
   const [accountDeletionRequests, setAccountDeletionRequests] = useState([]);
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Current admin profile state
+  const [currentAdmin, setCurrentAdmin] = useState(null);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileData, setProfileData] = useState({ display_name: '', avatar_url: '' });
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [selectedAvatarFile, setSelectedAvatarFile] = useState(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   
   // Admin management state
   const [showAddAdminDialog, setShowAddAdminDialog] = useState(false);
