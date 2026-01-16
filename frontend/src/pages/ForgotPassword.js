@@ -21,7 +21,7 @@ const ForgotPassword = () => {
   const handleSendCode = async (e) => {
     e.preventDefault();
     if (!email) {
-      toast.error('Lütfen e-posta adresinizi girin');
+      toast.error('Lütfen e-posta adresinizi girin.');
       return;
     }
 
@@ -35,10 +35,10 @@ const ForgotPassword = () => {
         toast.info(`Doğrulama kodu: ${response.data.reset_code_mock}`, { duration: 10000 });
       }
       
-      toast.success('Şifre sıfırlama kodu e-posta adresinize gönderildi');
+      toast.success('Şifre sıfırlama kodu e-posta adresinize gönderildi.');
       setStep(2);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Bir hata oluştu');
+      toast.error(error.response?.data?.detail || 'Bir hata oluştu.');
     } finally {
       setLoading(false);
     }
@@ -47,14 +47,14 @@ const ForgotPassword = () => {
   const handleVerifyCode = async (e) => {
     e.preventDefault();
     if (!code || code.length !== 6) {
-      toast.error('Lütfen 6 haneli doğrulama kodunu girin');
+      toast.error('Lütfen 6 haneli doğrulama kodunu girin.');
       return;
     }
 
     setLoading(true);
     try {
       await api.post(`/auth/verify-reset-code?reset_token=${resetToken}&code=${code}`);
-      toast.success('Kod doğrulandı');
+      toast.success('Kod doğrulandı.');
       setStep(3);
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Geçersiz kod');
@@ -66,11 +66,11 @@ const ForgotPassword = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     if (newPassword.length < 6) {
-      toast.error('Şifre en az 6 karakter olmalıdır');
+      toast.error('Şifre en az 6 karakter olmalıdır.');
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast.error('Şifreler eşleşmiyor');
+      toast.error('Şifreler eşleşmiyor.');
       return;
     }
 
@@ -80,10 +80,10 @@ const ForgotPassword = () => {
         reset_token: resetToken,
         new_password: newPassword
       });
-      toast.success('Şifreniz başarıyla değiştirildi');
+      toast.success('Şifreniz başarıyla değiştirildi.');
       navigate('/login');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Şifre değiştirilemedi');
+      toast.error(error.response?.data?.detail || 'Şifre değiştirilemedi.');
     } finally {
       setLoading(false);
     }
@@ -120,7 +120,7 @@ const ForgotPassword = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="ornek@kurum.gov.tr"
+                  placeholder="ornek@adalet.gov.tr"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
