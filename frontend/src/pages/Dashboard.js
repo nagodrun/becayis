@@ -171,6 +171,18 @@ const Dashboard = () => {
     }
   };
 
+  const handleDeleteInvitation = async (invitationId) => {
+    if (!window.confirm('Bu daveti silmek istediğinizden emin misiniz?')) return;
+    
+    try {
+      await api.delete(`/invitations/${invitationId}`);
+      toast.success('Davet silindi');
+      fetchDashboardData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Davet silinemedi');
+    }
+  };
+
   const handleMarkNotificationRead = async (notificationId) => {
     try {
       await api.post(`/notifications/${notificationId}/read`);
@@ -625,8 +637,16 @@ const Dashboard = () => {
               ) : (
                 <div className="space-y-4">
                   {invitations.received.map((invitation) => (
-                    <Card key={invitation.id} className="p-6" data-testid="received-invitation">
-                      <div className="flex justify-between items-start">
+                    <Card key={invitation.id} className="p-6 relative" data-testid="received-invitation">
+                      <button
+                        onClick={() => handleDeleteInvitation(invitation.id)}
+                        className="absolute top-4 right-4 text-slate-400 hover:text-red-600 transition-colors"
+                        data-testid={`delete-received-invitation-${invitation.id}`}
+                        title="Daveti Sil"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                      <div className="flex justify-between items-start pr-8">
                         <div className="flex-1">
                           <div className="font-semibold">{invitation.sender_profile?.display_name}</div>
                           <div className="text-sm text-slate-500">{invitation.sender_profile?.institution}</div>
@@ -671,8 +691,16 @@ const Dashboard = () => {
               ) : (
                 <div className="space-y-4">
                   {invitations.sent.map((invitation) => (
-                    <Card key={invitation.id} className="p-6" data-testid="sent-invitation">
-                      <div className="flex justify-between items-start">
+                    <Card key={invitation.id} className="p-6 relative" data-testid="sent-invitation">
+                      <button
+                        onClick={() => handleDeleteInvitation(invitation.id)}
+                        className="absolute top-4 right-4 text-slate-400 hover:text-red-600 transition-colors"
+                        data-testid={`delete-sent-invitation-${invitation.id}`}
+                        title="Daveti Sil"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                      <div className="flex justify-between items-start pr-8">
                         <div>
                           <div className="font-semibold">{invitation.receiver_profile?.display_name}</div>
                           <div className="text-sm text-slate-500">{invitation.receiver_profile?.institution}</div>
