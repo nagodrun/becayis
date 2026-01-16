@@ -1198,6 +1198,77 @@ const AdminDashboard = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Transfer Main Admin Dialog */}
+        <Dialog open={showTransferMainAdminDialog} onOpenChange={setShowTransferMainAdminDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Crown className="w-5 h-5 text-amber-500" />
+                Ana Admin Yetkisini Devret
+              </DialogTitle>
+              <DialogDescription>
+                <strong className="text-red-500">Dikkat!</strong> Bu işlem geri alınamaz. Ana admin yetkisini <strong>{selectedAdmin?.display_name || selectedAdmin?.username}</strong> kullanıcısına devretmek üzeresiniz.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center gap-3">
+                  <AlertTriangle className="w-6 h-6 text-amber-600" />
+                  <div className="text-sm text-amber-800 dark:text-amber-200">
+                    Bu işlem sonucunda:
+                    <ul className="mt-2 list-disc list-inside space-y-1">
+                      <li>Ana admin yetkisi {selectedAdmin?.display_name || selectedAdmin?.username} kullanıcısına geçecek</li>
+                      <li>Sizin yetkiniz normal admin seviyesine düşecek</li>
+                      <li>Bu işlemi geri almak için yeni ana admin'in onayı gerekecek</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="transfer-password">Şifrenizi Girin (Onay için)</Label>
+                <Input
+                  id="transfer-password"
+                  type="password"
+                  value={transferPassword}
+                  onChange={(e) => setTransferPassword(e.target.value)}
+                  onKeyDown={handlePasswordKeyEvent}
+                  onKeyUp={handlePasswordKeyEvent}
+                  placeholder="Mevcut şifreniz"
+                  data-testid="transfer-admin-password-input"
+                />
+                
+                {capsLockOn && (
+                  <div className="flex items-center gap-2 text-amber-600 text-xs mt-1">
+                    <AlertTriangle className="w-4 h-4" />
+                    <span>Caps Lock açık</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setShowTransferMainAdminDialog(false);
+                setSelectedAdmin(null);
+                setTransferPassword('');
+              }}>
+                İptal
+              </Button>
+              <Button 
+                onClick={handleTransferMainAdmin}
+                className="bg-amber-600 hover:bg-amber-700"
+                disabled={!transferPassword}
+                data-testid="confirm-transfer-btn"
+              >
+                <ArrowRightLeft className="w-4 h-4 mr-2" />
+                Yetkiyi Devret
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
