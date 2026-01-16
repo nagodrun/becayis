@@ -1500,6 +1500,11 @@ async def get_current_admin(admin = Depends(verify_admin)):
 @api_router.post("/admin/admins")
 async def create_admin(data: CreateAdmin, admin = Depends(verify_admin)):
     """Create a new admin"""
+    # Only main admin can create admins
+    current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
+    if current_admin and current_admin.get("role") != "main_admin" and admin["username"] != "becayis":
+        raise HTTPException(status_code=403, detail="Sadece ana admin yeni admin oluşturabilir")
+    
     # Check if username exists
     existing = await db.admins.find_one({"username": data.username})
     if existing:
@@ -1516,11 +1521,16 @@ async def create_admin(data: CreateAdmin, admin = Depends(verify_admin)):
     if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/]', data.password):
         raise HTTPException(status_code=400, detail="Şifre en az 1 özel karakter içermelidir")
     
+    # New admins can only be regular admins, not main_admin
+    new_role = "admin"
+    
     new_admin = {
         "id": str(uuid.uuid4()),
         "username": data.username,
         "password_hash": get_password_hash(data.password),
         "display_name": data.display_name or data.username,
+        "role": new_role,
+        "avatar_url": None,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "created_by": admin["username"]
     }
