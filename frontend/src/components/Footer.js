@@ -5,7 +5,7 @@ export const Footer = () => {
   return (
     <footer className="bg-slate-900 text-white mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
               Becayiş
@@ -28,8 +28,18 @@ export const Footer = () => {
             <h4 className="font-semibold mb-4">Destek</h4>
             <ul className="space-y-2 text-sm text-slate-400">
               <li><Link to="/help" className="hover:text-white transition-colors">Yardım</Link></li>
-              <li><Link to="/privacy" className="hover:text-white transition-colors">Gizlilik</Link></li>
-              <li><Link to="/terms" className="hover:text-white transition-colors">Şartlar</Link></li>
+              <li><Link to="/privacy" className="hover:text-white transition-colors">Gizlilik Politikası</Link></li>
+              <li><Link to="/terms" className="hover:text-white transition-colors">Kullanım Şartları</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-4">Yasal</h4>
+            <ul className="space-y-2 text-sm text-slate-400">
+              <li><Link to="/kvkk" className="hover:text-white transition-colors">KVKK Aydınlatma Metni</Link></li>
+              <li><Link to="/kvkk-basvuru" className="hover:text-white transition-colors">KVKK Başvuru Formu</Link></li>
+              <li><Link to="/cerezler" className="hover:text-white transition-colors">Çerez Politikası</Link></li>
+              <li><Link to="/uyelik-sozlesmesi" className="hover:text-white transition-colors">Üyelik Sözleşmesi</Link></li>
             </ul>
           </div>
         </div>
