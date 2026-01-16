@@ -22,6 +22,13 @@ const Toaster = ({
             "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
           closeButton: "group-[.toast]:bg-background group-[.toast]:border-border",
         },
+        onClick: (event) => {
+          // Get the toast id from the event
+          const toastElement = event.currentTarget;
+          if (toastElement && toastElement.dataset && toastElement.dataset.id) {
+            toast.dismiss(toastElement.dataset.id);
+          }
+        }
       }}
       {...props} />
   );
