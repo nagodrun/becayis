@@ -83,8 +83,8 @@ const AdminDashboard = () => {
 
     try {
       await api.delete(`/admin/users/${userId}`);
+      setUsers(prev => prev.filter(u => u.id !== userId));
       toast.success('Kullanıcı silindi');
-      fetchData();
     } catch (error) {
       toast.error('Kullanıcı silinemedi');
     }
@@ -95,8 +95,8 @@ const AdminDashboard = () => {
 
     try {
       await api.delete(`/admin/listings/${listingId}`);
+      setListings(prev => prev.filter(l => l.id !== listingId));
       toast.success('İlan silindi.');
-      fetchData();
     } catch (error) {
       toast.error('İlan silinemedi.');
     }
@@ -105,8 +105,10 @@ const AdminDashboard = () => {
   const handleApproveDeletion = async (requestId) => {
     try {
       await api.post(`/admin/deletion-requests/${requestId}/approve`);
+      setDeletionRequests(prev => prev.map(r => 
+        r.id === requestId ? { ...r, status: 'approved' } : r
+      ));
       toast.success('Silme isteği onaylandı');
-      fetchData();
     } catch (error) {
       toast.error('İşlem başarısız.');
     }
@@ -115,8 +117,10 @@ const AdminDashboard = () => {
   const handleRejectDeletion = async (requestId) => {
     try {
       await api.post(`/admin/deletion-requests/${requestId}/reject`);
+      setDeletionRequests(prev => prev.map(r => 
+        r.id === requestId ? { ...r, status: 'rejected' } : r
+      ));
       toast.success('Silme isteği reddedildi.');
-      fetchData();
     } catch (error) {
       toast.error('İşlem başarısız.');
     }
@@ -127,8 +131,8 @@ const AdminDashboard = () => {
     
     try {
       await api.delete(`/admin/deletion-requests/${requestId}`);
+      setDeletionRequests(prev => prev.filter(r => r.id !== requestId));
       toast.success('Silme isteği temizlendi.');
-      fetchData();
     } catch (error) {
       toast.error('İşlem başarısız.');
     }
@@ -140,8 +144,15 @@ const AdminDashboard = () => {
     
     try {
       await api.post(`/admin/account-deletion-requests/${requestId}/approve`);
+      setAccountDeletionRequests(prev => prev.map(r => 
+        r.id === requestId ? { ...r, status: 'approved' } : r
+      ));
+      // Also remove from users list
+      const request = accountDeletionRequests.find(r => r.id === requestId);
+      if (request) {
+        setUsers(prev => prev.filter(u => u.id !== request.user_id));
+      }
       toast.success('Hesap silme talebi onaylandı ve kullanıcı silindi.');
-      fetchData();
     } catch (error) {
       toast.error('İşlem başarısız.');
     }
@@ -150,8 +161,10 @@ const AdminDashboard = () => {
   const handleRejectAccountDeletion = async (requestId) => {
     try {
       await api.post(`/admin/account-deletion-requests/${requestId}/reject`);
+      setAccountDeletionRequests(prev => prev.map(r => 
+        r.id === requestId ? { ...r, status: 'rejected' } : r
+      ));
       toast.success('Hesap silme talebi reddedildi.');
-      fetchData();
     } catch (error) {
       toast.error('İşlem başarısız.');
     }
@@ -162,8 +175,8 @@ const AdminDashboard = () => {
     
     try {
       await api.delete(`/admin/account-deletion-requests/${requestId}`);
+      setAccountDeletionRequests(prev => prev.filter(r => r.id !== requestId));
       toast.success('Hesap silme talebi temizlendi.');
-      fetchData();
     } catch (error) {
       toast.error('İşlem başarısız.');
     }
