@@ -201,10 +201,20 @@ const Register = () => {
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onKeyDown={handleKeyDown}
+                  onKeyUp={handleKeyUp}
                   placeholder="Güçlü bir şifre oluşturun"
                   required
                   data-testid="register-password-input"
                 />
+                
+                {/* Caps Lock Warning */}
+                {capsLockOn && (
+                  <div className="mt-2 flex items-center gap-2 text-amber-600 dark:text-amber-400 text-xs">
+                    <AlertTriangle className="w-4 h-4" />
+                    <span>Caps Lock açık</span>
+                  </div>
+                )}
                 
                 {/* Password Requirements */}
                 <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
