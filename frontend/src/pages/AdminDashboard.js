@@ -376,6 +376,10 @@ const AdminDashboard = () => {
               )}
             </TabsTrigger>
             <TabsTrigger value="reports" data-testid="admin-tab-reports">Raporlar</TabsTrigger>
+            <TabsTrigger value="admins" data-testid="admin-tab-admins">
+              <Shield className="w-4 h-4 mr-1" />
+              Adminler
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users">
