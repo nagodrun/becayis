@@ -880,7 +880,7 @@ const AdminDashboard = () => {
                       </div>
                       <div className="flex gap-2">
                         {/* Role change button - only for main admin and not for self */}
-                        {isMainAdmin && admin.username !== currentAdmin?.username && admin.role !== 'main_admin' && admin.username !== 'becayis' && (
+                        {isMainAdmin && admin.username !== currentAdmin?.username && admin.role !== 'main_admin' && (
                           <Button
                             size="sm"
                             variant="outline"
@@ -907,7 +907,7 @@ const AdminDashboard = () => {
                           <KeyRound className="w-4 h-4 mr-1" />
                           Şifre Değiştir
                         </Button>
-                        {isMainAdmin && admin.username !== 'becayis' && admin.role !== 'main_admin' && admin.username !== currentAdmin?.username && (
+                        {isMainAdmin && admin.role !== 'main_admin' && admin.username !== currentAdmin?.username && (
                           <Button
                             size="sm"
                             variant="destructive"
