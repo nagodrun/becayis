@@ -6,7 +6,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
-import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut, X, UserPlus, KeyRound, Trash2, Camera, User } from 'lucide-react';
+import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut, X, UserPlus, KeyRound, Trash2, Camera, User, Crown, ArrowRightLeft } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -22,6 +22,7 @@ import { formatDate } from '../lib/utils';
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+  const adminAvatarInputRef = useRef(null);
   const [stats, setStats] = useState({});
   const [users, setUsers] = useState([]);
   const [listings, setListings] = useState([]);
@@ -38,13 +39,18 @@ const AdminDashboard = () => {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [selectedAvatarFile, setSelectedAvatarFile] = useState(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
   
   // Admin management state
   const [showAddAdminDialog, setShowAddAdminDialog] = useState(false);
   const [showChangePasswordDialog, setShowChangePasswordDialog] = useState(false);
+  const [showChangeRoleDialog, setShowChangeRoleDialog] = useState(false);
+  const [showTransferMainAdminDialog, setShowTransferMainAdminDialog] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [newAdminData, setNewAdminData] = useState({ username: '', password: '', display_name: '' });
   const [newPassword, setNewPassword] = useState('');
+  const [newRole, setNewRole] = useState('');
+  const [transferPassword, setTransferPassword] = useState('');
   const [capsLockOn, setCapsLockOn] = useState(false);
 
   // Password validation helpers
