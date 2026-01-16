@@ -202,11 +202,22 @@ const Dashboard = () => {
     }
   };
 
+  // Password validation helpers
+  const passwordHasMinLength = passwordData.new_password.length >= 8;
+  const passwordHasUppercase = /[A-Z]/.test(passwordData.new_password);
+  const passwordHasSpecialChar = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/]/.test(passwordData.new_password);
+  const passwordIsValid = passwordHasMinLength && passwordHasUppercase && passwordHasSpecialChar;
+
   const handleChangePassword = async (e) => {
     e.preventDefault();
     
-    if (passwordData.new_password.length < 6) {
-      toast.error('Yeni şifre en az 6 karakter olmalıdır');
+    if (!passwordIsValid) {
+      toast.error('Lütfen tüm şifre gereksinimlerini karşılayın');
+      return;
+    }
+    
+    if (passwordData.current_password === passwordData.new_password) {
+      toast.error('Yeni şifre mevcut şifrenizle aynı olamaz');
       return;
     }
     
