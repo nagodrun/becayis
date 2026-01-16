@@ -202,6 +202,34 @@ const Dashboard = () => {
     }
   };
 
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    
+    if (passwordData.new_password.length < 6) {
+      toast.error('Yeni şifre en az 6 karakter olmalıdır');
+      return;
+    }
+    
+    if (passwordData.new_password !== passwordData.confirm_password) {
+      toast.error('Yeni şifreler eşleşmiyor');
+      return;
+    }
+    
+    setChangingPassword(true);
+    try {
+      await api.post('/auth/change-password', {
+        current_password: passwordData.current_password,
+        new_password: passwordData.new_password
+      });
+      toast.success('Şifreniz başarıyla değiştirildi');
+      setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Şifre değiştirilemedi');
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
   const handleMarkNotificationRead = async (notificationId) => {
     try {
       await api.post(`/notifications/${notificationId}/read`);
