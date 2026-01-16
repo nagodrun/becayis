@@ -670,7 +670,247 @@ const AdminDashboard = () => {
               )}
             </Card>
           </TabsContent>
+
+          {/* Admin Management Tab */}
+          <TabsContent value="admins">
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold" style={{ fontFamily: 'Manrope' }}>
+                  Admin Yönetimi ({admins.length})
+                </h2>
+                <Button 
+                  onClick={() => setShowAddAdminDialog(true)}
+                  className="bg-emerald-600 hover:bg-emerald-700"
+                  data-testid="add-admin-btn"
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Yeni Admin Ekle
+                </Button>
+              </div>
+
+              {admins.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                  <Shield className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <p>Henüz admin yok</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {admins.map((admin) => (
+                    <div key={admin.id} className="border rounded-lg p-4 flex items-center justify-between" data-testid={`admin-row-${admin.id}`}>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
+                            <Shield className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                          </div>
+                          <div>
+                            <div className="font-semibold">{admin.display_name || admin.username}</div>
+                            <div className="text-sm text-slate-500">@{admin.username}</div>
+                          </div>
+                        </div>
+                        <div className="text-xs text-slate-500 mt-2">
+                          Oluşturulma: {formatDate(admin.created_at)}
+                          {admin.created_by && ` • Oluşturan: ${admin.created_by}`}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedAdmin(admin);
+                            setShowChangePasswordDialog(true);
+                          }}
+                          data-testid={`change-password-${admin.id}`}
+                        >
+                          <KeyRound className="w-4 h-4 mr-1" />
+                          Şifre Değiştir
+                        </Button>
+                        {admin.username !== 'becayis' && (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDeleteAdmin(admin.id, admin.username)}
+                            data-testid={`delete-admin-${admin.id}`}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </TabsContent>
         </Tabs>
+
+        {/* Add Admin Dialog */}
+        <Dialog open={showAddAdminDialog} onOpenChange={setShowAddAdminDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Yeni Admin Ekle</DialogTitle>
+              <DialogDescription>
+                Yeni bir admin hesabı oluşturun
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="admin-username">Kullanıcı Adı</Label>
+                <Input
+                  id="admin-username"
+                  value={newAdminData.username}
+                  onChange={(e) => setNewAdminData({ ...newAdminData, username: e.target.value })}
+                  placeholder="admin_kullanici"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="admin-display-name">Görünen İsim (Opsiyonel)</Label>
+                <Input
+                  id="admin-display-name"
+                  value={newAdminData.display_name}
+                  onChange={(e) => setNewAdminData({ ...newAdminData, display_name: e.target.value })}
+                  placeholder="Admin Adı"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="admin-password">Şifre</Label>
+                <Input
+                  id="admin-password"
+                  type="password"
+                  value={newAdminData.password}
+                  onChange={(e) => setNewAdminData({ ...newAdminData, password: e.target.value })}
+                  onKeyDown={handlePasswordKeyEvent}
+                  onKeyUp={handlePasswordKeyEvent}
+                  placeholder="Güçlü bir şifre"
+                />
+                
+                {capsLockOn && (
+                  <div className="flex items-center gap-2 text-amber-600 text-xs mt-1">
+                    <AlertTriangle className="w-4 h-4" />
+                    <span>Caps Lock açık</span>
+                  </div>
+                )}
+                
+                {/* Password Requirements */}
+                <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                  <p className="text-xs font-medium mb-2">Şifre Gereksinimleri:</p>
+                  <ul className="space-y-1">
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasMinLength(newAdminData.password) ? 'text-emerald-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasMinLength(newAdminData.password) ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                        {passwordHasMinLength(newAdminData.password) ? '✓' : '✗'}
+                      </span>
+                      En az 8 karakter
+                    </li>
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasUppercase(newAdminData.password) ? 'text-emerald-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasUppercase(newAdminData.password) ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                        {passwordHasUppercase(newAdminData.password) ? '✓' : '✗'}
+                      </span>
+                      En az 1 büyük harf (A-Z)
+                    </li>
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasSpecialChar(newAdminData.password) ? 'text-emerald-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasSpecialChar(newAdminData.password) ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                        {passwordHasSpecialChar(newAdminData.password) ? '✓' : '✗'}
+                      </span>
+                      En az 1 özel karakter
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowAddAdminDialog(false)}>
+                İptal
+              </Button>
+              <Button 
+                onClick={handleAddAdmin}
+                className="bg-emerald-600 hover:bg-emerald-700"
+                disabled={!passwordIsValid(newAdminData.password)}
+              >
+                Admin Ekle
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Change Password Dialog */}
+        <Dialog open={showChangePasswordDialog} onOpenChange={setShowChangePasswordDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Şifre Değiştir</DialogTitle>
+              <DialogDescription>
+                {selectedAdmin?.display_name || selectedAdmin?.username} için yeni şifre belirleyin
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="new-admin-password">Yeni Şifre</Label>
+                <Input
+                  id="new-admin-password"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  onKeyDown={handlePasswordKeyEvent}
+                  onKeyUp={handlePasswordKeyEvent}
+                  placeholder="Yeni şifre"
+                />
+                
+                {capsLockOn && (
+                  <div className="flex items-center gap-2 text-amber-600 text-xs mt-1">
+                    <AlertTriangle className="w-4 h-4" />
+                    <span>Caps Lock açık</span>
+                  </div>
+                )}
+                
+                {/* Password Requirements */}
+                <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                  <p className="text-xs font-medium mb-2">Şifre Gereksinimleri:</p>
+                  <ul className="space-y-1">
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasMinLength(newPassword) ? 'text-emerald-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasMinLength(newPassword) ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                        {passwordHasMinLength(newPassword) ? '✓' : '✗'}
+                      </span>
+                      En az 8 karakter
+                    </li>
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasUppercase(newPassword) ? 'text-emerald-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasUppercase(newPassword) ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                        {passwordHasUppercase(newPassword) ? '✓' : '✗'}
+                      </span>
+                      En az 1 büyük harf (A-Z)
+                    </li>
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasSpecialChar(newPassword) ? 'text-emerald-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasSpecialChar(newPassword) ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                        {passwordHasSpecialChar(newPassword) ? '✓' : '✗'}
+                      </span>
+                      En az 1 özel karakter
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setShowChangePasswordDialog(false);
+                setSelectedAdmin(null);
+                setNewPassword('');
+              }}>
+                İptal
+              </Button>
+              <Button 
+                onClick={handleChangeAdminPassword}
+                className="bg-emerald-600 hover:bg-emerald-700"
+                disabled={!passwordIsValid(newPassword)}
+              >
+                Şifreyi Güncelle
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
