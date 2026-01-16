@@ -14,8 +14,7 @@ const FAQ = () => {
     {
       question: "Becayiş nedir?",
       answer: "Becayiş, tanım olarak karşılıklı olarak yer değiştirmektir. Becayişin tanımı, 657 sayılı Kanunun 73'üncü maddesinde yapılmıştır.
-
-Becayiş : "Aynı kurumun başka başka yerlerde bulunan aynı sınıftaki memurları, karşılıklı olarak yer değiştirme suretiyle atanmalarını isteyebilirler. Bu isteğin yerine getirilmesi atamaya yetkili amirlerince uygun bulunmasına bağlıdır."
+      Becayiş : "Aynı kurumun başka başka yerlerde bulunan aynı sınıftaki memurları, karşılıklı olarak yer değiştirme suretiyle atanmalarını isteyebilirler. Bu isteğin yerine getirilmesi atamaya yetkili amirlerince uygun bulunmasına bağlıdır."
 
 Bu tanıma göre;
 
