@@ -504,7 +504,7 @@ const AdminDashboard = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="users" data-testid="admin-tab-users">Kullanıcılar</TabsTrigger>
             <TabsTrigger value="listings" data-testid="admin-tab-listings">İlanlar</TabsTrigger>
             <TabsTrigger value="deletions" data-testid="admin-tab-deletions">
@@ -521,6 +521,10 @@ const AdminDashboard = () => {
             <TabsTrigger value="admins" data-testid="admin-tab-admins">
               <Shield className="w-4 h-4 mr-1" />
               Adminler
+            </TabsTrigger>
+            <TabsTrigger value="profile" data-testid="admin-tab-profile">
+              <User className="w-4 h-4 mr-1" />
+              Profilim
             </TabsTrigger>
           </TabsList>
 
