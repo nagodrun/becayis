@@ -78,7 +78,10 @@ const Home = () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      if (debouncedSearch) params.append('title', debouncedSearch);
+      if (debouncedSearch) {
+        params.append('title', debouncedSearch);
+        params.append('role', debouncedSearch);  // Also search by position
+      }
       if (filters.position) params.append('role', filters.position);
       if (filters.province) params.append('province', filters.province);  // Changed: searches both current and desired
       
@@ -149,13 +152,13 @@ const Home = () => {
             </p>
             
             {/* Search Box */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 md:p-6 shadow-2xl max-w-4xl mx-auto w-full">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 md:p-6 shadow-2xl max-w-5xl mx-auto w-full">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {/* Main Search Input */}
                 <div className="sm:col-span-2 lg:col-span-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <Input
-                    placeholder="İlan veya kurum ara..."
+                    placeholder="İlan, kurum veya pozisyon ara..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 h-11 sm:h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-500 text-sm sm:text-base"
@@ -324,7 +327,7 @@ const Home = () => {
 
       {/* FAQ Section */}
       <div className="py-16 bg-card">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-foreground" style={{ fontFamily: 'Manrope' }}>
               Sıkça Sorulan Sorular

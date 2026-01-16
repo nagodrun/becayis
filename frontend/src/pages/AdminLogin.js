@@ -46,7 +46,7 @@ const AdminLogin = () => {
             <Shield className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Manrope' }}>Admin Girişi</h1>
-          <p className="text-slate-600">Yönetim paneline erişim</p>
+          <p className="text-slate-600">Yönetim paneline erişim.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

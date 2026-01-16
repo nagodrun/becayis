@@ -113,7 +113,7 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
             data-testid="invite-button"
           >
             <Send className="w-3.5 h-3.5 mr-1.5" />
-            Talep Gönder
+            Becayiş Talebi Gönder
           </Button>
         )}
 
@@ -124,7 +124,7 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
             data-testid="guest-invite-button"
           >
             <Send className="w-3.5 h-3.5 mr-1.5" />
-            Talep Gönder
+            Becayiş Talebi Gönder
           </Button>
         )}
       </div>

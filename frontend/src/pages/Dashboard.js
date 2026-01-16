@@ -142,7 +142,7 @@ const Dashboard = () => {
 
   const handleSubmitDeletionRequest = async () => {
     if (!deletionReason.trim()) {
-      toast.error('Lütfen silme sebebini belirtin');
+      toast.error('Lütfen silme sebebini belirtin.');
       return;
     }
 
@@ -151,20 +151,20 @@ const Dashboard = () => {
         listing_id: selectedListing.id,
         reason: deletionReason
       });
-      toast.success('Silme isteği gönderildi. Admin onayı bekleniyor.');
+      toast.success('Silme isteği gönderildi. Yönetici onayı bekleniyor.');
       setDeletionDialogOpen(false);
       setDeletionReason('');
       setSelectedListing(null);
       fetchDashboardData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'İstek gönderilemedi');
+      toast.error(error.response?.data?.detail || 'İstek gönderilemedi.');
     }
   };
 
   const handleRespondInvitation = async (invitationId, action) => {
     try {
       await api.post('/invitations/respond', { invitation_id: invitationId, action });
-      toast.success(action === 'accept' ? 'Davet kabul edildi' : 'Davet reddedildi');
+      toast.success(action === 'accept' ? 'Davet kabul edildi.' : 'Davet reddedildi.');
       fetchDashboardData();
     } catch (error) {
       toast.error('Davet yanıtlanamadı');
@@ -190,7 +190,7 @@ const Dashboard = () => {
       }
       toast.success('Davet silindi');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Davet silinemedi');
+      toast.error(error.response?.data?.detail || 'Davet silinemedi.');
     }
   };
 
@@ -221,9 +221,9 @@ const Dashboard = () => {
     try {
       await api.delete(`/notifications/${notificationId}`);
       setNotifications(notifications.filter(n => n.id !== notificationId));
-      toast.success('Bildirim silindi');
+      toast.success('Bildirim silindi.');
     } catch (error) {
-      toast.error('Bildirim silinemedi');
+      toast.error('Bildirim silinemedi.');
     }
   };
 
@@ -233,9 +233,9 @@ const Dashboard = () => {
     try {
       await api.delete(`/conversations/${conversationId}`);
       setConversations(conversations.filter(c => c.id !== conversationId));
-      toast.success('Konuşma silindi');
+      toast.success('Konuşma silindi.');
     } catch (error) {
-      toast.error('Konuşma silinemedi');
+      toast.error('Konuşma silinemedi.');
     }
   };
 
@@ -255,13 +255,13 @@ const Dashboard = () => {
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Sadece JPEG, PNG, WebP veya GIF dosyaları kabul edilir');
+      toast.error('Sadece JPEG, PNG, WebP veya GIF dosyaları kabul edilir.');
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Dosya boyutu 5MB\'dan küçük olmalıdır');
+      toast.error('Dosya boyutu 5MB\'dan küçük olmalıdır.');
       return;
     }
 
@@ -287,13 +287,13 @@ const Dashboard = () => {
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Sadece JPEG, PNG, WebP veya GIF dosyaları kabul edilir');
+      toast.error('Sadece JPEG, PNG, WebP veya GIF dosyaları kabul edilir.');
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Dosya boyutu 5MB\'dan küçük olmalıdır');
+      toast.error('Dosya boyutu 5MB\'dan küçük olmalıdır.');
       return;
     }
 
@@ -312,7 +312,7 @@ const Dashboard = () => {
       // Refresh user data
       if (fetchUser) fetchUser();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Profil fotoğrafı yüklenemedi');
+      toast.error(error.response?.data?.detail || 'Profil fotoğrafı yüklenemedi.');
     } finally {
       setUploadingAvatar(false);
     }
@@ -323,13 +323,13 @@ const Dashboard = () => {
     
     try {
       await api.delete('/profile/avatar');
-      toast.success('Profil fotoğrafı silindi');
+      toast.success('Profil fotoğrafı silindi.');
       setProfileData(prev => ({ ...prev, avatar_url: null }));
       
       // Refresh user data
       if (fetchUser) fetchUser();
     } catch (error) {
-      toast.error('Profil fotoğrafı silinemedi');
+      toast.error('Profil fotoğrafı silinemedi.');
     }
   };
 
@@ -355,7 +355,7 @@ const Dashboard = () => {
           setPendingAvatarFile(null);
           setPendingAvatarPreview(null);
         } catch (avatarError) {
-          toast.error('Profil fotoğrafı yüklenemedi');
+          toast.error('Profil fotoğrafı yüklenemedi.');
         } finally {
           setUploadingAvatar(false);
         }
@@ -377,12 +377,12 @@ const Dashboard = () => {
         // Update profile
         await api.put('/profile', profileData);
       }
-      toast.success('Profil güncellendi');
+      toast.success('Profil güncellendi.');
       setEditingProfile(false);
       // Refresh user data without page reload - stay on profile tab
       if (fetchUser) await fetchUser();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Profil güncellenemedi');
+      toast.error(error.response?.data?.detail || 'Profil güncellenemedi.');
     }
   };
 
@@ -405,7 +405,7 @@ const Dashboard = () => {
 
   const handleDeleteAccount = () => {
     if (accountDeletionPending) {
-      toast.info('Hesap silme talebiniz zaten beklemede. Admin onayı bekleniyor.');
+      toast.info('Hesap silme talebiniz zaten beklemede. Yönetici onayı bekleniyor.');
       return;
     }
     setAccountDeletionDialogOpen(true);
@@ -413,18 +413,18 @@ const Dashboard = () => {
 
   const handleSubmitAccountDeletion = async () => {
     if (!deletionReasonAccount.trim()) {
-      toast.error('Lütfen hesap silme sebebinizi belirtin');
+      toast.error('Lütfen hesap silme sebebinizi belirtin.');
       return;
     }
 
     try {
       await api.post('/auth/request-account-deletion', { reason: deletionReasonAccount });
-      toast.success('Hesap silme talebiniz alındı. Admin onayından sonra hesabınız silinecektir.');
+      toast.success('Hesap silme talebiniz alındı. Yönetici onayından sonra hesabınız silinecektir.');
       setAccountDeletionDialogOpen(false);
       setDeletionReasonAccount('');
       setAccountDeletionPending(true);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Talep gönderilemedi');
+      toast.error(error.response?.data?.detail || 'Talep gönderilemedi.');
     }
   };
 
@@ -569,9 +569,9 @@ const Dashboard = () => {
             {myListings.length === 0 ? (
               <Card className="p-12 text-center">
                 <FileText className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-                <p className="text-slate-500 mb-4">Henüz bir ilanınız yok</p>
+                <p className="text-slate-500 mb-4">Henüz bir ilanınız yok.</p>
                 <Link to="/listings/create">
-                  <Button className="bg-amber-500 hover:bg-amber-600">İlk İlanınızı Oluşturun</Button>
+                  <Button className="bg-amber-500 hover:bg-amber-600">İlk İlanınızı Oluşturun.</Button>
                 </Link>
               </Card>
             ) : (
@@ -697,7 +697,7 @@ const Dashboard = () => {
               <h3 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Gönderilen Davetler</h3>
               {invitations.sent.length === 0 ? (
                 <Card className="p-8 text-center text-slate-500">
-                  Henüz davet göndermediniz
+                  Henüz davet göndermediniz.
                 </Card>
               ) : (
                 <div className="space-y-4">
@@ -733,7 +733,7 @@ const Dashboard = () => {
             {conversations.length === 0 ? (
               <Card className="p-12 text-center">
                 <MessageSquare className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-                <p className="text-slate-500">Henüz mesajlaşmanız yok</p>
+                <p className="text-slate-500">Henüz mesajlaşmanız yok.</p>
               </Card>
             ) : (
               <div className="space-y-4">
@@ -790,7 +790,7 @@ const Dashboard = () => {
             {notifications.length === 0 ? (
               <Card className="p-12 text-center">
                 <Bell className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-                <p className="text-slate-500">Henüz bildiriminiz yok</p>
+                <p className="text-slate-500">Henüz bildiriminiz yok.</p>
               </Card>
             ) : (
               <div className="space-y-4">
@@ -825,7 +825,7 @@ const Dashboard = () => {
                             <Link to={`/messages/${conversation.id}`}>
                               <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600" data-testid="go-to-chat-button">
                                 <MessageSquare className="w-4 h-4 mr-2" />
-                                Mesajlaş
+                                Mesajlaş!
                               </Button>
                             </Link>
                           )}
@@ -952,7 +952,7 @@ const Dashboard = () => {
                         <p className="text-xs text-muted-foreground mt-1">Telefon numarası değiştirilemez</p>
                       </div>
                       <div>
-                        <Label htmlFor="institution">Kurum</Label>
+                        <Label htmlFor="institution">Kurumunuzu Seçin</Label>
                         <Select 
                           value={profileData.institution || "none"} 
                           onValueChange={(val) => setProfileData({ ...profileData, institution: val === "none" ? "" : val })}
@@ -961,13 +961,13 @@ const Dashboard = () => {
                             <SelectValue placeholder="Kurum Seçin" />
                           </SelectTrigger>
                           <SelectContent className="max-h-[300px]">
-                            <SelectItem value="none">Kurum Seçin</SelectItem>
+                            <SelectItem value="none">Kurum Seç</SelectItem>
                             {institutions.map(inst => <SelectItem key={inst} value={inst}>{inst}</SelectItem>)}
                           </SelectContent>
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="role">Pozisyon</Label>
+                        <Label htmlFor="role">Pozisyonunuzu Seçin</Label>
                         <Select 
                           value={profileData.role || "none"} 
                           onValueChange={(val) => setProfileData({ ...profileData, role: val === "none" ? "" : val })}
@@ -976,13 +976,13 @@ const Dashboard = () => {
                             <SelectValue placeholder="Pozisyon Seçin" />
                           </SelectTrigger>
                           <SelectContent className="max-h-[300px]">
-                            <SelectItem value="none">Pozisyon Seçin</SelectItem>
+                            <SelectItem value="none">Pozisyon Seç</SelectItem>
                             {positions.map(pos => <SelectItem key={pos} value={pos}>{pos}</SelectItem>)}
                           </SelectContent>
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="current_province">Şu Anki İl</Label>
+                        <Label htmlFor="current_province">Bulunduğunuz İli Seçin</Label>
                         <Select 
                           value={profileData.current_province || "none"} 
                           onValueChange={(val) => setProfileData({ ...profileData, current_province: val === "none" ? "" : val, current_district: "" })}
@@ -991,13 +991,13 @@ const Dashboard = () => {
                             <SelectValue placeholder="İl Seçin" />
                           </SelectTrigger>
                           <SelectContent className="max-h-[300px]">
-                            <SelectItem value="none">İl Seçin</SelectItem>
+                            <SelectItem value="none">İl Seç</SelectItem>
                             {provinces.map(prov => <SelectItem key={prov} value={prov}>{prov}</SelectItem>)}
                           </SelectContent>
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="current_district">Şu Anki İlçe</Label>
+                        <Label htmlFor="current_district">Bulunduğunuz İlçeyi Seçin</Label>
                         <Select 
                           value={profileData.current_district || "none"} 
                           onValueChange={(val) => setProfileData({ ...profileData, current_district: val === "none" ? "" : val })}
@@ -1007,7 +1007,7 @@ const Dashboard = () => {
                             <SelectValue placeholder={profileData.current_province ? "İlçe Seçin" : "Önce il seçin"} />
                           </SelectTrigger>
                           <SelectContent className="max-h-[300px]">
-                            <SelectItem value="none">İlçe Seçin</SelectItem>
+                            <SelectItem value="none">İlçe Seç</SelectItem>
                             {districts.map(dist => <SelectItem key={dist} value={dist}>{dist}</SelectItem>)}
                           </SelectContent>
                         </Select>

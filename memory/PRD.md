@@ -1,73 +1,134 @@
 # Becayiş - Kamu Çalışanları Yer Değişim Platformu
 
-## Proje Özeti
-Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla karşılıklı yer değişimi yapmasını kolaylaştıran platform.
+## Problem Statement
+Build a production-ready web app MVP for a "Public Employee Location Swap" platform in Turkey. The platform allows public employees in the same role to find each other and mutually swap locations.
 
-## Temel Özellikler
+## Core Features
 
-### Kimlik Doğrulama
-- Kurumsal e-posta ile kayıt (@gov.tr)
-- JWT tabanlı oturum yönetimi
-- Sicil numarası ve telefon doğrulama
+### Authentication
+- Unique account per person, verified by government email domain (*.gov.tr)
+- Registration: First Name, Last Name, Email, Password
+- JWT-based authentication
+- Email verification with OTP (currently mocked)
 
-### Kullanıcı Paneli
-- Profil yönetimi (fotoğraf, kurum, pozisyon, konum)
-- İlan oluşturma/düzenleme
-- Davet gönderme/alma
-- Gerçek zamanlı mesajlaşma (WebSocket)
-- Bildirim sistemi
+### User Dashboard
+- Profile management with avatar upload
+- Listings management (create, edit, request deletion)
+- Invitations (sent/received) with delete functionality
+- Conversations/Messages
+- Notifications
 
-### Admin Paneli
-- Kullanıcı moderasyonu
-- İlan onaylama/reddetme
-- Hesap silme taleplerini yönetme
+### Home Page & Listings
+- Recent listings display
+- Search bar with filters:
+  - Text search (title/institution)
+  - Position filter
+  - Province filter (searches both current AND desired province)
+- Unregistered users redirected to registration when clicking "Talep Gönder"
 
-## Teknik Altyapı
-- **Frontend:** React, TailwindCSS, Shadcn/UI
-- **Backend:** FastAPI, Python
-- **Database:** MongoDB
-- **Real-time:** WebSocket
+### Swap Invitation System
+- Profile completion required to send invitations
+- Location mismatch warning when user's current province doesn't match listing's desired province
+- Duplicate invitation prevention
+- Rate limiting (10 invitations/day)
+- Contact details revealed only after mutual acceptance
 
-## Son Güncellemeler (Ocak 2026)
+### Chat System
+- WebSocket-based real-time messaging
+- Conversation deletion with notification to other user
+- User blocking functionality
 
-### v1.4 - UI/UX İyileştirmeleri
-- İlan kartları küçültüldü ve kompaktlaştırıldı
-- Kullanıcı isimleri maskelendi (A*** Y*** formatı)
-- Kurum/pozisyon yan yana gösterildi
-- İlan başlığı max 45, açıklama max 140 karakter
-- Rakam girişi engellendi (telefon numarası önleme)
-- İlçe dropdown'ları il seçimine göre otomatik dolduruluyor
-- Profil fotoğrafı panelde görünüyor
-- Sekme sırası: Profil ilk sırada
+### Admin Panel
+- Credentials: becayis/1234
+- User management (view, block/unblock, delete)
+- Listing management
+- Deletion request approval (listings and accounts)
+- Platform statistics
 
-### v1.3 - Veri ve Tema
-- becayis.memurlar.net'ten 105 kurum, 220 pozisyon çekildi
-- 81 il için ilçe verileri eklendi
-- Dark tema tüm sayfalarda düzeltildi
-- Statik sayfalar (SSS, Gizlilik, Şartlar) yeniden tasarlandı
+## Tech Stack
+- Frontend: React, TailwindCSS, Shadcn/UI
+- Backend: FastAPI, Pydantic
+- Database: MongoDB
+- Real-time: WebSockets
 
-### v1.2 - Yeni Özellikler
-- Profil fotoğrafı yükleme
-- Kullanıcı engelleme
-- Tekrarlı davet engelleme
-- Konuşma silme bildirimi
-- WebSocket ile gerçek zamanlı chat
+## What's Implemented (December 2025)
+
+### UI/UX
+- [x] Dark/light theme toggle
+- [x] Responsive design (mobile-first)
+- [x] FAQ section (single column, responsive)
+- [x] Search section (responsive grid)
+- [x] Listing cards with masked names
+- [x] Profile avatar upload with preview
+- [x] Province/District dynamic dropdowns
+
+### Core Functionality
+- [x] User registration with email verification (mocked)
+- [x] User login/logout
+- [x] Profile CRUD
+- [x] Listing CRUD with deletion requests
+- [x] Invitation system with location matching warning
+- [x] Real-time chat via WebSocket
+- [x] User blocking
+- [x] Admin panel with full moderation capabilities
+
+### Recent Updates (Jan 2025)
+- [x] FAQ dropdowns: Single column responsive layout
+- [x] Search section: Full responsive grid (1/2/3 columns)
+- [x] Province filter: Searches both current AND desired province
+- [x] Invitation deletion: Local state update (no page refresh)
+- [x] Location mismatch warning: Formal toast message when sending invitation
+
+## Mocked Features
+- Email notifications (SendGrid planned)
+- Real OTP verification (Twilio planned)
+- SMS notifications
+
+## Backlog
+
+### P1 - High Priority
+- [ ] Email notifications (SendGrid integration)
+- [ ] Real OTP verification (Twilio integration)
+
+### P2 - Medium Priority
+- [ ] Mobile app conversion (React Native / PWA)
+- [ ] Push notifications
+- [ ] Advanced search filters
+
+### P3 - Low Priority
+- [ ] Analytics dashboard
+- [ ] Export functionality
+- [ ] Multi-language support
 
 ## API Endpoints
 
 ### Auth
-- POST /api/auth/register
+- POST /api/auth/register/step1
+- POST /api/auth/verify-email
 - POST /api/auth/login
 - GET /api/auth/me
+- POST /api/auth/request-account-deletion
+
+### Profile
+- GET/POST/PUT /api/profile
+- POST/DELETE /api/profile/avatar
 
 ### Listings
 - GET/POST /api/listings
-- PUT/DELETE /api/listings/{id}
+- GET/PUT/DELETE /api/listings/{id}
+- POST /api/listings/{id}/request-deletion
 
-### Profile
-- GET/PUT /api/profile
-- POST /api/profile/avatar
-- DELETE /api/profile/avatar
+### Invitations
+- GET/POST /api/invitations
+- POST /api/invitations/respond
+- DELETE /api/invitations/{id}
+
+### Chat
+- GET /api/conversations
+- GET /api/conversations/{id}/messages
+- POST /api/messages
+- DELETE /api/conversations/{id}
+- WebSocket: /ws/{token}
 
 ### Utility
 - GET /api/provinces
@@ -76,26 +137,9 @@ Türkiye'deki kamu çalışanlarının aynı pozisyondaki diğer çalışanlarla
 - GET /api/utility/positions
 - GET /api/faq
 
-### Communication
-- GET/POST /api/invitations
-- GET/POST /api/conversations
-- WS /ws/{token}
-
-## Bekleyen Görevler
-
-### P1 - Orta Öncelik
-- E-posta bildirimleri (SendGrid entegrasyonu)
-- Gerçek OTP doğrulama
-
-### P2 - Düşük Öncelik
-- Admin panel iyileştirmeleri
-- Performans optimizasyonları
-- Arama/filtreleme geliştirmeleri
-
-## Test Bilgileri
-- Admin: becayis / 1234
-- Test kullanıcı: @gov.tr uzantılı e-posta ile kayıt
-
-## Mock/Eksik Özellikler
-- E-posta bildirimleri (henüz entegre değil)
-- OTP doğrulama (mock)
+### Admin
+- POST /api/admin/login
+- GET /api/admin/users
+- GET /api/admin/listings
+- GET /api/admin/stats
+- Various moderation endpoints

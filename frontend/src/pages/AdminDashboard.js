@@ -95,10 +95,10 @@ const AdminDashboard = () => {
 
     try {
       await api.delete(`/admin/listings/${listingId}`);
-      toast.success('İlan silindi');
+      toast.success('İlan silindi.');
       fetchData();
     } catch (error) {
-      toast.error('İlan silinemedi');
+      toast.error('İlan silinemedi.');
     }
   };
 
@@ -108,17 +108,17 @@ const AdminDashboard = () => {
       toast.success('Silme isteği onaylandı');
       fetchData();
     } catch (error) {
-      toast.error('İşlem başarısız');
+      toast.error('İşlem başarısız.');
     }
   };
 
   const handleRejectDeletion = async (requestId) => {
     try {
       await api.post(`/admin/deletion-requests/${requestId}/reject`);
-      toast.success('Silme isteği reddedildi');
+      toast.success('Silme isteği reddedildi.');
       fetchData();
     } catch (error) {
-      toast.error('İşlem başarısız');
+      toast.error('İşlem başarısız.');
     }
   };
 
@@ -127,10 +127,10 @@ const AdminDashboard = () => {
     
     try {
       await api.delete(`/admin/deletion-requests/${requestId}`);
-      toast.success('Silme isteği temizlendi');
+      toast.success('Silme isteği temizlendi.');
       fetchData();
     } catch (error) {
-      toast.error('İşlem başarısız');
+      toast.error('İşlem başarısız.');
     }
   };
 
@@ -140,20 +140,20 @@ const AdminDashboard = () => {
     
     try {
       await api.post(`/admin/account-deletion-requests/${requestId}/approve`);
-      toast.success('Hesap silme talebi onaylandı ve kullanıcı silindi');
+      toast.success('Hesap silme talebi onaylandı ve kullanıcı silindi.');
       fetchData();
     } catch (error) {
-      toast.error('İşlem başarısız');
+      toast.error('İşlem başarısız.');
     }
   };
 
   const handleRejectAccountDeletion = async (requestId) => {
     try {
       await api.post(`/admin/account-deletion-requests/${requestId}/reject`);
-      toast.success('Hesap silme talebi reddedildi');
+      toast.success('Hesap silme talebi reddedildi.');
       fetchData();
     } catch (error) {
-      toast.error('İşlem başarısız');
+      toast.error('İşlem başarısız.');
     }
   };
 
@@ -162,10 +162,10 @@ const AdminDashboard = () => {
     
     try {
       await api.delete(`/admin/account-deletion-requests/${requestId}`);
-      toast.success('Hesap silme talebi temizlendi');
+      toast.success('Hesap silme talebi temizlendi.');
       fetchData();
     } catch (error) {
-      toast.error('İşlem başarısız');
+      toast.error('İşlem başarısız.');
     }
   };
 
@@ -231,7 +231,7 @@ const AdminDashboard = () => {
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Bekleyen Silme İsteği</p>
+                <p className="text-sm text-slate-500">Bekleyen Silme İstekleri</p>
                 <p className="text-3xl font-bold mt-1">{stats.pending_deletions}</p>
               </div>
               <AlertTriangle className="w-10 h-10 text-red-600" />
