@@ -6,7 +6,7 @@ import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
 import { toast } from 'sonner';
 import api from '../lib/api';
-import { ShieldCheck, Mail, RefreshCw } from 'lucide-react';
+import { ShieldCheck, Mail, RefreshCw, AlertTriangle } from 'lucide-react';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -14,6 +14,7 @@ const Register = () => {
   const [verificationId, setVerificationId] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -30,6 +31,22 @@ const Register = () => {
   const passwordHasUppercase = /[A-Z]/.test(formData.password);
   const passwordHasSpecialChar = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/]/.test(formData.password);
   const passwordIsValid = passwordHasMinLength && passwordHasUppercase && passwordHasSpecialChar;
+
+  const handleKeyDown = (e) => {
+    if (e.getModifierState('CapsLock')) {
+      setCapsLockOn(true);
+    } else {
+      setCapsLockOn(false);
+    }
+  };
+
+  const handleKeyUp = (e) => {
+    if (e.getModifierState('CapsLock')) {
+      setCapsLockOn(true);
+    } else {
+      setCapsLockOn(false);
+    }
+  };
 
   const handleStep1 = async (e) => {
     e.preventDefault();
