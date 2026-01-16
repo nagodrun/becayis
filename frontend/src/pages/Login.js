@@ -17,6 +17,12 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
 
+  // Password validation helpers
+  const passwordHasMinLength = formData.password.length >= 8;
+  const passwordHasUppercase = /[A-Z]/.test(formData.password);
+  const passwordHasSpecialChar = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/]/.test(formData.password);
+  const passwordIsValid = passwordHasMinLength && passwordHasUppercase && passwordHasSpecialChar;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -43,7 +49,7 @@ const Login = () => {
           <p className="text-muted-foreground">Hesabınıza giriş yapın</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="email" className="text-foreground">E-posta</Label>
             <Input
@@ -64,12 +70,39 @@ const Login = () => {
               id="password"
               type="password"
               value={formData.password}
-              placeholder="En az 8 haneli şifrenizi giriniz."
+              placeholder="Şifrenizi giriniz"
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required
               className="bg-background border-border text-foreground"
               data-testid="login-password-input"
             />
+            
+            {/* Password Requirements */}
+            {formData.password.length > 0 && (
+              <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                <p className="text-xs font-medium text-foreground mb-2">Şifre Gereksinimleri:</p>
+                <ul className="space-y-1.5">
+                  <li className={`flex items-center gap-2 text-xs ${passwordHasMinLength ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+                    <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasMinLength ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                      {passwordHasMinLength ? '✓' : '✗'}
+                    </span>
+                    En az 8 karakter
+                  </li>
+                  <li className={`flex items-center gap-2 text-xs ${passwordHasUppercase ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+                    <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasUppercase ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                      {passwordHasUppercase ? '✓' : '✗'}
+                    </span>
+                    En az 1 büyük harf (A-Z)
+                  </li>
+                  <li className={`flex items-center gap-2 text-xs ${passwordHasSpecialChar ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+                    <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasSpecialChar ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                      {passwordHasSpecialChar ? '✓' : '✗'}
+                    </span>
+                    En az 1 özel karakter (!@#$%^&* vb.)
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end">
@@ -81,7 +114,7 @@ const Login = () => {
           <Button
             type="submit"
             className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-            disabled={loading}
+            disabled={loading || !passwordIsValid}
             data-testid="login-submit-button"
           >
             {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
