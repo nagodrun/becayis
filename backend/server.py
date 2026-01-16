@@ -1507,7 +1507,7 @@ async def create_admin(data: CreateAdmin, admin = Depends(verify_admin)):
     """Create a new admin"""
     # Only main admin can create admins
     current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
-    if current_admin and current_admin.get("role") != "main_admin" and admin["username"] != "becayis":
+    if not current_admin or current_admin.get("role") != "main_admin":
         raise HTTPException(status_code=403, detail="Sadece ana admin yeni admin oluşturabilir")
     
     # Check if username exists
