@@ -1221,7 +1221,7 @@ const AdminDashboard = () => {
                     <ul className="mt-2 list-disc list-inside space-y-1">
                       <li>Ana admin yetkisi {selectedAdmin?.display_name || selectedAdmin?.username} kullanıcısına geçecek</li>
                       <li>Sizin yetkiniz normal admin seviyesine düşecek</li>
-                      <li>Bu işlemi geri almak için yeni ana admin'in onayı gerekecek</li>
+                      <li>Bu işlemi geri almak için yeni ana adminin onayı gerekecek</li>
                     </ul>
                   </div>
                 </div>
