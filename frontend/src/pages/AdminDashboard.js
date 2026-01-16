@@ -67,12 +67,17 @@ const AdminDashboard = () => {
     try {
       if (isBlocked) {
         await api.put(`/admin/users/${userId}/unblock`);
+        setUsers(prev => prev.map(u => 
+          u.id === userId ? { ...u, is_blocked: false } : u
+        ));
         toast.success('Kullanıcı engeli kaldırıldı');
       } else {
         await api.put(`/admin/users/${userId}/block`);
+        setUsers(prev => prev.map(u => 
+          u.id === userId ? { ...u, is_blocked: true } : u
+        ));
         toast.success('Kullanıcı engellendi');
       }
-      fetchData();
     } catch (error) {
       toast.error('İşlem başarısız');
     }
