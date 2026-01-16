@@ -1238,7 +1238,7 @@ const Dashboard = () => {
               <div className="mt-8 pt-6 border-t">
                 <h4 className="font-semibold text-foreground mb-3">Güvenlik İpuçları</h4>
                 <ul className="text-sm text-muted-foreground space-y-2">
-                  <li>• En az 8 karakter uzunluğunda şifre kullanın</li>
+                  <li>• En az 6 karakter uzunluğunda şifre kullanın</li>
                   <li>• Büyük-küçük harf, rakam ve özel karakter kombinasyonu tercih edin</li>
                   <li>• Şifrenizi kimseyle paylaşmayın</li>
                   <li>• Farklı platformlarda aynı şifreyi kullanmaktan kaçının</li>

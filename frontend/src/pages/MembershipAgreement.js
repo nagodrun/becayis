@@ -6,7 +6,7 @@ import { ArrowLeft, FileCheck, Shield, FileText, Cookie, HelpCircle } from 'luci
 const MembershipAgreement = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link to="/" className="inline-flex items-center text-emerald-600 hover:text-emerald-700 mb-8">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Ana Sayfaya Dön

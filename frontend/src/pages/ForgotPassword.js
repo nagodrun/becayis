@@ -66,7 +66,7 @@ const ForgotPassword = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     if (newPassword.length < 6) {
-      toast.error('Şifre en az 6 karakter olmalıdır.');
+      toast.error('Şifre en az 6 haneli olmalıdır.');
       return;
     }
     if (newPassword !== confirmPassword) {

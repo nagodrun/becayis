@@ -64,7 +64,7 @@ const Login = () => {
               id="password"
               type="password"
               value={formData.password}
-              placeholder="En az 6 karakterli şifrenizi giriniz."
+              placeholder="En az 6 haneli şifrenizi giriniz."
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required
               className="bg-background border-border text-foreground"
