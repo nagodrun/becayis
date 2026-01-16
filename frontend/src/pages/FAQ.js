@@ -31,7 +31,7 @@ const FAQ = () => {
       answer: `Öğretmenler ve sağlık personeli zorunlu hizmete tabidir. Bu nedenle zorunlu hizmet gören personelin becayiş isteyeceği ilinde zorunlu hizmet bölgesi kapsamında olması gerekmektedir.`
     },
     {
-      question: "657 sayılı DMK'nin becayişle ilgili maddesi?",
+      question: "657 sayılı Devlet Memurları Kanununun becayişle ilgili maddesi?",
       answer: `Karşılıklı Olarak Yer Değiştirme: Madde 73- (Değişik: 31.7.1970- 1327/32 md.; 30.5.1974-KHK 12/1 md.; aynen kabul: 15.5.1975- 1897/1 md.) Aynı Kurumun başka başka yerlerde bulunan aynı sınıftaki memurları, karşılıklı olarak yer değiştirme suretiyle atanmalarını isteyebilirler. Bu isteğin yerine getirilmesi atamaya yetkili amirlerince uygun bulunmasına bağlıdır.`
     },
     {

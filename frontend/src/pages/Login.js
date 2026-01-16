@@ -50,6 +50,7 @@ const Login = () => {
               id="email"
               type="email"
               value={formData.email}
+              placeholder="ornek@adalet.gov.tr"
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
               className="bg-background border-border text-foreground"
@@ -63,6 +64,7 @@ const Login = () => {
               id="password"
               type="password"
               value={formData.password}
+              placeholder="En az 6 karakterli şifrenizi giriniz."
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required
               className="bg-background border-border text-foreground"
