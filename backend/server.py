@@ -367,6 +367,102 @@ async def login(data: Login):
         }
     }
 
+@api_router.post("/auth/forgot-password")
+async def forgot_password(data: ForgotPassword):
+    """Send password reset code to email"""
+    user = await db.users.find_one({"email": data.email}, {"_id": 0})
+    if not user:
+        # Don't reveal if email exists
+        return {"message": "Eğer bu e-posta adresi kayıtlıysa, şifre sıfırlama kodu gönderildi"}
+    
+    # Generate reset token
+    reset_token = str(uuid.uuid4())
+    reset_code = generate_otp()
+    expires = datetime.now(timezone.utc) + timedelta(minutes=30)
+    
+    await db.password_resets.insert_one({
+        "id": reset_token,
+        "user_id": user["id"],
+        "email": data.email,
+        "code": reset_code,
+        "expires": expires.isoformat(),
+        "used": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    # TODO: Send email in production
+    return {
+        "message": "Şifre sıfırlama kodu e-posta adresinize gönderildi",
+        "reset_token": reset_token,
+        "reset_code_mock": reset_code  # Remove in production
+    }
+
+@api_router.post("/auth/verify-reset-code")
+async def verify_reset_code(reset_token: str, code: str):
+    """Verify password reset code"""
+    reset = await db.password_resets.find_one({
+        "id": reset_token,
+        "used": False
+    }, {"_id": 0})
+    
+    if not reset:
+        raise HTTPException(status_code=400, detail="Geçersiz veya süresi dolmuş sıfırlama talebi")
+    
+    expires = datetime.fromisoformat(reset["expires"].replace('Z', '+00:00'))
+    if datetime.now(timezone.utc) > expires:
+        raise HTTPException(status_code=400, detail="Sıfırlama kodunun süresi dolmuş")
+    
+    if reset["code"] != code:
+        raise HTTPException(status_code=400, detail="Geçersiz doğrulama kodu")
+    
+    return {"message": "Kod doğrulandı", "verified": True}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(data: ResetPassword):
+    """Reset password with token"""
+    reset = await db.password_resets.find_one({
+        "id": data.reset_token,
+        "used": False
+    }, {"_id": 0})
+    
+    if not reset:
+        raise HTTPException(status_code=400, detail="Geçersiz veya süresi dolmuş sıfırlama talebi")
+    
+    expires = datetime.fromisoformat(reset["expires"].replace('Z', '+00:00'))
+    if datetime.now(timezone.utc) > expires:
+        raise HTTPException(status_code=400, detail="Sıfırlama talebinin süresi dolmuş")
+    
+    # Update password
+    new_hash = get_password_hash(data.new_password)
+    await db.users.update_one(
+        {"id": reset["user_id"]},
+        {"$set": {"password_hash": new_hash}}
+    )
+    
+    # Mark reset as used
+    await db.password_resets.update_one(
+        {"id": data.reset_token},
+        {"$set": {"used": True}}
+    )
+    
+    return {"message": "Şifreniz başarıyla değiştirildi"}
+
+@api_router.post("/auth/change-password")
+async def change_password(data: ChangePassword, current_user: dict = Depends(get_current_user)):
+    """Change password for logged in user"""
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    
+    if not verify_password(data.current_password, user["password_hash"]):
+        raise HTTPException(status_code=400, detail="Mevcut şifre hatalı")
+    
+    new_hash = get_password_hash(data.new_password)
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"password_hash": new_hash}}
+    )
+    
+    return {"message": "Şifreniz başarıyla değiştirildi"}
+
 @api_router.get("/auth/me")
 async def get_me(current_user: dict = Depends(get_current_user)):
     profile = await db.profiles.find_one({"user_id": current_user["id"]}, {"_id": 0})
