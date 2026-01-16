@@ -177,6 +177,127 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleChangeRole = async () => {
+    if (!selectedAdmin || !newRole) return;
+
+    try {
+      await api.put(`/admin/admins/${selectedAdmin.id}/role`, {
+        admin_id: selectedAdmin.id,
+        new_role: newRole
+      });
+      toast.success('Admin yetkisi güncellendi');
+      setShowChangeRoleDialog(false);
+      setSelectedAdmin(null);
+      setNewRole('');
+      // Refresh admins list
+      const adminsRes = await api.get('/admin/admins');
+      setAdmins(adminsRes.data || []);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Yetki güncellenemedi');
+    }
+  };
+
+  const handleTransferMainAdmin = async () => {
+    if (!selectedAdmin || !transferPassword) {
+      toast.error('Şifre zorunludur');
+      return;
+    }
+
+    try {
+      await api.post('/admin/transfer-main-admin', {
+        new_main_admin_id: selectedAdmin.id,
+        password: transferPassword
+      });
+      toast.success('Ana admin yetkisi devredildi');
+      setShowTransferMainAdminDialog(false);
+      setSelectedAdmin(null);
+      setTransferPassword('');
+      // Refresh data - user may need to re-login
+      const adminsRes = await api.get('/admin/admins');
+      setAdmins(adminsRes.data || []);
+      const currentAdminRes = await api.get('/admin/me');
+      setCurrentAdmin(currentAdminRes.data);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Devir işlemi başarısız');
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      setSavingProfile(true);
+      
+      // Upload avatar if selected
+      if (selectedAvatarFile) {
+        const formData = new FormData();
+        formData.append('file', selectedAvatarFile);
+        await api.post('/admin/avatar', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+      }
+      
+      // Update profile
+      await api.put('/admin/profile', {
+        display_name: profileData.display_name
+      });
+      
+      toast.success('Profil güncellendi');
+      setEditingProfile(false);
+      setSelectedAvatarFile(null);
+      setAvatarPreview(null);
+      
+      // Refresh current admin data
+      const currentAdminRes = await api.get('/admin/me');
+      setCurrentAdmin(currentAdminRes.data);
+      setProfileData({
+        display_name: currentAdminRes.data?.display_name || '',
+        avatar_url: currentAdminRes.data?.avatar_url || ''
+      });
+      
+      // Refresh admins list
+      const adminsRes = await api.get('/admin/admins');
+      setAdmins(adminsRes.data || []);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Profil güncellenemedi');
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const handleAdminAvatarSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Dosya boyutu 5MB\'dan küçük olmalıdır');
+        return;
+      }
+      setSelectedAvatarFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => setAvatarPreview(e.target.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDeleteAdminAvatar = async () => {
+    try {
+      await api.delete('/admin/avatar');
+      toast.success('Profil fotoğrafı silindi');
+      setAvatarPreview(null);
+      setSelectedAvatarFile(null);
+      // Refresh current admin data
+      const currentAdminRes = await api.get('/admin/me');
+      setCurrentAdmin(currentAdminRes.data);
+      setProfileData({
+        display_name: currentAdminRes.data?.display_name || '',
+        avatar_url: currentAdminRes.data?.avatar_url || ''
+      });
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fotoğraf silinemedi');
+    }
+  };
+
+  // Check if current user is main admin
+  const isMainAdmin = currentAdmin?.role === 'main_admin' || currentAdmin?.username === 'becayis';
+
   const handleBlockUser = async (userId, isBlocked) => {
     try {
       if (isBlocked) {
