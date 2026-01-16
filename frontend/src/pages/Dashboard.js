@@ -575,7 +575,7 @@ const Dashboard = () => {
             handleMarkAllNotificationsRead();
           }
         }}>
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="profile" data-testid="tab-profile">Profil</TabsTrigger>
             <TabsTrigger value="listings" data-testid="tab-listings">İlanlarım</TabsTrigger>
             <TabsTrigger value="invitations" data-testid="tab-invitations">
