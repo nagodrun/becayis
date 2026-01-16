@@ -6,7 +6,7 @@ import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
 import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, AlertTriangle } from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,12 +16,29 @@ const Login = () => {
     password: ''
   });
   const [loading, setLoading] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
 
   // Password validation helpers
   const passwordHasMinLength = formData.password.length >= 8;
   const passwordHasUppercase = /[A-Z]/.test(formData.password);
   const passwordHasSpecialChar = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/]/.test(formData.password);
   const passwordIsValid = passwordHasMinLength && passwordHasUppercase && passwordHasSpecialChar;
+
+  const handleKeyDown = (e) => {
+    if (e.getModifierState('CapsLock')) {
+      setCapsLockOn(true);
+    } else {
+      setCapsLockOn(false);
+    }
+  };
+
+  const handleKeyUp = (e) => {
+    if (e.getModifierState('CapsLock')) {
+      setCapsLockOn(true);
+    } else {
+      setCapsLockOn(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,10 +89,20 @@ const Login = () => {
               value={formData.password}
               placeholder="Şifrenizi giriniz"
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onKeyDown={handleKeyDown}
+              onKeyUp={handleKeyUp}
               required
               className="bg-background border-border text-foreground"
               data-testid="login-password-input"
             />
+            
+            {/* Caps Lock Warning */}
+            {capsLockOn && (
+              <div className="mt-2 flex items-center gap-2 text-amber-600 dark:text-amber-400 text-xs">
+                <AlertTriangle className="w-4 h-4" />
+                <span>Caps Lock açık</span>
+              </div>
+            )}
             
             {/* Password Requirements */}
             {formData.password.length > 0 && (
