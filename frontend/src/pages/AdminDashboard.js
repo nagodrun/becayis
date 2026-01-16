@@ -859,14 +859,14 @@ const AdminDashboard = () => {
                                 <Shield className="w-5 h-5 text-slate-600 dark:text-slate-300" />
                               </div>
                             )}
-                            {(admin.role === 'main_admin' || admin.username === 'becayis') && (
+                            {admin.role === 'main_admin' && (
                               <Crown className="w-4 h-4 text-amber-500 absolute -top-1 -right-1" />
                             )}
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
                               <span className="font-semibold">{admin.display_name || admin.username}</span>
-                              {(admin.role === 'main_admin' || admin.username === 'becayis') && (
+                              {admin.role === 'main_admin' && (
                                 <Badge className="bg-amber-500 text-white text-xs">Ana Admin</Badge>
                               )}
                             </div>
