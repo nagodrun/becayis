@@ -178,7 +178,7 @@ const Register = () => {
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  placeholder="En az 6 karakter"
+                  placeholder="En az 8 karakter"
                   required
                   data-testid="register-password-input"
                 />
