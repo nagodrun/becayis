@@ -541,6 +541,7 @@ async def get_listings(
     role: Optional[str] = None,
     current_province: Optional[str] = None,
     desired_province: Optional[str] = None,
+    province: Optional[str] = None,  # New: search both current and desired province
     listing_status: str = "active",
     limit: int = 50
 ):
@@ -555,6 +556,12 @@ async def get_listings(
         query["current_province"] = current_province
     if desired_province:
         query["desired_province"] = desired_province
+    # Search both current and desired province
+    if province:
+        query["$or"] = [
+            {"current_province": province},
+            {"desired_province": province}
+        ]
     
     listings = await db.listings.find(query, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(limit)
     
@@ -744,6 +751,20 @@ async def get_invitations(current_user: dict = Depends(get_current_user)):
         inv["receiver_profile"] = receiver_profile
     
     return {"sent": sent, "received": received}
+
+@api_router.delete("/invitations/{invitation_id}")
+async def delete_invitation(invitation_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete an invitation (sent or received)"""
+    invitation = await db.invitations.find_one({"id": invitation_id}, {"_id": 0})
+    if not invitation:
+        raise HTTPException(status_code=404, detail="Davet bulunamadı")
+    
+    # Check if user is sender or receiver
+    if invitation["sender_id"] != current_user["id"] and invitation["receiver_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok")
+    
+    await db.invitations.delete_one({"id": invitation_id})
+    return {"message": "Davet silindi"}
 
 @api_router.post("/invitations/respond")
 async def respond_invitation(data: RespondInvitation, current_user: dict = Depends(get_current_user)):
