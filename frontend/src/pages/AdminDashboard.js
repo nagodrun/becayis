@@ -824,14 +824,16 @@ const AdminDashboard = () => {
                 <h2 className="text-xl font-bold" style={{ fontFamily: 'Manrope' }}>
                   Admin Yönetimi ({admins.length})
                 </h2>
-                <Button 
-                  onClick={() => setShowAddAdminDialog(true)}
-                  className="bg-emerald-600 hover:bg-emerald-700"
-                  data-testid="add-admin-btn"
-                >
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Yeni Admin Ekle
-                </Button>
+                {isMainAdmin && (
+                  <Button 
+                    onClick={() => setShowAddAdminDialog(true)}
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                    data-testid="add-admin-btn"
+                  >
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Yeni Admin Ekle
+                  </Button>
+                )}
               </div>
 
               {admins.length === 0 ? (
@@ -844,12 +846,30 @@ const AdminDashboard = () => {
                   {admins.map((admin) => (
                     <div key={admin.id} className="border rounded-lg p-4 flex items-center justify-between" data-testid={`admin-row-${admin.id}`}>
                       <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
-                            <Shield className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            {admin.avatar_url ? (
+                              <img 
+                                src={`${process.env.REACT_APP_BACKEND_URL}${admin.avatar_url}`} 
+                                alt={admin.display_name} 
+                                className="w-10 h-10 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
+                                <Shield className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                              </div>
+                            )}
+                            {(admin.role === 'main_admin' || admin.username === 'becayis') && (
+                              <Crown className="w-4 h-4 text-amber-500 absolute -top-1 -right-1" />
+                            )}
                           </div>
                           <div>
-                            <div className="font-semibold">{admin.display_name || admin.username}</div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold">{admin.display_name || admin.username}</span>
+                              {(admin.role === 'main_admin' || admin.username === 'becayis') && (
+                                <Badge className="bg-amber-500 text-white text-xs">Ana Admin</Badge>
+                              )}
+                            </div>
                             <div className="text-sm text-slate-500">@{admin.username}</div>
                           </div>
                         </div>
@@ -859,6 +879,22 @@ const AdminDashboard = () => {
                         </div>
                       </div>
                       <div className="flex gap-2">
+                        {/* Role change button - only for main admin and not for self */}
+                        {isMainAdmin && admin.username !== currentAdmin?.username && admin.role !== 'main_admin' && admin.username !== 'becayis' && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedAdmin(admin);
+                              setShowTransferMainAdminDialog(true);
+                            }}
+                            className="text-amber-600 border-amber-600 hover:bg-amber-50"
+                            data-testid={`transfer-admin-${admin.id}`}
+                          >
+                            <ArrowRightLeft className="w-4 h-4 mr-1" />
+                            Ana Admin Yap
+                          </Button>
+                        )}
                         <Button
                           size="sm"
                           variant="outline"
@@ -871,7 +907,7 @@ const AdminDashboard = () => {
                           <KeyRound className="w-4 h-4 mr-1" />
                           Şifre Değiştir
                         </Button>
-                        {admin.username !== 'becayis' && (
+                        {isMainAdmin && admin.username !== 'becayis' && admin.role !== 'main_admin' && admin.username !== currentAdmin?.username && (
                           <Button
                             size="sm"
                             variant="destructive"
@@ -886,6 +922,111 @@ const AdminDashboard = () => {
                   ))}
                 </div>
               )}
+            </Card>
+          </TabsContent>
+
+          {/* Profile Tab */}
+          <TabsContent value="profile">
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-6" style={{ fontFamily: 'Manrope' }}>
+                Profilim
+              </h2>
+
+              <div className="max-w-md mx-auto">
+                {/* Avatar Section */}
+                <div className="flex flex-col items-center mb-8">
+                  <div className="relative">
+                    {avatarPreview || currentAdmin?.avatar_url ? (
+                      <img
+                        src={avatarPreview || `${process.env.REACT_APP_BACKEND_URL}${currentAdmin?.avatar_url}`}
+                        alt="Admin Avatar"
+                        className="w-32 h-32 rounded-full object-cover border-4 border-slate-200"
+                      />
+                    ) : (
+                      <div className="w-32 h-32 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center border-4 border-slate-300">
+                        <Shield className="w-16 h-16 text-slate-400" />
+                      </div>
+                    )}
+                    {(currentAdmin?.role === 'main_admin' || currentAdmin?.username === 'becayis') && (
+                      <Crown className="w-8 h-8 text-amber-500 absolute -top-2 -right-2" />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => adminAvatarInputRef.current?.click()}
+                      className="absolute bottom-0 right-0 w-10 h-10 bg-emerald-600 hover:bg-emerald-700 rounded-full flex items-center justify-center text-white shadow-lg"
+                      data-testid="admin-change-avatar-btn"
+                    >
+                      <Camera className="w-5 h-5" />
+                    </button>
+                    <input
+                      type="file"
+                      ref={adminAvatarInputRef}
+                      onChange={handleAdminAvatarSelect}
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      className="hidden"
+                    />
+                  </div>
+                  {(avatarPreview || currentAdmin?.avatar_url) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-2 text-red-500 hover:text-red-600"
+                      onClick={handleDeleteAdminAvatar}
+                      data-testid="admin-delete-avatar-btn"
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Fotoğrafı Sil
+                    </Button>
+                  )}
+                </div>
+
+                {/* Profile Info */}
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm text-slate-600">Kullanıcı Adı</Label>
+                    <div className="mt-1 p-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-700 dark:text-slate-300">
+                      @{currentAdmin?.username}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm text-slate-600">Yetki</Label>
+                    <div className="mt-1 p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                      {(currentAdmin?.role === 'main_admin' || currentAdmin?.username === 'becayis') ? (
+                        <Badge className="bg-amber-500 text-white">
+                          <Crown className="w-3 h-3 mr-1" />
+                          Ana Admin
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline">Admin</Badge>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="admin-display-name" className="text-sm text-slate-600">Görünen İsim</Label>
+                    <Input
+                      id="admin-display-name"
+                      value={profileData.display_name}
+                      onChange={(e) => setProfileData({ ...profileData, display_name: e.target.value })}
+                      placeholder="İsminiz"
+                      className="mt-1"
+                      data-testid="admin-profile-display-name"
+                    />
+                  </div>
+
+                  <div className="pt-4">
+                    <Button
+                      onClick={handleSaveProfile}
+                      className="w-full bg-emerald-600 hover:bg-emerald-700"
+                      disabled={savingProfile}
+                      data-testid="admin-save-profile-btn"
+                    >
+                      {savingProfile ? 'Kaydediliyor...' : 'Profili Kaydet'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </Card>
           </TabsContent>
         </Tabs>
