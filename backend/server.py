@@ -1172,15 +1172,24 @@ async def admin_login(username: str, password: str):
                 "username": ADMIN_USERNAME,
                 "password_hash": get_password_hash(ADMIN_PASSWORD),
                 "display_name": "Ana Admin",
+                "role": "main_admin",
+                "avatar_url": None,
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "created_by": "system"
             })
+        else:
+            # Update existing admin to have main_admin role if not set
+            if existing.get("role") != "main_admin":
+                await db.admins.update_one(
+                    {"username": ADMIN_USERNAME},
+                    {"$set": {"role": "main_admin"}}
+                )
         
         access_token = create_access_token(data={"sub": "admin", "is_admin": True, "username": username})
         return {
             "access_token": access_token,
             "token_type": "bearer",
-            "user": {"username": username, "role": "admin"}
+            "user": {"username": username, "role": "main_admin"}
         }
     
     # Check admins collection
@@ -1190,7 +1199,7 @@ async def admin_login(username: str, password: str):
         return {
             "access_token": access_token,
             "token_type": "bearer",
-            "user": {"username": username, "role": "admin"}
+            "user": {"username": username, "role": admin.get("role", "admin")}
         }
     
     raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı")
