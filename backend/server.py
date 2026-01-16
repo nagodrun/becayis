@@ -1327,6 +1327,31 @@ async def delete_notification(notification_id: str, current_user: dict = Depends
     
     return {"message": "Bildirim silindi"}
 
+# ============= LISTING STATISTICS ENDPOINTS =============
+@api_router.get("/stats/top-positions")
+async def get_top_positions(limit: int = 10):
+    """Get most listed positions with counts"""
+    pipeline = [
+        {"$match": {"status": "active"}},
+        {"$group": {"_id": "$role", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+        {"$limit": limit}
+    ]
+    results = await db.listings.aggregate(pipeline).to_list(limit)
+    return [{"position": r["_id"], "count": r["count"]} for r in results if r["_id"]]
+
+@api_router.get("/stats/top-institutions")
+async def get_top_institutions(limit: int = 10):
+    """Get most listed institutions with counts"""
+    pipeline = [
+        {"$match": {"status": "active"}},
+        {"$group": {"_id": "$institution", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+        {"$limit": limit}
+    ]
+    results = await db.listings.aggregate(pipeline).to_list(limit)
+    return [{"institution": r["_id"], "count": r["count"]} for r in results if r["_id"]]
+
 # ============= UTILITY ENDPOINTS =============
 @api_router.get("/utility/institutions")
 async def get_institutions_list():
