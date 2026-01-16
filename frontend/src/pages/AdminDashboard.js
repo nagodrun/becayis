@@ -83,6 +83,7 @@ const AdminDashboard = () => {
       setReports(reportsRes.data);
       setDeletionRequests(deletionReqRes.data);
       setAccountDeletionRequests(accountDeletionReqRes.data);
+      setAdmins(adminsRes.data || []);
     } catch (error) {
       toast.error('Veriler yüklenirken hata oluştu');
       if (error.response?.status === 403) {
@@ -90,6 +91,68 @@ const AdminDashboard = () => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Admin management functions
+  const handleAddAdmin = async () => {
+    if (!newAdminData.username || !newAdminData.password) {
+      toast.error('Kullanıcı adı ve şifre zorunludur');
+      return;
+    }
+    
+    if (!passwordIsValid(newAdminData.password)) {
+      toast.error('Şifre gereksinimlerini karşılamıyor');
+      return;
+    }
+
+    try {
+      await api.post('/admin/admins', newAdminData);
+      toast.success('Admin başarıyla oluşturuldu');
+      setShowAddAdminDialog(false);
+      setNewAdminData({ username: '', password: '', display_name: '' });
+      // Refresh admins list
+      const adminsRes = await api.get('/admin/admins');
+      setAdmins(adminsRes.data || []);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Admin oluşturulamadı');
+    }
+  };
+
+  const handleChangeAdminPassword = async () => {
+    if (!newPassword) {
+      toast.error('Yeni şifre zorunludur');
+      return;
+    }
+    
+    if (!passwordIsValid(newPassword)) {
+      toast.error('Şifre gereksinimlerini karşılamıyor');
+      return;
+    }
+
+    try {
+      await api.put(`/admin/admins/${selectedAdmin.id}/password`, {
+        admin_id: selectedAdmin.id,
+        new_password: newPassword
+      });
+      toast.success('Şifre başarıyla güncellendi');
+      setShowChangePasswordDialog(false);
+      setSelectedAdmin(null);
+      setNewPassword('');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Şifre güncellenemedi');
+    }
+  };
+
+  const handleDeleteAdmin = async (adminId, username) => {
+    if (!window.confirm(`"${username}" admin hesabını silmek istediğinizden emin misiniz?`)) return;
+
+    try {
+      await api.delete(`/admin/admins/${adminId}`);
+      setAdmins(prev => prev.filter(a => a.id !== adminId));
+      toast.success('Admin silindi');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Admin silinemedi');
     }
   };
 
