@@ -97,6 +97,13 @@ const Home = () => {
       return;
     }
 
+    // Check if user has completed their profile
+    if (!user.profile_completed || !user.profile?.institution || !user.profile?.role || !user.profile?.current_province) {
+      toast.error('Davet göndermek için önce profilinizi tamamlamanız gerekiyor');
+      navigate('/dashboard');
+      return;
+    }
+
     try {
       await api.post('/invitations', { listing_id: listing.id });
       toast.success('Davet başarıyla gönderildi');
@@ -309,7 +316,7 @@ const Home = () => {
 
       {/* FAQ Section */}
       <div className="py-16 bg-card">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-foreground" style={{ fontFamily: 'Manrope' }}>
               Sıkça Sorulan Sorular
@@ -317,13 +324,13 @@ const Home = () => {
             <p className="text-muted-foreground">Merak ettiğiniz soruların cevapları.</p>
           </div>
 
-          <Accordion type="single" collapsible className="w-full space-y-4">
+          <Accordion type="single" collapsible className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
             {faqData.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border border-border rounded-lg px-6 bg-background">
-                <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground">
+              <AccordionItem key={index} value={`item-${index}`} className="border border-border rounded-lg px-4 md:px-6 bg-background">
+                <AccordionTrigger className="text-left font-semibold hover:no-underline text-foreground text-sm md:text-base py-3 md:py-4">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
+                <AccordionContent className="text-muted-foreground text-sm pb-3 md:pb-4">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
