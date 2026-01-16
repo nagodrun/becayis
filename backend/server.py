@@ -1625,20 +1625,14 @@ async def transfer_main_admin(data: TransferMainAdmin, admin = Depends(verify_ad
     """Transfer main admin role to another admin - requires password confirmation"""
     # Only main admin can transfer
     current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
-    is_main_admin = admin["username"] == "becayis" or (current_admin and current_admin.get("role") == "main_admin")
+    is_main_admin = current_admin and current_admin.get("role") == "main_admin"
     
     if not is_main_admin:
         raise HTTPException(status_code=403, detail="Sadece ana admin bu işlemi yapabilir")
     
-    # Verify password
-    if admin["username"] == "becayis":
-        # For hardcoded admin, check against hardcoded password
-        if data.password != ADMIN_PASSWORD:
-            raise HTTPException(status_code=401, detail="Şifre hatalı")
-    else:
-        # For database admins, verify hashed password
-        if not current_admin or not verify_password(data.password, current_admin.get("password_hash", "")):
-            raise HTTPException(status_code=401, detail="Şifre hatalı")
+    # Verify password - check database password hash
+    if not current_admin or not verify_password(data.password, current_admin.get("password_hash", "")):
+        raise HTTPException(status_code=401, detail="Şifre hatalı")
     
     # Get target admin
     target_admin = await db.admins.find_one({"id": data.new_main_admin_id}, {"_id": 0})
@@ -1655,12 +1649,11 @@ async def transfer_main_admin(data: TransferMainAdmin, admin = Depends(verify_ad
         {"$set": {"role": "main_admin"}}
     )
     
-    # Demote current main admin to regular admin (if not the hardcoded one)
-    if current_admin:
-        await db.admins.update_one(
-            {"username": admin["username"]},
-            {"$set": {"role": "admin"}}
-        )
+    # Demote current main admin to regular admin
+    await db.admins.update_one(
+        {"username": admin["username"]},
+        {"$set": {"role": "admin"}}
+    )
     
     return {"message": f"Ana admin yetkisi '{target_admin['display_name'] or target_admin['username']}' kullanıcısına devredildi"}
 
