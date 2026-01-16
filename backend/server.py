@@ -1572,8 +1572,13 @@ async def delete_admin(admin_id: str, admin = Depends(verify_admin)):
         raise HTTPException(status_code=404, detail="Admin bulunamadı")
     
     # Prevent deleting the main admin
-    if target_admin["username"] == "becayis":
+    if target_admin["username"] == "becayis" or target_admin.get("role") == "main_admin":
         raise HTTPException(status_code=400, detail="Ana admin silinemez")
+    
+    # Only main admin can delete other admins
+    current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
+    if current_admin and current_admin.get("role") != "main_admin" and admin["username"] != "becayis":
+        raise HTTPException(status_code=403, detail="Sadece ana admin diğer adminleri silebilir")
     
     # Prevent self-deletion
     if target_admin["username"] == admin["username"]:
@@ -1581,6 +1586,162 @@ async def delete_admin(admin_id: str, admin = Depends(verify_admin)):
     
     await db.admins.delete_one({"id": admin_id})
     return {"message": "Admin silindi"}
+
+@api_router.put("/admin/admins/{admin_id}/role")
+async def update_admin_role(admin_id: str, data: UpdateAdminRole, admin = Depends(verify_admin)):
+    """Update admin role - only main admin can do this"""
+    # Only main admin (becayis) can change roles
+    current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
+    is_main_admin = admin["username"] == "becayis" or (current_admin and current_admin.get("role") == "main_admin")
+    
+    if not is_main_admin:
+        raise HTTPException(status_code=403, detail="Sadece ana admin yetki değiştirebilir")
+    
+    target_admin = await db.admins.find_one({"id": admin_id}, {"_id": 0})
+    if not target_admin:
+        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+    
+    if data.new_role not in ["admin", "main_admin"]:
+        raise HTTPException(status_code=400, detail="Geçersiz rol. 'admin' veya 'main_admin' olmalı")
+    
+    # Cannot change own role to regular admin (would lose main admin)
+    if target_admin["username"] == admin["username"] and data.new_role == "admin":
+        raise HTTPException(status_code=400, detail="Kendi yetkinizi düşüremezsiniz. Ana admin devri yapın.")
+    
+    await db.admins.update_one(
+        {"id": admin_id},
+        {"$set": {"role": data.new_role}}
+    )
+    
+    return {"message": f"Admin yetkisi '{data.new_role}' olarak güncellendi"}
+
+@api_router.post("/admin/transfer-main-admin")
+async def transfer_main_admin(data: TransferMainAdmin, admin = Depends(verify_admin)):
+    """Transfer main admin role to another admin - requires password confirmation"""
+    # Only main admin can transfer
+    current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
+    is_main_admin = admin["username"] == "becayis" or (current_admin and current_admin.get("role") == "main_admin")
+    
+    if not is_main_admin:
+        raise HTTPException(status_code=403, detail="Sadece ana admin bu işlemi yapabilir")
+    
+    # Verify password
+    if admin["username"] == "becayis":
+        # For hardcoded admin, check against hardcoded password
+        if data.password != ADMIN_PASSWORD:
+            raise HTTPException(status_code=401, detail="Şifre hatalı")
+    else:
+        # For database admins, verify hashed password
+        if not current_admin or not verify_password(data.password, current_admin.get("password_hash", "")):
+            raise HTTPException(status_code=401, detail="Şifre hatalı")
+    
+    # Get target admin
+    target_admin = await db.admins.find_one({"id": data.new_main_admin_id}, {"_id": 0})
+    if not target_admin:
+        raise HTTPException(status_code=404, detail="Hedef admin bulunamadı")
+    
+    # Cannot transfer to self
+    if target_admin["username"] == admin["username"]:
+        raise HTTPException(status_code=400, detail="Kendinize devir yapamazsınız")
+    
+    # Update target admin to main_admin
+    await db.admins.update_one(
+        {"id": data.new_main_admin_id},
+        {"$set": {"role": "main_admin"}}
+    )
+    
+    # Demote current main admin to regular admin (if not the hardcoded one)
+    if current_admin:
+        await db.admins.update_one(
+            {"username": admin["username"]},
+            {"$set": {"role": "admin"}}
+        )
+    
+    return {"message": f"Ana admin yetkisi '{target_admin['display_name'] or target_admin['username']}' kullanıcısına devredildi"}
+
+@api_router.put("/admin/profile")
+async def update_admin_profile(data: UpdateAdminProfile, admin = Depends(verify_admin)):
+    """Update current admin's profile (display name, avatar)"""
+    update_data = {}
+    
+    if data.display_name is not None:
+        update_data["display_name"] = data.display_name
+    
+    if data.avatar_url is not None:
+        update_data["avatar_url"] = data.avatar_url
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Güncellenecek veri yok")
+    
+    result = await db.admins.update_one(
+        {"username": admin["username"]},
+        {"$set": update_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+    
+    return {"message": "Profil güncellendi"}
+
+@api_router.post("/admin/avatar")
+async def upload_admin_avatar(file: UploadFile = File(...), admin = Depends(verify_admin)):
+    """Upload admin profile avatar"""
+    # Validate file type
+    allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Sadece JPEG, PNG, WebP veya GIF dosyaları kabul edilir")
+    
+    # Validate file size (max 5MB)
+    content = await file.read()
+    if len(content) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Dosya boyutu 5MB'dan küçük olmalıdır")
+    
+    # Generate unique filename
+    file_ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    filename = f"admin_{admin['username']}_{uuid.uuid4().hex[:8]}.{file_ext}"
+    file_path = UPLOADS_DIR / filename
+    
+    # Delete old avatar if exists
+    current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
+    if current_admin and current_admin.get("avatar_url"):
+        old_filename = current_admin["avatar_url"].split("/")[-1]
+        old_path = UPLOADS_DIR / old_filename
+        if old_path.exists():
+            old_path.unlink()
+    
+    # Save new file
+    with open(file_path, "wb") as f:
+        f.write(content)
+    
+    # Update admin profile with avatar URL
+    avatar_url = f"/api/uploads/avatars/{filename}"
+    await db.admins.update_one(
+        {"username": admin["username"]},
+        {"$set": {"avatar_url": avatar_url}}
+    )
+    
+    return {"message": "Profil fotoğrafı yüklendi", "avatar_url": avatar_url}
+
+@api_router.delete("/admin/avatar")
+async def delete_admin_avatar(admin = Depends(verify_admin)):
+    """Delete admin profile avatar"""
+    current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
+    if not current_admin or not current_admin.get("avatar_url"):
+        raise HTTPException(status_code=404, detail="Profil fotoğrafı bulunamadı")
+    
+    # Delete file
+    filename = current_admin["avatar_url"].split("/")[-1]
+    file_path = UPLOADS_DIR / filename
+    if file_path.exists():
+        file_path.unlink()
+    
+    # Update profile
+    await db.admins.update_one(
+        {"username": admin["username"]},
+        {"$set": {"avatar_url": None}}
+    )
+    
+    return {"message": "Profil fotoğrafı silindi"}
 
 @api_router.delete("/notifications/{notification_id}")
 async def delete_notification(notification_id: str, current_user: dict = Depends(get_current_user)):
