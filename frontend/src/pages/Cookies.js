@@ -1,16 +1,36 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '../components/ui/card';
-import { ArrowLeft, Cookie } from 'lucide-react';
+import { ArrowLeft, Cookie, Shield, FileText, FileCheck, HelpCircle } from 'lucide-react';
 
 const Cookies = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link to="/" className="inline-flex items-center text-emerald-600 hover:text-emerald-700 mb-8">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Ana Sayfaya Dön
         </Link>
+
+        {/* Quick Links */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+          <Link to="/kvkk" className="p-3 bg-card border border-border rounded-lg text-center hover:shadow-md transition-shadow">
+            <Shield className="w-6 h-6 mx-auto mb-1.5 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-xs font-medium text-foreground">KVKK Aydınlatma</span>
+          </Link>
+          <Link to="/kvkk-basvuru" className="p-3 bg-card border border-border rounded-lg text-center hover:shadow-md transition-shadow">
+            <FileText className="w-6 h-6 mx-auto mb-1.5 text-blue-600 dark:text-blue-400" />
+            <span className="text-xs font-medium text-foreground">KVKK Başvuru</span>
+          </Link>
+          <Link to="/uyelik-sozlesmesi" className="p-3 bg-card border border-border rounded-lg text-center hover:shadow-md transition-shadow">
+            <FileCheck className="w-6 h-6 mx-auto mb-1.5 text-purple-600 dark:text-purple-400" />
+            <span className="text-xs font-medium text-foreground">Üyelik Sözleşmesi</span>
+          </Link>
+          <Link to="/help" className="p-3 bg-card border border-border rounded-lg text-center hover:shadow-md transition-shadow">
+            <HelpCircle className="w-6 h-6 mx-auto mb-1.5 text-red-600 dark:text-red-400" />
+            <span className="text-xs font-medium text-foreground">Yardım</span>
+          </Link>
+        </div>
 
         <Card>
           <CardContent className="p-8">
