@@ -19,12 +19,28 @@ const FAQ = () => {
       Becayişin atamaya yetkili amirce uygun bulunması gerekmektedir.`
     },
     {
+      question: "Becayişin dönemi var mıdır?",
+      answer: "657 sayılı Kanunda becayiş için bir dönem öngörülmemiştir. Ancak öğretmenlerin eğitim ve öğretimin bütünlüğü çerçevesinde ara tatil veya okul bitiminde başvurmaları daha uygun olacaktır."
+    },
+    {
+      question: "Becayişin kabul edilmeme ihtimali var mıdır?",
+      answer: '657 sayılı Kanun, her ne kadar becayiş için atamaya yetkili amirin onayını zorunlu görmüşse de, onay verilmemesi için hiçbir sebep bulunmamaktadır. İdarenin yaptığı ve yapacağı tüm işlemlerin kamu yararına uygun olması gerekmektedir. Becayişte kamu yararı açısından, olumsuz cevap verilmesini gerektirecek hiçbir neden bulunmamaktadır. Bu nedenle uygun becayiş talebine izin verilmemesi halinde açılacak bir dava kazanılır.'
+    },
+    {
+      question: "Becayiş ve zorunlu hizmet ilişkisi?",
+      answer: `Öğretmenler ve sağlık personeli zorunlu hizmete tabidir. Bu nedenle zorunlu hizmet gören personelin becayiş isteyeceği ilinde zorunlu hizmet bölgesi kapsamında olması gerekmektedir.`
+    },
+    {
+      question: "657 sayılı DMK'nin becayişle ilgili maddesi?",
+      answer: `Karşılıklı Olarak Yer Değiştirme: Madde 73- (Değişik: 31.7.1970- 1327/32 md.; 30.5.1974-KHK 12/1 md.; aynen kabul: 15.5.1975- 1897/1 md.) Aynı Kurumun başka başka yerlerde bulunan aynı sınıftaki memurları, karşılıklı olarak yer değiştirme suretiyle atanmalarını isteyebilirler. Bu isteğin yerine getirilmesi atamaya yetkili amirlerince uygun bulunmasına bağlıdır.`
+    },
+    {
       question: "Platforma nasıl kayıt olabilirim?",
       answer: "Kayıt için kurumsal e-posta adresiniz (@gov.tr uzantılı) gereklidir. Kayıt olurken mail adresinize gönderilecek doğrulama kodu ile doğrulama yaptıktan sonra kayıt olabilirsiniz."
     },
     {
-      question: "Sadece kurumsal e-posta ile mi kayıt olabilirim?",
-      answer: "Evet, güvenlik nedeniyle sadece .gov.tr uzantılı kurumsal e-posta adresleri ile kayıt olunabilir. Bu, platformun sadece gerçek kamu çalışanları tarafından kullanılmasını sağlar."
+      question: "Neden sadece kurumsal e-posta ile kayıt olabiliyorum?",
+      answer: "Güvenlik nedeniyle sadece .gov.tr uzantılı kurumsal e-posta adresleri ile kayıt olunabilir. Bu, platformun sadece gerçek kamu çalışanları tarafından kullanılmasını sağlar."
     },
     {
       question: "Kaç hesap oluşturabilirim?",
@@ -36,11 +52,11 @@ const FAQ = () => {
     },
     {
       question: "İletişim bilgilerim ne zaman paylaşılır?",
-      answer: "İletişim bilgileriniz (telefon, e-posta) gizlidir ve sadece gönderdiğiniz veya aldığınız bir daveti kabul ettiğinizde karşı tarafla paylaşılır. Davet reddedilirse hiçbir bilgi paylaşılmaz."
+      answer: "İletişim bilgileriniz e-posta gizlidir ve sadece gönderdiğiniz veya aldığınız bir daveti kabul ettiğinizde karşı tarafla paylaşılır. Davet reddedilirse hiçbir bilgi paylaşılmaz."
     },
     {
       question: "Davet sistemi nasıl çalışır?",
-      answer: "Bir ilana davet gönderdiğinizde, ilan sahibi bildirim alır. Kabul ederse, her iki tarafın iletişim bilgileri paylaşılır ve mesajlaşma başlatılabilir. Günlük maksimum 10 davet gönderebilirsiniz."
+      answer: "Bir ilana davet gönderdiğinizde, ilan sahibi bildirim alır. Kabul ederse, her iki tarafın iletişim bilgileri paylaşılır ve mesajlaşma başlatılabilir."
     },
     {
       question: "İlanımı nasıl silebilirim?",
