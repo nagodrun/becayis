@@ -11,6 +11,7 @@ import { FeedbackButton } from './components/FeedbackButton';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import CompleteProfile from './pages/CompleteProfile';
 import CreateEditListing from './pages/CreateEditListing';
@@ -21,6 +22,10 @@ import FAQ from './pages/FAQ';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Help from './pages/Help';
+import KVKK from './pages/KVKK';
+import KVKKBasvuru from './pages/KVKKBasvuru';
+import Cookies from './pages/Cookies';
+import MembershipAgreement from './pages/MembershipAgreement';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -49,10 +54,15 @@ const AppContent = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/help" element={<Help />} />
+          <Route path="/kvkk" element={<KVKK />} />
+          <Route path="/kvkk-basvuru" element={<KVKKBasvuru />} />
+          <Route path="/cerezler" element={<Cookies />} />
+          <Route path="/uyelik-sozlesmesi" element={<MembershipAgreement />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route
