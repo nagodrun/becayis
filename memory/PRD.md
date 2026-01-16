@@ -10,6 +10,9 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - Registration: First Name, Last Name, Email, Password
 - JWT-based authentication
 - Email verification with OTP (currently mocked)
+- Password strength validation (8+ chars, 1 uppercase, 1 special char)
+- Caps Lock detection on password fields
+- Forgot Password flow (mocked email)
 
 ### User Dashboard
 - Profile management with avatar upload
@@ -17,13 +20,15 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - Invitations (sent/received) with delete functionality
 - Conversations/Messages
 - Notifications
+- Security tab for password change
 
 ### Home Page & Listings
 - Recent listings display
 - Search bar with filters:
-  - Text search (title/institution)
+  - Text search (title/institution/position)
   - Position filter
   - Province filter (searches both current AND desired province)
+- Dynamic "Most Listed Positions" and "Most Listed Institutions" sections
 - Unregistered users redirected to registration when clicking "Talep Gönder"
 
 ### Swap Invitation System
@@ -39,11 +44,19 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - User blocking functionality
 
 ### Admin Panel
-- Credentials: becayis/1234
+- **Main Admin**: nuno / Nuno1234! (role: main_admin)
+- **Regular Admin**: becayis / 1234 (role: admin)
 - User management (view, block/unblock, delete)
 - Listing management
 - Deletion request approval (listings and accounts)
 - Platform statistics
+- **Admin Management (Main Admin Only)**:
+  - Create new admins
+  - Delete other admins
+  - Transfer main admin role (with password confirmation)
+  - Change admin passwords
+- **Profile Tab**: Edit display name, upload avatar
+- Caps Lock detection on admin login
 
 ## Tech Stack
 - Frontend: React, TailwindCSS, Shadcn/UI
