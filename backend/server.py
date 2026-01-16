@@ -1437,6 +1437,97 @@ async def clear_account_deletion_request(request_id: str, admin = Depends(verify
     await db.account_deletion_requests.delete_one({"id": request_id})
     return {"message": "Hesap silme talebi temizlendi"}
 
+# ============= ADMIN MANAGEMENT ENDPOINTS =============
+class CreateAdmin(BaseModel):
+    username: str
+    password: str
+    display_name: Optional[str] = None
+
+class UpdateAdminPassword(BaseModel):
+    admin_id: str
+    new_password: str
+
+@api_router.get("/admin/admins")
+async def get_admins(admin = Depends(verify_admin)):
+    """Get list of all admins"""
+    admins = await db.admins.find({}, {"_id": 0, "password_hash": 0}).to_list(100)
+    return admins
+
+@api_router.post("/admin/admins")
+async def create_admin(data: CreateAdmin, admin = Depends(verify_admin)):
+    """Create a new admin"""
+    # Check if username exists
+    existing = await db.admins.find_one({"username": data.username})
+    if existing:
+        raise HTTPException(status_code=400, detail="Bu kullanıcı adı zaten kullanılıyor")
+    
+    # Validate password
+    if len(data.password) < 8:
+        raise HTTPException(status_code=400, detail="Şifre en az 8 karakter olmalıdır")
+    
+    import re
+    if not re.search(r'[A-Z]', data.password):
+        raise HTTPException(status_code=400, detail="Şifre en az 1 büyük harf içermelidir")
+    
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/]', data.password):
+        raise HTTPException(status_code=400, detail="Şifre en az 1 özel karakter içermelidir")
+    
+    new_admin = {
+        "id": str(uuid.uuid4()),
+        "username": data.username,
+        "password_hash": get_password_hash(data.password),
+        "display_name": data.display_name or data.username,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_by": admin["username"]
+    }
+    
+    await db.admins.insert_one(new_admin)
+    
+    return {"message": "Admin başarıyla oluşturuldu", "admin_id": new_admin["id"]}
+
+@api_router.put("/admin/admins/{admin_id}/password")
+async def update_admin_password(admin_id: str, data: UpdateAdminPassword, admin = Depends(verify_admin)):
+    """Update admin password"""
+    target_admin = await db.admins.find_one({"id": admin_id}, {"_id": 0})
+    if not target_admin:
+        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+    
+    # Validate password
+    if len(data.new_password) < 8:
+        raise HTTPException(status_code=400, detail="Şifre en az 8 karakter olmalıdır")
+    
+    import re
+    if not re.search(r'[A-Z]', data.new_password):
+        raise HTTPException(status_code=400, detail="Şifre en az 1 büyük harf içermelidir")
+    
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/]', data.new_password):
+        raise HTTPException(status_code=400, detail="Şifre en az 1 özel karakter içermelidir")
+    
+    await db.admins.update_one(
+        {"id": admin_id},
+        {"$set": {"password_hash": get_password_hash(data.new_password)}}
+    )
+    
+    return {"message": "Admin şifresi güncellendi"}
+
+@api_router.delete("/admin/admins/{admin_id}")
+async def delete_admin(admin_id: str, admin = Depends(verify_admin)):
+    """Delete an admin"""
+    target_admin = await db.admins.find_one({"id": admin_id}, {"_id": 0})
+    if not target_admin:
+        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+    
+    # Prevent deleting the main admin
+    if target_admin["username"] == "becayis":
+        raise HTTPException(status_code=400, detail="Ana admin silinemez")
+    
+    # Prevent self-deletion
+    if target_admin["username"] == admin["username"]:
+        raise HTTPException(status_code=400, detail="Kendinizi silemezsiniz")
+    
+    await db.admins.delete_one({"id": admin_id})
+    return {"message": "Admin silindi"}
+
 @api_router.delete("/notifications/{notification_id}")
 async def delete_notification(notification_id: str, current_user: dict = Depends(get_current_user)):
     result = await db.notifications.delete_one({
