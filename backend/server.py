@@ -218,6 +218,17 @@ class RequestListingDeletion(BaseModel):
 class RequestAccountDeletion(BaseModel):
     reason: str
 
+class ForgotPassword(BaseModel):
+    email: str
+
+class ResetPassword(BaseModel):
+    reset_token: str
+    new_password: str
+
+class ChangePassword(BaseModel):
+    current_password: str
+    new_password: str
+
 # ============= AUTH ENDPOINTS =============
 @api_router.post("/auth/register/step1")
 async def register_step1(data: RegisterStep1):
