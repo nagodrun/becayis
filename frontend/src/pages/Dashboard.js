@@ -589,6 +589,10 @@ const Dashboard = () => {
                 <Badge className="ml-2 bg-red-500">{unreadNotifications}</Badge>
               )}
             </TabsTrigger>
+            <TabsTrigger value="security" data-testid="tab-security">
+              <KeyRound className="w-4 h-4 mr-1" />
+              Güvenlik
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="listings" className="space-y-6">
