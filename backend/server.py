@@ -455,6 +455,21 @@ async def change_password(data: ChangePassword, current_user: dict = Depends(get
     if not verify_password(data.current_password, user["password_hash"]):
         raise HTTPException(status_code=400, detail="Mevcut şifre hatalı")
     
+    # Check if new password is same as current
+    if data.current_password == data.new_password:
+        raise HTTPException(status_code=400, detail="Yeni şifre mevcut şifrenizle aynı olamaz")
+    
+    # Validate password requirements
+    if len(data.new_password) < 8:
+        raise HTTPException(status_code=400, detail="Şifre en az 8 karakter olmalıdır")
+    
+    import re
+    if not re.search(r'[A-Z]', data.new_password):
+        raise HTTPException(status_code=400, detail="Şifre en az 1 büyük harf içermelidir")
+    
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/]', data.new_password):
+        raise HTTPException(status_code=400, detail="Şifre en az 1 özel karakter içermelidir")
+    
     new_hash = get_password_hash(data.new_password)
     await db.users.update_one(
         {"id": current_user["id"]},
