@@ -25,16 +25,22 @@ const Register = () => {
 
   const [verificationCode, setVerificationCode] = useState('');
 
+  // Password validation helpers
+  const passwordHasMinLength = formData.password.length >= 8;
+  const passwordHasUppercase = /[A-Z]/.test(formData.password);
+  const passwordHasSpecialChar = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/]/.test(formData.password);
+  const passwordIsValid = passwordHasMinLength && passwordHasUppercase && passwordHasSpecialChar;
+
   const handleStep1 = async (e) => {
     e.preventDefault();
     
-    if (formData.password !== formData.passwordConfirm) {
-      toast.error('Şifreler eşleşmiyor');
+    if (!passwordIsValid) {
+      toast.error('Lütfen tüm şifre gereksinimlerini karşılayın');
       return;
     }
 
-    if (formData.password.length < 6) {
-      toast.error('Şifre en az 6 karakter olmalıdır');
+    if (formData.password !== formData.passwordConfirm) {
+      toast.error('Şifreler eşleşmiyor');
       return;
     }
 
