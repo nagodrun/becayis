@@ -48,7 +48,7 @@ export const FeedbackButton = () => {
         setCategory('general');
         setOpen(false);
       } catch (error) {
-        toast.error(error.response?.data?.detail || 'Geri bildirim gönderilemedi');
+        toast.error(getErrorMessage(error, 'Geri bildirim gönderilemedi'));
       } finally {
         setSubmitting(false);
       }
