@@ -1041,33 +1041,27 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <Label htmlFor="institution">Kurumunuzu Seçin</Label>
-                        <Select 
-                          value={profileData.institution || "none"} 
-                          onValueChange={(val) => setProfileData({ ...profileData, institution: val === "none" ? "" : val })}
-                        >
-                          <SelectTrigger className="w-full" data-testid="profile-institution-select">
-                            <SelectValue placeholder="Kurum Seçin" />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-[300px]">
-                            <SelectItem value="none">Kurum Seç</SelectItem>
-                            {institutions.map(inst => <SelectItem key={inst} value={inst}>{inst}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
+                        <SearchableSelect
+                          options={institutions}
+                          value={profileData.institution}
+                          onValueChange={(val) => setProfileData({ ...profileData, institution: val })}
+                          placeholder="Kurum Seçin"
+                          searchPlaceholder="Kurum ara..."
+                          emptyMessage="Kurum bulunamadı."
+                          data-testid="profile-institution-select"
+                        />
                       </div>
                       <div>
                         <Label htmlFor="role">Pozisyonunuzu Seçin</Label>
-                        <Select 
-                          value={profileData.role || "none"} 
-                          onValueChange={(val) => setProfileData({ ...profileData, role: val === "none" ? "" : val })}
-                        >
-                          <SelectTrigger className="w-full" data-testid="profile-position-select">
-                            <SelectValue placeholder="Pozisyon Seçin" />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-[300px]">
-                            <SelectItem value="none">Pozisyon Seç</SelectItem>
-                            {positions.map(pos => <SelectItem key={pos} value={pos}>{pos}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
+                        <SearchableSelect
+                          options={positions}
+                          value={profileData.role}
+                          onValueChange={(val) => setProfileData({ ...profileData, role: val })}
+                          placeholder="Pozisyon Seçin"
+                          searchPlaceholder="Pozisyon ara..."
+                          emptyMessage="Pozisyon bulunamadı."
+                          data-testid="profile-position-select"
+                        />
                       </div>
                       <div>
                         <Label htmlFor="current_province">Bulunduğunuz İli Seçin</Label>
