@@ -647,6 +647,11 @@ const AdminDashboard = () => {
           <TabsList className="flex w-full overflow-x-auto scrollbar-hide">
             <TabsTrigger value="users" data-testid="admin-tab-users" className="flex-shrink-0">Kullanıcılar</TabsTrigger>
             <TabsTrigger value="listings" data-testid="admin-tab-listings" className="flex-shrink-0">İlanlar</TabsTrigger>
+            <TabsTrigger value="pending-listings" data-testid="admin-tab-pending-listings" className="flex-shrink-0">
+              İlan Onayı {pendingListings.length > 0 && (
+                <Badge className="ml-2 bg-amber-500">{pendingListings.length}</Badge>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="deletions" data-testid="admin-tab-deletions" className="flex-shrink-0">
               İlan Silme {deletionRequests.filter(r => r.status === 'pending').length > 0 && (
                 <Badge className="ml-2 bg-red-500">{deletionRequests.filter(r => r.status === 'pending').length}</Badge>
