@@ -89,7 +89,7 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [statsRes, usersRes, listingsRes, reportsRes, deletionReqRes, accountDeletionReqRes, adminsRes, currentAdminRes] = await Promise.all([
+      const [statsRes, usersRes, listingsRes, reportsRes, deletionReqRes, accountDeletionReqRes, adminsRes, currentAdminRes, adminNotificationsRes] = await Promise.all([
         api.get('/admin/stats'),
         api.get('/admin/users'),
         api.get('/admin/listings'),
@@ -97,7 +97,8 @@ const AdminDashboard = () => {
         api.get('/admin/deletion-requests'),
         api.get('/admin/account-deletion-requests'),
         api.get('/admin/admins'),
-        api.get('/admin/me')
+        api.get('/admin/me'),
+        api.get('/admin/notifications')
       ]);
 
       setStats(statsRes.data);
@@ -112,6 +113,7 @@ const AdminDashboard = () => {
         display_name: currentAdminRes.data?.display_name || '',
         avatar_url: currentAdminRes.data?.avatar_url || ''
       });
+      setAdminNotifications(adminNotificationsRes.data || []);
     } catch (error) {
       toast.error('Veriler yüklenirken hata oluştu');
       if (error.response?.status === 403) {
