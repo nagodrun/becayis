@@ -204,7 +204,7 @@ const Dashboard = () => {
       setSelectedListing(null);
       fetchDashboardData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'İstek gönderilemedi.');
+      toast.error(getErrorMessage(error, 'İstek gönderilemedi.');
     }
   };
 
@@ -237,7 +237,7 @@ const Dashboard = () => {
       }
       toast.success('Davet silindi');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Davet silinemedi.');
+      toast.error(getErrorMessage(error, 'Davet silinemedi.');
     }
   };
 
@@ -274,7 +274,7 @@ const Dashboard = () => {
       toast.success('Şifreniz başarıyla değiştirildi');
       setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Şifre değiştirilemedi');
+      toast.error(getErrorMessage(error, 'Şifre değiştirilemedi');
     } finally {
       setChangingPassword(false);
     }
@@ -358,7 +358,7 @@ const Dashboard = () => {
       setSupportFormData({ subject: '', message: '', category: 'general' });
       toast.success('Destek talebiniz oluşturuldu');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Destek talebi oluşturulamadı');
+      toast.error(getErrorMessage(error, 'Destek talebi oluşturulamadı');
     } finally {
       setSubmittingTicket(false);
     }
@@ -466,7 +466,7 @@ const Dashboard = () => {
       // Refresh user data
       if (fetchUser) fetchUser();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Profil fotoğrafı yüklenemedi.');
+      toast.error(getErrorMessage(error, 'Profil fotoğrafı yüklenemedi.');
     } finally {
       setUploadingAvatar(false);
     }
@@ -536,7 +536,7 @@ const Dashboard = () => {
       // Refresh user data without page reload - stay on profile tab
       if (fetchUser) await fetchUser();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Profil güncellenemedi.');
+      toast.error(getErrorMessage(error, 'Profil güncellenemedi.');
     }
   };
 
@@ -578,7 +578,7 @@ const Dashboard = () => {
       setDeletionReasonAccount('');
       setAccountDeletionPending(true);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Talep gönderilemedi.');
+      toast.error(getErrorMessage(error, 'Talep gönderilemedi.');
     }
   };
 
