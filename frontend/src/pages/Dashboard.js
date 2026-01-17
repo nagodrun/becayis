@@ -1218,13 +1218,12 @@ const Dashboard = () => {
                 <form onSubmit={handleChangePassword} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="current_password">Mevcut Şifre</Label>
-                    <Input
+                    <PasswordInput
                       id="current_password"
-                      type="password"
                       value={passwordData.current_password}
                       onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })}
                       onKeyDown={handlePasswordKeyDown}
-                      onKeyUp={handlePasswordKeyUp}
+                      onKeyUp={handlePasswordKeyDown}
                       placeholder="Mevcut şifrenizi girin"
                       required
                       data-testid="current-password-input"
@@ -1233,13 +1232,12 @@ const Dashboard = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="new_password">Yeni Şifre</Label>
-                    <Input
+                    <PasswordInput
                       id="new_password"
-                      type="password"
                       value={passwordData.new_password}
                       onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
                       onKeyDown={handlePasswordKeyDown}
-                      onKeyUp={handlePasswordKeyUp}
+                      onKeyUp={handlePasswordKeyDown}
                       placeholder="Güçlü bir şifre oluşturun"
                       required
                       data-testid="new-password-input"
@@ -1248,13 +1246,12 @@ const Dashboard = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="confirm_password">Yeni Şifre (Tekrar)</Label>
-                    <Input
+                    <PasswordInput
                       id="confirm_password"
-                      type="password"
                       value={passwordData.confirm_password}
                       onChange={(e) => setPasswordData({ ...passwordData, confirm_password: e.target.value })}
                       onKeyDown={handlePasswordKeyDown}
-                      onKeyUp={handlePasswordKeyUp}
+                      onKeyUp={handlePasswordKeyDown}
                       placeholder="Yeni şifrenizi tekrar girin"
                       required
                       data-testid="confirm-password-input"
