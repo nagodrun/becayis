@@ -1394,6 +1394,111 @@ async def admin_get_deletion_requests(admin = Depends(verify_admin)):
     
     return requests
 
+# ============= ADMIN LISTING APPROVAL =============
+@api_router.get("/admin/pending-listings")
+async def get_pending_listings(admin = Depends(verify_admin)):
+    """Get all listings pending approval"""
+    listings = await db.listings.find({"status": "pending_approval"}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    
+    # Enrich with user profile data
+    for listing in listings:
+        profile = await db.profiles.find_one({"user_id": listing["user_id"]}, {"_id": 0})
+        user = await db.users.find_one({"id": listing["user_id"]}, {"_id": 0, "password_hash": 0})
+        listing["user_profile"] = profile
+        listing["user"] = user
+    
+    return listings
+
+@api_router.post("/admin/listings/{listing_id}/approve")
+async def approve_listing(listing_id: str, admin = Depends(verify_admin)):
+    """Approve a pending listing"""
+    listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
+    if not listing:
+        raise HTTPException(status_code=404, detail="İlan bulunamadı")
+    
+    if listing["status"] != "pending_approval":
+        raise HTTPException(status_code=400, detail="Bu ilan zaten işlenmiş")
+    
+    await db.listings.update_one(
+        {"id": listing_id},
+        {"$set": {"status": "active", "approved_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # Notify user
+    await create_notification(
+        listing["user_id"],
+        "İlan Onaylandı",
+        f"'{listing['title']}' başlıklı ilanınız onaylandı ve yayına alındı.",
+        "listing_approved"
+    )
+    
+    return {"message": "İlan onaylandı"}
+
+class RejectListingRequest(BaseModel):
+    reason: Optional[str] = None
+
+@api_router.post("/admin/listings/{listing_id}/reject")
+async def reject_listing(listing_id: str, data: RejectListingRequest = None, admin = Depends(verify_admin)):
+    """Reject a pending listing"""
+    listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
+    if not listing:
+        raise HTTPException(status_code=404, detail="İlan bulunamadı")
+    
+    if listing["status"] != "pending_approval":
+        raise HTTPException(status_code=400, detail="Bu ilan zaten işlenmiş")
+    
+    reason = data.reason if data else None
+    
+    await db.listings.update_one(
+        {"id": listing_id},
+        {"$set": {
+            "status": "rejected",
+            "rejected_at": datetime.now(timezone.utc).isoformat(),
+            "rejection_reason": reason
+        }}
+    )
+    
+    # Notify user
+    message = f"'{listing['title']}' başlıklı ilanınız reddedildi."
+    if reason:
+        message += f" Sebep: {reason}"
+    
+    await create_notification(
+        listing["user_id"],
+        "İlan Reddedildi",
+        message,
+        "listing_rejected"
+    )
+    
+    return {"message": "İlan reddedildi"}
+
+# ============= ADMIN SEND MESSAGE TO USER =============
+class AdminSendMessageToUser(BaseModel):
+    user_id: str
+    title: str
+    message: str
+
+@api_router.post("/admin/users/{user_id}/message")
+async def admin_send_message_to_user(user_id: str, data: AdminSendMessageToUser, admin = Depends(verify_admin)):
+    """Send a message/notification to a specific user"""
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+    
+    # Create notification for user
+    notification = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "title": data.title,
+        "message": data.message,
+        "type": "admin_message",
+        "read": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.notifications.insert_one(notification)
+    
+    return {"message": "Mesaj gönderildi"}
+
 @api_router.delete("/admin/users/{user_id}")
 async def admin_delete_user(user_id: str, admin = Depends(verify_admin)):
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
