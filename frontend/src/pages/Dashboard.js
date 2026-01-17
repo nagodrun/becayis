@@ -204,7 +204,7 @@ const Dashboard = () => {
       setSelectedListing(null);
       fetchDashboardData();
     } catch (error) {
-      toast.error(getErrorMessage(error, 'İstek gönderilemedi.');
+      toast.error(getErrorMessage(error, 'İstek gönderilemedi.'));
     }
   };
 
