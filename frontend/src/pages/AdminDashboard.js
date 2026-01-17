@@ -894,6 +894,62 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
 
+          {/* Notifications Tab */}
+          <TabsContent value="notifications">
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold" style={{ fontFamily: 'Manrope' }}>
+                  Toplu Bildirim Gönder
+                </h2>
+                <Button 
+                  onClick={() => setShowBulkNotificationDialog(true)}
+                  className="bg-emerald-600 hover:bg-emerald-700"
+                  data-testid="send-bulk-notification-btn"
+                >
+                  <Send className="w-4 h-4 mr-2" />
+                  Yeni Bildirim Gönder
+                </Button>
+              </div>
+
+              <p className="text-sm text-slate-500 mb-6">
+                Bu sayfadan tüm kullanıcılara toplu bildirim gönderebilirsiniz. Gönderilen bildirimler kullanıcıların panellerindeki "Bildirimler" sekmesinde görünecektir.
+              </p>
+
+              <h3 className="text-lg font-semibold mb-4">Gönderilen Bildirimler</h3>
+              
+              {adminNotifications.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                  <Bell className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <p>Henüz toplu bildirim gönderilmemiş</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Group by title and message to show unique notifications */}
+                  {[...new Map(adminNotifications.map(n => [`${n.title}-${n.message}`, n])).values()].map((notification) => (
+                    <div key={notification.id} className="border rounded-lg p-4 flex items-center justify-between" data-testid={`admin-notification-${notification.id}`}>
+                      <div className="flex-1">
+                        <div className="font-semibold text-foreground">{notification.title}</div>
+                        <div className="text-sm text-slate-500 mt-1">{notification.message}</div>
+                        <div className="text-xs text-slate-400 mt-2">
+                          Gönderilme: {formatDate(notification.created_at)}
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-slate-400 hover:text-red-500 hover:bg-red-50"
+                        onClick={() => handleDeleteAdminNotification(notification.id)}
+                        data-testid={`delete-notification-${notification.id}`}
+                      >
+                        <X className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </TabsContent>
+
           {/* Admin Management Tab */}
           <TabsContent value="admins">
             <Card className="p-6">
