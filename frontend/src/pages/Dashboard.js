@@ -20,7 +20,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '../components/ui/dialog';
-import api from '../lib/api';
+import api, { getErrorMessage } from '../lib/api';
 import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDate } from '../lib/utils';
