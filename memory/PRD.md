@@ -51,7 +51,9 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - **Main Admin**: nuno / Nuno1234! (role: main_admin)
 - **Regular Admin**: becayis / 1234 (role: admin)
 - User management (view, block/unblock, delete)
+- **Send individual messages to users**
 - Listing management
+- **Listing Approval System** - New listings require admin approval
 - Deletion request approval (listings and accounts)
 - Platform statistics with reset functionality
 - **Admin Management (Main Admin Only)**:
@@ -63,13 +65,25 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - **Bulk Notifications**: Send notifications to all users
 - **Accepted Invitations Reset**: Clear counter in stats
 - Caps Lock detection on admin login
+- **Admin login error stays on admin page (no redirect to user login)**
 - **Scrollable tabs on mobile**
 - **Responsive admin action buttons**
+
+### Listing Approval System
+- New listings created with status `pending_approval`
+- Admin can approve or reject listings
+- User receives notification when listing is approved/rejected
+- Rejection can include a reason message
 
 ### Blocked User Restrictions
 - Admin-blocked users cannot send swap invitations
 - Admin-blocked users cannot send messages
 - Block status stored in user document (`blocked: true`)
+
+### Searchable Dropdowns
+- **Institution selection**: Searchable dropdown for public institutions
+- **Position selection**: Searchable dropdown for job positions
+- Search endpoints: `/api/institutions/search`, `/api/positions/search`
 
 ## Tech Stack
 - Frontend: React, TailwindCSS, Shadcn/UI
