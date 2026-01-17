@@ -732,6 +732,12 @@ const Dashboard = () => {
                 <Badge className="ml-2 bg-red-500">{unreadNotifications}</Badge>
               )}
             </TabsTrigger>
+            <TabsTrigger value="support" data-testid="tab-support" className="flex-shrink-0">
+              <HelpCircle className="w-4 h-4 mr-1" />
+              Destek {supportTickets.filter(t => t.status === 'answered').length > 0 && (
+                <Badge className="ml-2 bg-emerald-500">{supportTickets.filter(t => t.status === 'answered').length}</Badge>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="security" data-testid="tab-security" className="flex-shrink-0">
               <KeyRound className="w-4 h-4 mr-1" />
               Güvenlik
