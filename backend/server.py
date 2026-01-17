@@ -1509,7 +1509,35 @@ async def admin_send_message_to_user(user_id: str, data: AdminSendMessageToUser,
     }
     await db.notifications.insert_one(notification)
     
-    return {"message": "Mesaj gönderildi"}
+    return {"message": "Mesaj gönderildi", "notification_id": notification["id"]}
+
+@api_router.get("/admin/user-messages")
+async def get_admin_user_messages(admin = Depends(verify_admin)):
+    """Get all admin messages sent to individual users"""
+    messages = await db.notifications.find(
+        {"type": "admin_message"}, 
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    # Enrich with user profile data
+    for msg in messages:
+        profile = await db.profiles.find_one({"user_id": msg["user_id"]}, {"_id": 0})
+        user = await db.users.find_one({"id": msg["user_id"]}, {"_id": 0, "email": 1, "first_name": 1, "last_name": 1})
+        msg["user_profile"] = profile
+        msg["user_email"] = user.get("email") if user else None
+        msg["user_name"] = f"{user.get('first_name', '')} {user.get('last_name', '')}".strip() if user else None
+    
+    return messages
+
+@api_router.delete("/admin/user-messages/{notification_id}")
+async def delete_admin_user_message(notification_id: str, admin = Depends(verify_admin)):
+    """Delete a specific admin message sent to a user"""
+    notification = await db.notifications.find_one({"id": notification_id, "type": "admin_message"}, {"_id": 0})
+    if not notification:
+        raise HTTPException(status_code=404, detail="Mesaj bulunamadı")
+    
+    await db.notifications.delete_one({"id": notification_id})
+    return {"message": "Mesaj silindi"}
 
 @api_router.delete("/admin/users/{user_id}")
 async def admin_delete_user(user_id: str, admin = Depends(verify_admin)):
