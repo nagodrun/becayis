@@ -53,16 +53,23 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - User management (view, block/unblock, delete)
 - Listing management
 - Deletion request approval (listings and accounts)
-- Platform statistics
+- Platform statistics with reset functionality
 - **Admin Management (Main Admin Only)**:
   - Create new admins
   - Delete other admins
   - Transfer main admin role (with password confirmation)
   - Change admin passwords
 - **Profile Tab**: Edit display name, upload avatar
+- **Bulk Notifications**: Send notifications to all users
+- **Accepted Invitations Reset**: Clear counter in stats
 - Caps Lock detection on admin login
 - **Scrollable tabs on mobile**
 - **Responsive admin action buttons**
+
+### Blocked User Restrictions
+- Admin-blocked users cannot send swap invitations
+- Admin-blocked users cannot send messages
+- Block status stored in user document (`blocked: true`)
 
 ## Tech Stack
 - Frontend: React, TailwindCSS, Shadcn/UI
