@@ -358,7 +358,7 @@ const Dashboard = () => {
       setSupportFormData({ subject: '', message: '', category: 'general' });
       toast.success('Destek talebiniz oluşturuldu');
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Destek talebi oluşturulamadı');
+      toast.error(getErrorMessage(error, 'Destek talebi oluşturulamadı'));
     } finally {
       setSubmittingTicket(false);
     }
