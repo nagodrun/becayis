@@ -14,7 +14,7 @@ import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
-import api from '../lib/api';
+import api, { getErrorMessage } from '../lib/api';
 
 export const FeedbackButton = () => {
   const { user } = useAuth();
