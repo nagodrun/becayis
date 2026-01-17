@@ -98,6 +98,7 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - [x] Helper text for auto-generated title
 - [x] Space key enabled in title input
 - [x] **NEW: Login, Register, Admin Login pages redesigned** - Modern 2-column layout with gradient backgrounds, feature cards, and improved UX
+- [x] **NEW: Support Ticket System** - Users can create support tickets, admins can view and reply, users see responses in "Destek Taleplerim" tab
 
 ### Previous Updates
 - [x] Admin role management (main_admin vs admin)
