@@ -59,6 +59,18 @@ const AdminDashboard = () => {
   const [newRole, setNewRole] = useState('');
   const [transferPassword, setTransferPassword] = useState('');
   const [capsLockOn, setCapsLockOn] = useState(false);
+  
+  // Pending listings state
+  const [pendingListings, setPendingListings] = useState([]);
+  const [rejectReason, setRejectReason] = useState('');
+  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [selectedListingForReject, setSelectedListingForReject] = useState(null);
+  
+  // User message state
+  const [showUserMessageDialog, setShowUserMessageDialog] = useState(false);
+  const [selectedUserForMessage, setSelectedUserForMessage] = useState(null);
+  const [userMessageData, setUserMessageData] = useState({ title: '', message: '' });
+  const [sendingUserMessage, setSendingUserMessage] = useState(false);
 
   // Password validation helpers
   const passwordHasMinLength = (pwd) => pwd.length >= 8;
