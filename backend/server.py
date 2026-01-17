@@ -872,6 +872,18 @@ async def send_invitation(data: SendInvitation, current_user: dict = Depends(get
         elif existing["status"] == "rejected":
             raise HTTPException(status_code=400, detail="Bu ilana daha önce davet gönderdiniz ve reddedildi")
     
+    # Check if positions match
+    sender_profile = await db.profiles.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    if sender_profile and listing.get("role"):
+        sender_position = sender_profile.get("role", "").lower().strip()
+        listing_position = listing.get("role", "").lower().strip()
+        
+        if sender_position and listing_position and sender_position != listing_position:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Bu ilana talep gönderemezsiniz. İlan sahibinin pozisyonu ({listing.get('role')}) sizin pozisyonunuz ({sender_profile.get('role')}) ile eşleşmiyor. Becayiş talebi yalnızca aynı pozisyondaki kişiler arasında gönderilebilir."
+            )
+    
     # Create invitation
     invitation = {
         "id": str(uuid.uuid4()),
