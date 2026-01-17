@@ -42,6 +42,13 @@ const Dashboard = () => {
   const [showWarning, setShowWarning] = useState(() => {
     return localStorage.getItem('hideWarning') !== 'true';
   });
+  
+  // Admin notifications banner state - track dismissed notifications
+  const [dismissedBanners, setDismissedBanners] = useState(() => {
+    const saved = localStorage.getItem('dismissedAdminBanners');
+    return saved ? JSON.parse(saved) : [];
+  });
+  
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileData, setProfileData] = useState({
     display_name: '',
