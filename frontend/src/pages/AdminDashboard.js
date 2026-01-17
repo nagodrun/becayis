@@ -360,6 +360,16 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleDeleteUserMessage = async (notificationId) => {
+    try {
+      await api.delete(`/admin/user-messages/${notificationId}`);
+      setAdminUserMessages(prev => prev.filter(n => n.id !== notificationId));
+      toast.success('Mesaj silindi');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Mesaj silinemedi');
+    }
+  };
+
   const handleResetAcceptedInvitations = async () => {
     if (!window.confirm('Tüm kabul edilmiş davetleri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) return;
 
