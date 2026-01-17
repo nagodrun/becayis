@@ -55,6 +55,7 @@ const AdminDashboard = () => {
   const [bulkNotificationData, setBulkNotificationData] = useState({ title: '', message: '' });
   const [sendingNotification, setSendingNotification] = useState(false);
   const [adminNotifications, setAdminNotifications] = useState([]);
+  const [adminUserMessages, setAdminUserMessages] = useState([]); // Sent user messages
   const [newPassword, setNewPassword] = useState('');
   const [newRole, setNewRole] = useState('');
   const [transferPassword, setTransferPassword] = useState('');
