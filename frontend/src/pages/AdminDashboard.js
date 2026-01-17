@@ -1625,6 +1625,118 @@ const AdminDashboard = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Reject Listing Dialog */}
+        <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-red-600">
+                <X className="w-5 h-5" />
+                İlanı Reddet
+              </DialogTitle>
+              <DialogDescription>
+                "{selectedListingForReject?.title}" başlıklı ilanı reddetmek üzeresiniz.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="reject-reason">Red Sebebi (İsteğe bağlı)</Label>
+                <Textarea
+                  id="reject-reason"
+                  value={rejectReason}
+                  onChange={(e) => setRejectReason(e.target.value)}
+                  placeholder="Kullanıcıya iletilecek red sebebini yazın..."
+                  rows={3}
+                  data-testid="reject-reason-input"
+                />
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setShowRejectDialog(false);
+                setSelectedListingForReject(null);
+                setRejectReason('');
+              }}>
+                İptal
+              </Button>
+              <Button 
+                variant="destructive"
+                onClick={handleRejectListing}
+                data-testid="confirm-reject-btn"
+              >
+                <X className="w-4 h-4 mr-2" />
+                Reddet
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* User Message Dialog */}
+        <Dialog open={showUserMessageDialog} onOpenChange={setShowUserMessageDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Mail className="w-5 h-5 text-emerald-600" />
+                Kullanıcıya Mesaj Gönder
+              </DialogTitle>
+              <DialogDescription>
+                {selectedUserForMessage?.profile?.display_name || selectedUserForMessage?.email} kullanıcısına mesaj gönder.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="user-message-title">Başlık</Label>
+                <Input
+                  id="user-message-title"
+                  value={userMessageData.title}
+                  onChange={(e) => setUserMessageData({ ...userMessageData, title: e.target.value })}
+                  placeholder="Mesaj başlığı"
+                  data-testid="user-message-title-input"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="user-message-content">Mesaj</Label>
+                <Textarea
+                  id="user-message-content"
+                  value={userMessageData.message}
+                  onChange={(e) => setUserMessageData({ ...userMessageData, message: e.target.value })}
+                  placeholder="Mesaj içeriği..."
+                  rows={4}
+                  data-testid="user-message-content-input"
+                />
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setShowUserMessageDialog(false);
+                setSelectedUserForMessage(null);
+                setUserMessageData({ title: '', message: '' });
+              }}>
+                İptal
+              </Button>
+              <Button 
+                onClick={handleSendUserMessage}
+                className="bg-emerald-600 hover:bg-emerald-700"
+                disabled={sendingUserMessage || !userMessageData.title.trim() || !userMessageData.message.trim()}
+                data-testid="confirm-send-user-message-btn"
+              >
+                {sendingUserMessage ? (
+                  <>Gönderiliyor...</>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4 mr-2" />
+                    Gönder
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
