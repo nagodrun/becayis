@@ -1086,10 +1086,10 @@ const AdminDashboard = () => {
                 Bu sayfadan tüm kullanıcılara toplu bildirim gönderebilirsiniz. Gönderilen bildirimler kullanıcıların panellerindeki "Bildirimler" sekmesinde görünecektir.
               </p>
 
-              <h3 className="text-lg font-semibold mb-4">Gönderilen Bildirimler</h3>
+              <h3 className="text-lg font-semibold mb-4">Gönderilen Toplu Bildirimler</h3>
               
               {adminNotifications.length === 0 ? (
-                <div className="text-center py-12 text-slate-500">
+                <div className="text-center py-8 text-slate-500">
                   <Bell className="w-12 h-12 mx-auto mb-4 text-slate-300" />
                   <p>Henüz toplu bildirim gönderilmemiş</p>
                 </div>
@@ -1105,15 +1105,60 @@ const AdminDashboard = () => {
                           Gönderilme: {formatDate(notification.created_at)}
                         </div>
                       </div>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="text-slate-400 hover:text-red-500 hover:bg-red-50"
-                        onClick={() => handleDeleteAdminNotification(notification.id)}
-                        data-testid={`delete-notification-${notification.id}`}
-                      >
-                        <X className="w-5 h-5" />
-                      </Button>
+                      {isMainAdmin && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-slate-400 hover:text-red-500 hover:bg-red-50"
+                          onClick={() => handleDeleteAdminNotification(notification.id)}
+                          data-testid={`delete-notification-${notification.id}`}
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Individual User Messages Section */}
+              <h3 className="text-lg font-semibold mb-4 mt-8 pt-6 border-t">Gönderilen Özel Mesajlar</h3>
+              
+              {adminUserMessages.length === 0 ? (
+                <div className="text-center py-8 text-slate-500">
+                  <Mail className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <p>Henüz özel mesaj gönderilmemiş</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {adminUserMessages.map((message) => (
+                    <div key={message.id} className="border rounded-lg p-4 flex items-center justify-between bg-blue-50/50 dark:bg-blue-900/10" data-testid={`user-message-${message.id}`}>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700 border-blue-200">
+                            Özel Mesaj
+                          </Badge>
+                          <span className="text-sm text-slate-600">
+                            Alıcı: {message.user_profile?.display_name || message.user_name || message.user_email || 'Bilinmeyen'}
+                          </span>
+                        </div>
+                        <div className="font-semibold text-foreground">{message.title}</div>
+                        <div className="text-sm text-slate-500 mt-1">{message.message}</div>
+                        <div className="text-xs text-slate-400 mt-2">
+                          Gönderilme: {formatDate(message.created_at)}
+                        </div>
+                      </div>
+                      {isMainAdmin && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-slate-400 hover:text-red-500 hover:bg-red-50"
+                          onClick={() => handleDeleteUserMessage(message.id)}
+                          data-testid={`delete-user-message-${message.id}`}
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
