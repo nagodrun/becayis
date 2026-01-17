@@ -2186,7 +2186,7 @@ async def admin_reply_to_ticket(ticket_id: str, data: SupportTicketReply, admin 
     
     reply = {
         "id": str(uuid.uuid4()),
-        "admin_id": admin["id"],
+        "admin_id": admin.get("admin_id", "unknown"),
         "admin_name": admin.get("display_name", admin.get("username", "Admin")),
         "message": data.message,
         "created_at": datetime.now(timezone.utc).isoformat()
