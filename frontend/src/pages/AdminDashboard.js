@@ -504,25 +504,25 @@ const AdminDashboard = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="users" data-testid="admin-tab-users">Kullanıcılar</TabsTrigger>
-            <TabsTrigger value="listings" data-testid="admin-tab-listings">İlanlar</TabsTrigger>
-            <TabsTrigger value="deletions" data-testid="admin-tab-deletions">
+          <TabsList className="flex w-full overflow-x-auto scrollbar-hide">
+            <TabsTrigger value="users" data-testid="admin-tab-users" className="flex-shrink-0">Kullanıcılar</TabsTrigger>
+            <TabsTrigger value="listings" data-testid="admin-tab-listings" className="flex-shrink-0">İlanlar</TabsTrigger>
+            <TabsTrigger value="deletions" data-testid="admin-tab-deletions" className="flex-shrink-0">
               İlan Silme {deletionRequests.filter(r => r.status === 'pending').length > 0 && (
                 <Badge className="ml-2 bg-red-500">{deletionRequests.filter(r => r.status === 'pending').length}</Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="account-deletions" data-testid="admin-tab-account-deletions">
+            <TabsTrigger value="account-deletions" data-testid="admin-tab-account-deletions" className="flex-shrink-0">
               Hesap Silme {accountDeletionRequests.filter(r => r.status === 'pending').length > 0 && (
                 <Badge className="ml-2 bg-red-500">{accountDeletionRequests.filter(r => r.status === 'pending').length}</Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="reports" data-testid="admin-tab-reports">Raporlar</TabsTrigger>
-            <TabsTrigger value="admins" data-testid="admin-tab-admins">
+            <TabsTrigger value="reports" data-testid="admin-tab-reports" className="flex-shrink-0">Raporlar</TabsTrigger>
+            <TabsTrigger value="admins" data-testid="admin-tab-admins" className="flex-shrink-0">
               <Shield className="w-4 h-4 mr-1" />
               Adminler
             </TabsTrigger>
-            <TabsTrigger value="profile" data-testid="admin-tab-profile">
+            <TabsTrigger value="profile" data-testid="admin-tab-profile" className="flex-shrink-0">
               <User className="w-4 h-4 mr-1" />
               Profilim
             </TabsTrigger>
