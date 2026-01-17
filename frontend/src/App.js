@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from './components/ui/sonner';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -27,6 +27,24 @@ import KVKKBasvuru from './pages/KVKKBasvuru';
 import Cookies from './pages/Cookies';
 import MembershipAgreement from './pages/MembershipAgreement';
 
+// Scroll restoration component
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    // Only scroll to top on route change, not on page refresh
+    const isPageRefresh = performance.navigation?.type === 1 || 
+                          (performance.getEntriesByType && 
+                           performance.getEntriesByType('navigation')[0]?.type === 'reload');
+    
+    if (!isPageRefresh) {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname]);
+  
+  return null;
+};
+
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
@@ -48,6 +66,7 @@ const ProtectedRoute = ({ children }) => {
 const AppContent = () => {
   return (
     <div className="flex flex-col min-h-screen">
+      <ScrollToTop />
       <Navbar />
       <main className="flex-1">
         <Routes>
