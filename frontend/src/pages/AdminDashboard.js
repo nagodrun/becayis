@@ -844,10 +844,10 @@ const AdminDashboard = () => {
               ) : (
                 <div className="space-y-4">
                   {admins.map((admin) => (
-                    <div key={admin.id} className="border rounded-lg p-4 flex items-center justify-between" data-testid={`admin-row-${admin.id}`}>
+                    <div key={admin.id} className="border rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4" data-testid={`admin-row-${admin.id}`}>
                       <div className="flex-1">
                         <div className="flex items-center gap-3">
-                          <div className="relative">
+                          <div className="relative flex-shrink-0">
                             {admin.avatar_url ? (
                               <img 
                                 src={`${process.env.REACT_APP_BACKEND_URL}${admin.avatar_url}`} 
@@ -864,7 +864,7 @@ const AdminDashboard = () => {
                             )}
                           </div>
                           <div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-semibold">{admin.display_name || admin.username}</span>
                               {admin.role === 'main_admin' && (
                                 <Badge className="bg-amber-500 text-white text-xs">Ana Admin</Badge>
@@ -878,7 +878,7 @@ const AdminDashboard = () => {
                           {admin.created_by && ` • Oluşturan: ${admin.created_by}`}
                         </div>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2 justify-end">
                         {/* Role change button - only for main admin and not for self */}
                         {isMainAdmin && admin.username !== currentAdmin?.username && admin.role !== 'main_admin' && (
                           <Button
@@ -892,7 +892,8 @@ const AdminDashboard = () => {
                             data-testid={`transfer-admin-${admin.id}`}
                           >
                             <ArrowRightLeft className="w-4 h-4 mr-1" />
-                            Ana Admin Yap
+                            <span className="hidden sm:inline">Ana Admin Yap</span>
+                            <span className="sm:hidden">Devret</span>
                           </Button>
                         )}
                         <Button
@@ -904,8 +905,8 @@ const AdminDashboard = () => {
                           }}
                           data-testid={`change-password-${admin.id}`}
                         >
-                          <KeyRound className="w-4 h-4 mr-1" />
-                          Şifre Değiştir
+                          <KeyRound className="w-4 h-4 sm:mr-1" />
+                          <span className="hidden sm:inline">Şifre Değiştir</span>
                         </Button>
                         {isMainAdmin && admin.role !== 'main_admin' && admin.username !== currentAdmin?.username && (
                           <Button
