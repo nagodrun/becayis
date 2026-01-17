@@ -1985,10 +1985,30 @@ async def get_institutions_alt():
     """Return Turkish public institutions (alternative endpoint)"""
     return INSTITUTIONS
 
+@api_router.get("/institutions/search")
+async def search_institutions(q: str = ""):
+    """Search institutions by query"""
+    if not q or len(q) < 2:
+        return INSTITUTIONS[:20]  # Return first 20 if no query
+    
+    q_lower = q.lower()
+    results = [inst for inst in INSTITUTIONS if q_lower in inst.lower()]
+    return results[:20]  # Limit to 20 results
+
 @api_router.get("/utility/positions")
 async def get_positions_list():
     """Return common public sector positions from constants"""
     return sorted(POSITIONS)
+
+@api_router.get("/positions/search")
+async def search_positions(q: str = ""):
+    """Search positions by query"""
+    if not q or len(q) < 2:
+        return sorted(POSITIONS)[:20]  # Return first 20 if no query
+    
+    q_lower = q.lower()
+    results = [pos for pos in POSITIONS if q_lower in pos.lower()]
+    return sorted(results)[:20]  # Limit to 20 results
 
 @api_router.get("/provinces")
 async def get_provinces():
