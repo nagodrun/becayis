@@ -61,8 +61,18 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
               <div className="text-xs text-muted-foreground">{formatDate(listing.created_at)}</div>
             </div>
           </div>
-          <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800">
-            {listing.status === 'active' ? 'Aktif' : 'Kapalı'}
+          <Badge variant="outline" className={`text-xs ${
+            listing.status === 'active' 
+              ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800'
+              : listing.status === 'pending_approval'
+              ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800'
+              : listing.status === 'rejected'
+              ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800'
+              : 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-900/30 dark:text-slate-400 dark:border-slate-800'
+          }`}>
+            {listing.status === 'active' ? 'Açık' : 
+             listing.status === 'pending_approval' ? 'Onay Bekliyor' : 
+             listing.status === 'rejected' ? 'Reddedildi' : 'Kapalı'}
           </Badge>
         </div>
 
