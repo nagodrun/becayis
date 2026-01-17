@@ -4,7 +4,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card } from '../components/ui/card';
 import { toast } from 'sonner';
-import api from '../lib/api';
+import api, { getErrorMessage } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Send, Phone, Mail, ArrowLeft, Ban, MoreVertical } from 'lucide-react';
 import { formatDate } from '../lib/utils';
@@ -159,7 +159,7 @@ const ChatPage = () => {
         const messagesRes = await api.get(`/conversations/${conversationId}/messages`);
         setMessages(messagesRes.data.messages);
       } catch (error) {
-        toast.error(error.response?.data?.detail || 'Mesaj gönderilemedi');
+        toast.error(getErrorMessage(error, 'Mesaj gönderilemedi');
       }
     }
   };
@@ -195,7 +195,7 @@ const ChatPage = () => {
       toast.success('Kullanıcı engellendi');
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Kullanıcı engellenemedi');
+      toast.error(getErrorMessage(error, 'Kullanıcı engellenemedi');
     }
   };
 

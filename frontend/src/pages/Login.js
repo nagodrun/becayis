@@ -38,7 +38,7 @@ const Login = () => {
       toast.success('Giriş başarılı!');
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Giriş başarısız');
+      toast.error(getErrorMessage(error, 'Giriş başarısız');
     } finally {
       setLoading(false);
     }

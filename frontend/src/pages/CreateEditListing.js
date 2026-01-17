@@ -7,7 +7,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Card } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import api from '../lib/api';
+import api, { getErrorMessage } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { FileText } from 'lucide-react';
 
@@ -168,7 +168,7 @@ const CreateEditListing = () => {
       }
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'İlan kaydedilemedi');
+      toast.error(getErrorMessage(error, 'İlan kaydedilemedi');
     } finally {
       setLoading(false);
     }

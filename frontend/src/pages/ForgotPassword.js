@@ -6,7 +6,7 @@ import { PasswordInput } from '../components/ui/password-input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Label } from '../components/ui/label';
 import { Mail, ArrowLeft, KeyRound, Check, AlertTriangle } from 'lucide-react';
-import api from '../lib/api';
+import api, { getErrorMessage } from '../lib/api';
 import { toast } from 'sonner';
 
 const ForgotPassword = () => {
@@ -50,7 +50,7 @@ const ForgotPassword = () => {
       toast.success('Şifre sıfırlama kodu e-posta adresinize gönderildi.');
       setStep(2);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Bir hata oluştu.');
+      toast.error(getErrorMessage(error, 'Bir hata oluştu.');
     } finally {
       setLoading(false);
     }
@@ -69,7 +69,7 @@ const ForgotPassword = () => {
       toast.success('Kod doğrulandı.');
       setStep(3);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Geçersiz kod');
+      toast.error(getErrorMessage(error, 'Geçersiz kod');
     } finally {
       setLoading(false);
     }
@@ -95,7 +95,7 @@ const ForgotPassword = () => {
       toast.success('Şifreniz başarıyla değiştirildi.');
       navigate('/login');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Şifre değiştirilemedi.');
+      toast.error(getErrorMessage(error, 'Şifre değiştirilemedi.');
     } finally {
       setLoading(false);
     }

@@ -7,7 +7,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Card } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import api from '../lib/api';
+import api, { getErrorMessage } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { User as UserIcon } from 'lucide-react';
 
@@ -70,7 +70,7 @@ const CompleteProfile = () => {
       toast.success('Profiliniz oluşturuldu!');
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Profil oluşturulamadı');
+      toast.error(getErrorMessage(error, 'Profil oluşturulamadı');
     } finally {
       setLoading(false);
     }

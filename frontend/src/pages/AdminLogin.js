@@ -6,7 +6,7 @@ import { PasswordInput } from '../components/ui/password-input';
 import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
 import { toast } from 'sonner';
-import api from '../lib/api';
+import api, { getErrorMessage } from '../lib/api';
 import { Shield, AlertTriangle, User, Lock, Settings, Users, BarChart3 } from 'lucide-react';
 
 const AdminLogin = () => {
@@ -38,7 +38,7 @@ const AdminLogin = () => {
       toast.success('Admin girişi başarılı!');
       navigate('/admin/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Giriş başarısız');
+      toast.error(getErrorMessage(error, 'Giriş başarısız');
     } finally {
       setLoading(false);
     }

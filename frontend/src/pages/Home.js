@@ -5,7 +5,7 @@ import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { ListingCard } from '../components/ListingCard';
 import { MapPin, Users, ShieldCheck, MessageSquare, Search, X, Building2, Briefcase } from 'lucide-react';
-import api from '../lib/api';
+import api, { getErrorMessage } from '../lib/api';
 import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -107,7 +107,7 @@ const Home = () => {
       await api.post('/invitations', { listing_id: listing.id });
       toast.success('Davet başarıyla gönderildi.');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Davet gönderilemedi.');
+      toast.error(getErrorMessage(error, 'Davet gönderilemedi.');
     }
   };
 
