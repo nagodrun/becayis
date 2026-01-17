@@ -127,9 +127,16 @@ const CreateEditListing = () => {
     e.preventDefault();
     setLoading(true);
 
+    // Ensure title starts with the province prefix
+    let finalTitle = formData.title;
+    const expectedPrefix = `${profileData.current_province} - ${formData.desired_province}`;
+    if (!finalTitle.startsWith(expectedPrefix)) {
+      finalTitle = expectedPrefix + (finalTitle ? ` ${finalTitle}` : '');
+    }
+
     try {
       const listingData = {
-        title: formData.title,
+        title: finalTitle,
         institution: profileData.institution,
         role: profileData.role,
         current_province: profileData.current_province,
@@ -144,7 +151,8 @@ const CreateEditListing = () => {
         toast.success('İlan güncellendi');
       } else {
         await api.post('/listings', listingData);
-        toast.success('İlan oluşturuldu');
+        toast.success('İlan oluşturuldu ve admin onayı bekliyor');
+      }
       }
       navigate('/dashboard');
     } catch (error) {
