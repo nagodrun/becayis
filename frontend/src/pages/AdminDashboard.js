@@ -576,6 +576,10 @@ const AdminDashboard = () => {
                 <Badge className="ml-2 bg-red-500">{accountDeletionRequests.filter(r => r.status === 'pending').length}</Badge>
               )}
             </TabsTrigger>
+            <TabsTrigger value="notifications" data-testid="admin-tab-notifications" className="flex-shrink-0">
+              <Bell className="w-4 h-4 mr-1" />
+              Bildirimler
+            </TabsTrigger>
             <TabsTrigger value="reports" data-testid="admin-tab-reports" className="flex-shrink-0">Raporlar</TabsTrigger>
             <TabsTrigger value="admins" data-testid="admin-tab-admins" className="flex-shrink-0">
               <Shield className="w-4 h-4 mr-1" />
