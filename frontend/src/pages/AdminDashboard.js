@@ -1403,6 +1403,70 @@ const AdminDashboard = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Bulk Notification Dialog */}
+        <Dialog open={showBulkNotificationDialog} onOpenChange={setShowBulkNotificationDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Bell className="w-5 h-5 text-emerald-600" />
+                Toplu Bildirim Gönder
+              </DialogTitle>
+              <DialogDescription>
+                Bu bildirim tüm kayıtlı kullanıcılara gönderilecektir.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="notification-title">Başlık</Label>
+                <Input
+                  id="notification-title"
+                  value={bulkNotificationData.title}
+                  onChange={(e) => setBulkNotificationData({ ...bulkNotificationData, title: e.target.value })}
+                  placeholder="Bildirim başlığı"
+                  data-testid="notification-title-input"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="notification-message">Mesaj</Label>
+                <Textarea
+                  id="notification-message"
+                  value={bulkNotificationData.message}
+                  onChange={(e) => setBulkNotificationData({ ...bulkNotificationData, message: e.target.value })}
+                  placeholder="Bildirim mesajı..."
+                  rows={4}
+                  data-testid="notification-message-input"
+                />
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setShowBulkNotificationDialog(false);
+                setBulkNotificationData({ title: '', message: '' });
+              }}>
+                İptal
+              </Button>
+              <Button 
+                onClick={handleSendBulkNotification}
+                className="bg-emerald-600 hover:bg-emerald-700"
+                disabled={sendingNotification || !bulkNotificationData.title.trim() || !bulkNotificationData.message.trim()}
+                data-testid="confirm-send-notification-btn"
+              >
+                {sendingNotification ? (
+                  <>Gönderiliyor...</>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4 mr-2" />
+                    Gönder
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
