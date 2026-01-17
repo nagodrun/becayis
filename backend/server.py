@@ -2081,6 +2081,153 @@ async def get_faq():
     """Return FAQ data from constants"""
     return FAQ_DATA
 
+# ============= SUPPORT TICKETS / FEEDBACK =============
+
+class SupportTicketCreate(BaseModel):
+    subject: str = Field(..., min_length=5, max_length=100)
+    message: str = Field(..., min_length=10, max_length=1000)
+    category: str = Field(default="general")  # general, bug, suggestion, complaint
+
+class SupportTicketReply(BaseModel):
+    message: str = Field(..., min_length=1, max_length=1000)
+
+@api_router.post("/support-tickets")
+async def create_support_ticket(data: SupportTicketCreate, current_user: dict = Depends(get_current_user)):
+    """Create a new support ticket (user feedback)"""
+    # Get user profile for display name
+    profile = await db.profiles.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    
+    ticket = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "user_email": current_user.get("email", ""),
+        "user_name": profile.get("display_name", f"{current_user.get('first_name', '')} {current_user.get('last_name', '')}".strip()) if profile else f"{current_user.get('first_name', '')} {current_user.get('last_name', '')}".strip(),
+        "subject": data.subject,
+        "message": data.message,
+        "category": data.category,
+        "status": "open",  # open, answered, closed
+        "replies": [],
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.support_tickets.insert_one(ticket)
+    ticket.pop("_id", None)
+    
+    return {"message": "Destek talebiniz oluşturuldu", "ticket": ticket}
+
+@api_router.get("/support-tickets")
+async def get_user_support_tickets(current_user: dict = Depends(get_current_user)):
+    """Get all support tickets for the current user"""
+    tickets = await db.support_tickets.find(
+        {"user_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    return tickets
+
+@api_router.get("/support-tickets/{ticket_id}")
+async def get_support_ticket(ticket_id: str, current_user: dict = Depends(get_current_user)):
+    """Get a specific support ticket"""
+    ticket = await db.support_tickets.find_one(
+        {"id": ticket_id, "user_id": current_user["id"]},
+        {"_id": 0}
+    )
+    
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Destek talebi bulunamadı")
+    
+    return ticket
+
+@api_router.delete("/support-tickets/{ticket_id}")
+async def delete_support_ticket(ticket_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a support ticket"""
+    result = await db.support_tickets.delete_one({
+        "id": ticket_id,
+        "user_id": current_user["id"]
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Destek talebi bulunamadı")
+    
+    return {"message": "Destek talebi silindi"}
+
+# Admin endpoints for support tickets
+@api_router.get("/admin/support-tickets")
+async def get_all_support_tickets(admin = Depends(verify_admin)):
+    """Get all support tickets (admin only)"""
+    tickets = await db.support_tickets.find(
+        {},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(500)
+    
+    return tickets
+
+@api_router.post("/admin/support-tickets/{ticket_id}/reply")
+async def admin_reply_to_ticket(ticket_id: str, data: SupportTicketReply, admin = Depends(verify_admin)):
+    """Admin reply to a support ticket"""
+    ticket = await db.support_tickets.find_one({"id": ticket_id}, {"_id": 0})
+    
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Destek talebi bulunamadı")
+    
+    reply = {
+        "id": str(uuid.uuid4()),
+        "admin_id": admin["id"],
+        "admin_name": admin.get("display_name", admin.get("username", "Admin")),
+        "message": data.message,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.support_tickets.update_one(
+        {"id": ticket_id},
+        {
+            "$push": {"replies": reply},
+            "$set": {
+                "status": "answered",
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    # Create notification for user
+    await create_notification(
+        ticket["user_id"],
+        "Destek Talebinize Yanıt",
+        f"'{ticket['subject']}' konulu destek talebinize yanıt verildi.",
+        "support_reply"
+    )
+    
+    return {"message": "Yanıt gönderildi", "reply": reply}
+
+@api_router.put("/admin/support-tickets/{ticket_id}/close")
+async def admin_close_ticket(ticket_id: str, admin = Depends(verify_admin)):
+    """Close a support ticket"""
+    result = await db.support_tickets.update_one(
+        {"id": ticket_id},
+        {
+            "$set": {
+                "status": "closed",
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Destek talebi bulunamadı")
+    
+    return {"message": "Destek talebi kapatıldı"}
+
+@api_router.delete("/admin/support-tickets/{ticket_id}")
+async def admin_delete_ticket(ticket_id: str, admin = Depends(verify_admin)):
+    """Delete a support ticket (admin only)"""
+    result = await db.support_tickets.delete_one({"id": ticket_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Destek talebi bulunamadı")
+    
+    return {"message": "Destek talebi silindi"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
