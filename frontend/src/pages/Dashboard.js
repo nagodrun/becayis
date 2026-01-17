@@ -317,6 +317,18 @@ const Dashboard = () => {
     localStorage.setItem('hideWarning', 'true');
   };
 
+  // Handle dismissing admin notification banner - moves it to notifications tab
+  const handleDismissAdminBanner = (notificationId) => {
+    const newDismissed = [...dismissedBanners, notificationId];
+    setDismissedBanners(newDismissed);
+    localStorage.setItem('dismissedAdminBanners', JSON.stringify(newDismissed));
+  };
+
+  // Get admin notifications that should show as banners (not dismissed yet)
+  const adminBannerNotifications = notifications.filter(
+    n => (n.type === 'admin_broadcast' || n.type === 'admin_message') && !dismissedBanners.includes(n.id)
+  );
+
   // State for pending avatar upload
   const [pendingAvatarFile, setPendingAvatarFile] = useState(null);
   const [pendingAvatarPreview, setPendingAvatarPreview] = useState(null);
