@@ -638,9 +638,9 @@ const Dashboard = () => {
                 </Button>
               ) : (
                 <Link to="/listings/create">
-                  <Button className="bg-slate-900 hover:bg-slate-800" data-testid="create-listing-button">
+                  <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white" data-testid="create-listing-button">
                     <Plus className="w-4 h-4 mr-2" />
-                    Yeni İlan
+                    Yeni İlan Oluştur
                   </Button>
                 </Link>
               )}

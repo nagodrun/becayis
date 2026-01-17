@@ -253,7 +253,7 @@ const Home = () => {
           {user && (
             <Link to="/listings/create">
               <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white" data-testid="create-listing-button">
-                İlan Oluştur
+                Becayiş İlanı Oluştur
               </Button>
             </Link>
           )}
