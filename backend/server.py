@@ -1718,13 +1718,12 @@ async def create_admin(data: CreateAdmin, admin = Depends(verify_admin)):
     # Check if username exists
     existing = await db.admins.find_one({"username": username})
     if existing:
-        raise HTTPException(status_code=400, detail="Bu kullanıcı adı zaten kullanılıyor")
+        raise HTTPException(status_code=400, detail="Bu e-posta adresi zaten kullanılıyor")
     
     # Validate password
     if len(data.password) < 8:
         raise HTTPException(status_code=400, detail="Şifre en az 8 karakter olmalıdır")
     
-    import re
     if not re.search(r'[A-Z]', data.password):
         raise HTTPException(status_code=400, detail="Şifre en az 1 büyük harf içermelidir")
     
@@ -1736,9 +1735,9 @@ async def create_admin(data: CreateAdmin, admin = Depends(verify_admin)):
     
     new_admin = {
         "id": str(uuid.uuid4()),
-        "username": data.username,
+        "username": username,
         "password_hash": get_password_hash(data.password),
-        "display_name": data.display_name or data.username,
+        "display_name": data.display_name or username,
         "role": new_role,
         "avatar_url": None,
         "created_at": datetime.now(timezone.utc).isoformat(),
