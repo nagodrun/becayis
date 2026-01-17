@@ -1057,14 +1057,19 @@ const AdminDashboard = () => {
               ) : (
                 <div className="space-y-4">
                   {supportTickets.map((ticket) => (
-                    <div key={ticket.id} className="border rounded-lg p-4" data-testid={`admin-ticket-${ticket.id}`}>
+                    <div key={ticket.id} className={`border rounded-lg p-4 ${ticket.status === 'closed' ? 'bg-slate-50 dark:bg-slate-800/30 border-slate-200 dark:border-slate-700' : ''}`} data-testid={`admin-ticket-${ticket.id}`}>
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
+                            {ticket.status === 'closed' && (
+                              <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
+                                <Check className="w-4 h-4 text-white" />
+                              </div>
+                            )}
                             {getTicketStatusBadge(ticket.status)}
                             <Badge variant="outline" className="text-xs">{getCategoryLabel(ticket.category)}</Badge>
                           </div>
-                          <h3 className="font-semibold text-foreground">{ticket.subject}</h3>
+                          <h3 className={`font-semibold ${ticket.status === 'closed' ? 'text-muted-foreground line-through' : 'text-foreground'}`}>{ticket.subject}</h3>
                           <p className="text-sm text-muted-foreground mt-1">
                             <span className="font-medium">{ticket.user_name || ticket.user_email}</span>
                             {' • '}{formatDate(ticket.created_at)}
