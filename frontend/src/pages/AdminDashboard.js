@@ -7,7 +7,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
-import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut, X, UserPlus, KeyRound, Trash2, Camera, User, Crown, ArrowRightLeft, Bell, Send, RefreshCw, Check, Clock, Mail } from 'lucide-react';
+import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut, X, UserPlus, KeyRound, Trash2, Camera, User, Crown, ArrowRightLeft, Bell, Send, RefreshCw, Check, Clock, Mail, HelpCircle, MessageCircle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -31,6 +31,7 @@ const AdminDashboard = () => {
   const [deletionRequests, setDeletionRequests] = useState([]);
   const [accountDeletionRequests, setAccountDeletionRequests] = useState([]);
   const [admins, setAdmins] = useState([]);
+  const [supportTickets, setSupportTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   
   // Current admin profile state
@@ -72,6 +73,12 @@ const AdminDashboard = () => {
   const [selectedUserForMessage, setSelectedUserForMessage] = useState(null);
   const [userMessageData, setUserMessageData] = useState({ title: '', message: '' });
   const [sendingUserMessage, setSendingUserMessage] = useState(false);
+  
+  // Support ticket reply state
+  const [showTicketReplyDialog, setShowTicketReplyDialog] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [ticketReplyMessage, setTicketReplyMessage] = useState('');
+  const [sendingTicketReply, setSendingTicketReply] = useState(false);
 
   // Password validation helpers
   const passwordHasMinLength = (pwd) => pwd.length >= 8;
