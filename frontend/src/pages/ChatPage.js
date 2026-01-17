@@ -159,7 +159,7 @@ const ChatPage = () => {
         const messagesRes = await api.get(`/conversations/${conversationId}/messages`);
         setMessages(messagesRes.data.messages);
       } catch (error) {
-        toast.error(getErrorMessage(error, 'Mesaj gönderilemedi');
+        toast.error(getErrorMessage(error, 'Mesaj gönderilemedi'));
       }
     }
   };
@@ -195,7 +195,7 @@ const ChatPage = () => {
       toast.success('Kullanıcı engellendi');
       navigate('/dashboard');
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Kullanıcı engellenemedi');
+      toast.error(getErrorMessage(error, 'Kullanıcı engellenemedi'));
     }
   };
 

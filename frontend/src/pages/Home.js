@@ -107,7 +107,7 @@ const Home = () => {
       await api.post('/invitations', { listing_id: listing.id });
       toast.success('Davet başarıyla gönderildi.');
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Davet gönderilemedi.');
+      toast.error(getErrorMessage(error, 'Davet gönderilemedi.'));
     }
   };
 

@@ -70,7 +70,7 @@ const CompleteProfile = () => {
       toast.success('Profiliniz oluşturuldu!');
       navigate('/dashboard');
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Profil oluşturulamadı');
+      toast.error(getErrorMessage(error, 'Profil oluşturulamadı'));
     } finally {
       setLoading(false);
     }

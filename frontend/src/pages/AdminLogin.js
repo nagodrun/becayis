@@ -38,7 +38,7 @@ const AdminLogin = () => {
       toast.success('Admin girişi başarılı!');
       navigate('/admin/dashboard');
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Giriş başarısız');
+      toast.error(getErrorMessage(error, 'Giriş başarısız'));
     } finally {
       setLoading(false);
     }

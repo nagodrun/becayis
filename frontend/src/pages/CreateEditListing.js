@@ -168,7 +168,7 @@ const CreateEditListing = () => {
       }
       navigate('/dashboard');
     } catch (error) {
-      toast.error(getErrorMessage(error, 'İlan kaydedilemedi');
+      toast.error(getErrorMessage(error, 'İlan kaydedilemedi'));
     } finally {
       setLoading(false);
     }
