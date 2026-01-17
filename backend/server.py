@@ -633,8 +633,22 @@ async def delete_avatar(current_user: dict = Depends(get_current_user)):
     return {"message": "Profil fotoğrafı silindi"}
 
 # ============= LISTING ENDPOINTS =============
+MAX_LISTINGS_PER_USER = 3
+
 @api_router.post("/listings")
 async def create_listing(data: CreateListing, current_user: dict = Depends(get_current_user)):
+    # Check if user has reached the maximum listing limit
+    user_listings_count = await db.listings.count_documents({
+        "user_id": current_user["id"],
+        "status": {"$in": ["active", "pending"]}
+    })
+    
+    if user_listings_count >= MAX_LISTINGS_PER_USER:
+        raise HTTPException(
+            status_code=400,
+            detail=f"En fazla {MAX_LISTINGS_PER_USER} aktif ilan oluşturabilirsiniz. Yeni ilan eklemek için mevcut ilanlarınızdan birini silmeniz gerekiyor."
+        )
+    
     listing = {
         "id": str(uuid.uuid4()),
         "user_id": current_user["id"],
@@ -642,9 +656,9 @@ async def create_listing(data: CreateListing, current_user: dict = Depends(get_c
         "institution": data.institution,
         "role": data.role,
         "current_province": data.current_province,
-        "current_district": data.current_district,
+        "current_district": data.current_district or "",
         "desired_province": data.desired_province,
-        "desired_district": data.desired_district,
+        "desired_district": data.desired_district or "",
         "notes": data.notes,
         "status": "active",
         "created_at": datetime.now(timezone.utc).isoformat(),
