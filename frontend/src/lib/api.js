@@ -7,6 +7,35 @@ const api = axios.create({
   baseURL: API_BASE,
 });
 
+// Helper function to extract error message from API response
+export const getErrorMessage = (error, defaultMessage = 'Bir hata oluştu') => {
+  const detail = error?.response?.data?.detail;
+  
+  if (!detail) return defaultMessage;
+  
+  // If detail is a string, return it directly
+  if (typeof detail === 'string') return detail;
+  
+  // If detail is an array (Pydantic validation errors), extract messages
+  if (Array.isArray(detail)) {
+    return detail.map(err => {
+      if (typeof err === 'string') return err;
+      if (err.msg) return err.msg;
+      return defaultMessage;
+    }).join(', ');
+  }
+  
+  // If detail is an object with msg property
+  if (detail.msg) return detail.msg;
+  
+  // If detail is an object, try to stringify it meaningfully
+  if (typeof detail === 'object') {
+    return JSON.stringify(detail);
+  }
+  
+  return defaultMessage;
+};
+
 // Add token to requests
 api.interceptors.request.use((config) => {
   // Check for admin token first, then regular token
