@@ -307,6 +307,56 @@ const AdminDashboard = () => {
   // Check if current user is main admin
   const isMainAdmin = currentAdmin?.role === 'main_admin';
 
+  // Bulk notification functions
+  const handleSendBulkNotification = async () => {
+    if (!bulkNotificationData.title.trim() || !bulkNotificationData.message.trim()) {
+      toast.error('Başlık ve mesaj zorunludur');
+      return;
+    }
+
+    setSendingNotification(true);
+    try {
+      const response = await api.post('/admin/notifications/bulk', {
+        title: bulkNotificationData.title,
+        message: bulkNotificationData.message
+      });
+      toast.success(response.data.message);
+      setShowBulkNotificationDialog(false);
+      setBulkNotificationData({ title: '', message: '' });
+      // Refresh notifications
+      const notificationsRes = await api.get('/admin/notifications');
+      setAdminNotifications(notificationsRes.data || []);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Bildirim gönderilemedi');
+    } finally {
+      setSendingNotification(false);
+    }
+  };
+
+  const handleDeleteAdminNotification = async (notificationId) => {
+    try {
+      await api.delete(`/admin/notifications/${notificationId}`);
+      setAdminNotifications(prev => prev.filter(n => n.id !== notificationId));
+      toast.success('Bildirim silindi');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Bildirim silinemedi');
+    }
+  };
+
+  const handleResetAcceptedInvitations = async () => {
+    if (!window.confirm('Tüm kabul edilmiş davetleri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) return;
+
+    try {
+      const response = await api.delete('/admin/stats/accepted-invitations');
+      toast.success(response.data.message);
+      // Refresh stats
+      const statsRes = await api.get('/admin/stats');
+      setStats(statsRes.data);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'İşlem başarısız');
+    }
+  };
+
   const handleBlockUser = async (userId, isBlocked) => {
     try {
       if (isBlocked) {
@@ -320,7 +370,7 @@ const AdminDashboard = () => {
         setUsers(prev => prev.map(u => 
           u.id === userId ? { ...u, is_blocked: true } : u
         ));
-        toast.success('Kullanıcı engellendi');
+        toast.success('Kullanıcı engellendi. Kullanıcı artık talep gönderemez ve mesaj yazamaz.');
       }
     } catch (error) {
       toast.error('İşlem başarısız');
