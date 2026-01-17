@@ -103,15 +103,6 @@ const Home = () => {
       navigate('/dashboard');
       return;
     }
-
-    // Check if user's current location matches listing's desired location
-    if (user.profile?.current_province && listing.desired_province && 
-        user.profile.current_province !== listing.desired_province) {
-      toast.warning('Dikkat: Davet göndermek istediğiniz ilanın hedef konumu ile mevcut konumunuz örtüşmemektedir. Yine de devam etmek istiyor musunuz?', {
-        duration: 5000
-      });
-    }
-
     try {
       await api.post('/invitations', { listing_id: listing.id });
       toast.success('Davet başarıyla gönderildi.');

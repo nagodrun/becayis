@@ -934,7 +934,7 @@ async def delete_invitation(invitation_id: str, current_user: dict = Depends(get
     
     # Check if user is sender or receiver
     if invitation["sender_id"] != current_user["id"] and invitation["receiver_id"] != current_user["id"]:
-        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok")
+        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok.")
     
     await db.invitations.delete_one({"id": invitation_id})
     return {"message": "Davet silindi"}
@@ -943,16 +943,16 @@ async def delete_invitation(invitation_id: str, current_user: dict = Depends(get
 async def respond_invitation(data: RespondInvitation, current_user: dict = Depends(get_current_user)):
     invitation = await db.invitations.find_one({"id": data.invitation_id}, {"_id": 0})
     if not invitation:
-        raise HTTPException(status_code=404, detail="Davet bulunamadı")
+        raise HTTPException(status_code=404, detail="Davet bulunamadı.")
     
     if invitation["receiver_id"] != current_user["id"]:
-        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok")
+        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok.")
     
     if invitation["status"] != "pending":
-        raise HTTPException(status_code=400, detail="Bu davet zaten yanıtlanmış")
+        raise HTTPException(status_code=400, detail="Bu davet zaten yanıtlanmış.")
     
     if data.action not in ["accept", "reject"]:
-        raise HTTPException(status_code=400, detail="Geçersiz işlem")
+        raise HTTPException(status_code=400, detail="Geçersiz işlem.")
     
     # Update invitation
     await db.invitations.update_one(
@@ -978,17 +978,17 @@ async def respond_invitation(data: RespondInvitation, current_user: dict = Depen
             "invitation_accepted"
         )
         
-        return {"message": "Davet kabul edildi", "conversation_id": conversation["id"]}
+        return {"message": "Davet kabul edildi.", "conversation_id": conversation["id"]}
     else:
         # Send notification to sender
         await create_notification(
             invitation["sender_id"],
-            "Davet Reddedildi",
-            "Gönderdiğiniz değişim daveti reddedildi",
+            "Davet Reddedildi.",
+            "Gönderdiğiniz değişim daveti reddedildi.",
             "invitation_rejected"
         )
         
-        return {"message": "Davet reddedildi"}
+        return {"message": "Davet reddedildi."}
 
 # ============= CHAT ENDPOINTS =============
 @api_router.get("/conversations")
@@ -1019,10 +1019,10 @@ async def get_messages(conversation_id: str, current_user: dict = Depends(get_cu
     # Verify access
     conversation = await db.conversations.find_one({"id": conversation_id}, {"_id": 0})
     if not conversation:
-        raise HTTPException(status_code=404, detail="Konuşma bulunamadı")
+        raise HTTPException(status_code=404, detail="Konuşma bulunamadı.")
     
     if current_user["id"] not in conversation["participants"]:
-        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok")
+        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok.")
     
     messages = await db.messages.find(
         {"conversation_id": conversation_id},
@@ -1053,10 +1053,10 @@ async def send_message(data: SendMessage, current_user: dict = Depends(get_curre
     # Verify access
     conversation = await db.conversations.find_one({"id": data.conversation_id}, {"_id": 0})
     if not conversation:
-        raise HTTPException(status_code=404, detail="Konuşma bulunamadı")
+        raise HTTPException(status_code=404, detail="Konuşma bulunamadı.")
     
     if current_user["id"] not in conversation["participants"]:
-        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok")
+        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok.")
     
     # Check if blocked (user-to-user block)
     other_user_id = [p for p in conversation["participants"] if p != current_user["id"]][0]
@@ -1065,7 +1065,7 @@ async def send_message(data: SendMessage, current_user: dict = Depends(get_curre
         "blocked_id": current_user["id"]
     })
     if block:
-        raise HTTPException(status_code=403, detail="Bu kullanıcıya mesaj gönderemezsiniz")
+        raise HTTPException(status_code=403, detail="Bu kullanıcıya mesaj gönderemezsiniz.")
     
     message = {
         "id": str(uuid.uuid4()),
@@ -1081,7 +1081,7 @@ async def send_message(data: SendMessage, current_user: dict = Depends(get_curre
     await create_notification(
         other_user_id,
         "Yeni Mesaj",
-        "Size yeni bir mesaj geldi",
+        "Size yeni bir mesaj geldi.",
         "message"
     )
     
@@ -1094,10 +1094,10 @@ async def delete_conversation(conversation_id: str, current_user: dict = Depends
     """Delete a conversation and all its messages"""
     conversation = await db.conversations.find_one({"id": conversation_id}, {"_id": 0})
     if not conversation:
-        raise HTTPException(status_code=404, detail="Konuşma bulunamadı")
+        raise HTTPException(status_code=404, detail="Konuşma bulunamadı.")
     
     if current_user["id"] not in conversation["participants"]:
-        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok")
+        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok.")
     
     # Get other participant to send notification
     other_user_id = [p for p in conversation["participants"] if p != current_user["id"]][0]
@@ -1115,12 +1115,12 @@ async def delete_conversation(conversation_id: str, current_user: dict = Depends
     # Send notification to other user
     await create_notification(
         other_user_id,
-        "Konuşma Sonlandırıldı",
-        f"{display_name} sizinle olan konuşmayı sonlandırdı",
+        "Konuşma Sonlandırıldı.",
+        f"{display_name} sizinle olan konuşmayı sonlandırdı.",
         "conversation_ended"
     )
     
-    return {"message": "Konuşma silindi"}
+    return {"message": "Konuşma silindi."}
 
 # ============= NOTIFICATION ENDPOINTS =============
 @api_router.get("/notifications")
@@ -1138,13 +1138,13 @@ async def mark_notification_read(notification_id: str, current_user: dict = Depe
         {"id": notification_id, "user_id": current_user["id"]},
         {"$set": {"read": True}}
     )
-    return {"message": "Bildirim okundu olarak işaretlendi"}
+    return {"message": "Bildirim okundu olarak işaretlendi."}
 
 # ============= BLOCK/REPORT ENDPOINTS =============
 @api_router.post("/block")
 async def block_user(data: BlockUser, current_user: dict = Depends(get_current_user)):
     if data.blocked_user_id == current_user["id"]:
-        raise HTTPException(status_code=400, detail="Kendinizi engelleyemezsiniz")
+        raise HTTPException(status_code=400, detail="Kendinizi engelleyemezsiniz.")
     
     # Check if already blocked
     existing = await db.blocks.find_one({
@@ -1152,7 +1152,7 @@ async def block_user(data: BlockUser, current_user: dict = Depends(get_current_u
         "blocked_id": data.blocked_user_id
     })
     if existing:
-        raise HTTPException(status_code=400, detail="Bu kullanıcı zaten engellenmiş")
+        raise HTTPException(status_code=400, detail="Bu kullanıcı zaten engellenmiş.")
     
     block = {
         "id": str(uuid.uuid4()),
@@ -1163,7 +1163,7 @@ async def block_user(data: BlockUser, current_user: dict = Depends(get_current_u
     }
     await db.blocks.insert_one(block)
     
-    return {"message": "Kullanıcı engellendi"}
+    return {"message": "Kullanıcı engellendi."}
 
 @api_router.get("/blocks")
 async def get_blocks(current_user: dict = Depends(get_current_user)):
@@ -1185,7 +1185,7 @@ async def unblock_user(blocked_user_id: str, current_user: dict = Depends(get_cu
     })
     
     if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Engel bulunamadı")
+        raise HTTPException(status_code=404, detail="Engel bulunamadı.")
     
     return {"message": "Engel kaldırıldı"}
 
@@ -1199,10 +1199,10 @@ async def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(secur
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         is_admin = payload.get("is_admin", False)
         if not is_admin:
-            raise HTTPException(status_code=403, detail="Admin yetkisi gerekli")
+            raise HTTPException(status_code=403, detail="Admin yetkisi gerekli.")
         return payload
     except JWTError:
-        raise HTTPException(status_code=401, detail="Token geçersiz")
+        raise HTTPException(status_code=401, detail="Token geçersiz.")
 
 @api_router.post("/admin/login")
 async def admin_login(username: str, password: str):
@@ -1242,7 +1242,7 @@ async def admin_login(username: str, password: str):
             "user": {"username": username, "role": admin.get("role", "admin")}
         }
     
-    raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı")
+    raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı.")
 
 @api_router.get("/admin/users")
 async def admin_get_users(admin = Depends(verify_admin)):
@@ -1274,9 +1274,9 @@ async def admin_block_user(user_id: str, admin = Depends(verify_admin)):
     )
     
     if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı.")
     
-    return {"message": "Kullanıcı engellendi"}
+    return {"message": "Kullanıcı engellendi."}
 
 @api_router.put("/admin/users/{user_id}/unblock")
 async def admin_unblock_user(user_id: str, admin = Depends(verify_admin)):
@@ -1286,18 +1286,18 @@ async def admin_unblock_user(user_id: str, admin = Depends(verify_admin)):
     )
     
     if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı.")
     
-    return {"message": "Kullanıcı engeli kaldırıldı"}
+    return {"message": "Kullanıcı engeli kaldırıldı."}
 
 @api_router.delete("/admin/listings/{listing_id}")
 async def admin_delete_listing(listing_id: str, admin = Depends(verify_admin)):
     result = await db.listings.delete_one({"id": listing_id})
     
     if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="İlan bulunamadı")
+        raise HTTPException(status_code=404, detail="İlan bulunamadı.")
     
-    return {"message": "İlan silindi"}
+    return {"message": "İlan silindi."}
 
 @api_router.get("/admin/reports")
 async def admin_get_reports(admin = Depends(verify_admin)):
@@ -1338,7 +1338,7 @@ async def admin_get_stats(admin = Depends(verify_admin)):
 async def reset_accepted_invitations_count(admin = Depends(verify_admin)):
     """Reset accepted invitations by deleting all accepted invitations"""
     result = await db.invitations.delete_many({"status": "accepted"})
-    return {"message": f"{result.deleted_count} kabul edilmiş davet silindi", "deleted_count": result.deleted_count}
+    return {"message": f"{result.deleted_count} kabul edilmiş davet silindi.", "deleted_count": result.deleted_count}
 
 class BulkNotification(BaseModel):
     title: str
@@ -1365,7 +1365,7 @@ async def send_bulk_notification(data: BulkNotification, admin = Depends(verify_
     if notifications:
         await db.notifications.insert_many(notifications)
     
-    return {"message": f"{len(notifications)} kullanıcıya bildirim gönderildi", "count": len(notifications)}
+    return {"message": f"{len(notifications)} kullanıcıya bildirim gönderildi.", "count": len(notifications)}
 
 @api_router.get("/admin/notifications")
 async def get_admin_notifications(admin = Depends(verify_admin)):
@@ -1382,7 +1382,7 @@ async def delete_admin_notification(notification_id: str, admin = Depends(verify
     # Find the notification to get its details
     notification = await db.notifications.find_one({"id": notification_id}, {"_id": 0})
     if not notification:
-        raise HTTPException(status_code=404, detail="Bildirim bulunamadı")
+        raise HTTPException(status_code=404, detail="Bildirim bulunamadı.")
     
     # Delete all notifications with the same title, message, and type that were created around the same time
     result = await db.notifications.delete_many({
@@ -1426,10 +1426,10 @@ async def approve_listing(listing_id: str, admin = Depends(verify_admin)):
     """Approve a pending listing"""
     listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
     if not listing:
-        raise HTTPException(status_code=404, detail="İlan bulunamadı")
+        raise HTTPException(status_code=404, detail="İlan bulunamadı.")
     
     if listing["status"] != "pending_approval":
-        raise HTTPException(status_code=400, detail="Bu ilan zaten işlenmiş")
+        raise HTTPException(status_code=400, detail="Bu ilan zaten işlenmiş.")
     
     await db.listings.update_one(
         {"id": listing_id},
@@ -1454,10 +1454,10 @@ async def reject_listing(listing_id: str, data: RejectListingRequest = None, adm
     """Reject a pending listing"""
     listing = await db.listings.find_one({"id": listing_id}, {"_id": 0})
     if not listing:
-        raise HTTPException(status_code=404, detail="İlan bulunamadı")
+        raise HTTPException(status_code=404, detail="İlan bulunamadı.")
     
     if listing["status"] != "pending_approval":
-        raise HTTPException(status_code=400, detail="Bu ilan zaten işlenmiş")
+        raise HTTPException(status_code=400, detail="Bu ilan zaten işlenmiş.")
     
     reason = data.reason if data else None
     
@@ -1482,7 +1482,7 @@ async def reject_listing(listing_id: str, data: RejectListingRequest = None, adm
         "listing_rejected"
     )
     
-    return {"message": "İlan reddedildi"}
+    return {"message": "İlan reddedildi."}
 
 # ============= ADMIN SEND MESSAGE TO USER =============
 class AdminSendMessageToUser(BaseModel):
@@ -1495,7 +1495,7 @@ async def admin_send_message_to_user(user_id: str, data: AdminSendMessageToUser,
     """Send a message/notification to a specific user"""
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not user:
-        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı.")
     
     # Create notification for user
     notification = {
@@ -1534,7 +1534,7 @@ async def delete_admin_user_message(notification_id: str, admin = Depends(verify
     """Delete a specific admin message sent to a user"""
     notification = await db.notifications.find_one({"id": notification_id, "type": "admin_message"}, {"_id": 0})
     if not notification:
-        raise HTTPException(status_code=404, detail="Mesaj bulunamadı")
+        raise HTTPException(status_code=404, detail="Mesaj bulunamadı.")
     
     await db.notifications.delete_one({"id": notification_id})
     return {"message": "Mesaj silindi"}
@@ -1543,7 +1543,7 @@ async def delete_admin_user_message(notification_id: str, admin = Depends(verify
 async def admin_delete_user(user_id: str, admin = Depends(verify_admin)):
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not user:
-        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+        raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı.")
     
     # Delete user and all related data
     await db.users.delete_one({"id": user_id})
@@ -1554,16 +1554,16 @@ async def admin_delete_user(user_id: str, admin = Depends(verify_admin)):
     # TODO: Send email notification to user
     # send_email(user["email"], "Hesabınız Silindi", "...")
     
-    return {"message": "Kullanıcı silindi"}
+    return {"message": "Kullanıcı silindi."}
 
 @api_router.post("/admin/deletion-requests/{request_id}/approve")
 async def admin_approve_deletion(request_id: str, admin = Depends(verify_admin)):
     request = await db.deletion_requests.find_one({"id": request_id}, {"_id": 0})
     if not request:
-        raise HTTPException(status_code=404, detail="Silme isteği bulunamadı")
+        raise HTTPException(status_code=404, detail="Silme isteği bulunamadı.")
     
     if request["status"] != "pending":
-        raise HTTPException(status_code=400, detail="Bu istek zaten işlenmiş")
+        raise HTTPException(status_code=400, detail="Bu istek zaten işlenmiş.")
     
     # Delete the listing
     await db.listings.delete_one({"id": request["listing_id"]})
@@ -1591,10 +1591,10 @@ async def admin_approve_deletion(request_id: str, admin = Depends(verify_admin))
 async def admin_reject_deletion(request_id: str, admin = Depends(verify_admin)):
     request = await db.deletion_requests.find_one({"id": request_id}, {"_id": 0})
     if not request:
-        raise HTTPException(status_code=404, detail="Silme isteği bulunamadı")
+        raise HTTPException(status_code=404, detail="Silme isteği bulunamadı.")
     
     if request["status"] != "pending":
-        raise HTTPException(status_code=400, detail="Bu istek zaten işlenmiş")
+        raise HTTPException(status_code=400, detail="Bu istek zaten işlenmiş.")
     
     # Update request status
     await db.deletion_requests.update_one(
@@ -1608,7 +1608,7 @@ async def admin_reject_deletion(request_id: str, admin = Depends(verify_admin)):
     # Send notification to user
     await create_notification(
         request["user_id"],
-        "İlan Silme Reddedildi",
+        "İlan Silme Reddedildi.",
         "İlan silme isteğiniz reddedildi. İlanınız sistemde kalmaya devam edecek.",
         "deletion_rejected"
     )
@@ -1620,10 +1620,10 @@ async def admin_delete_deletion_request(request_id: str, admin = Depends(verify_
     """Delete a deletion request (for cleanup purposes)"""
     request = await db.deletion_requests.find_one({"id": request_id}, {"_id": 0})
     if not request:
-        raise HTTPException(status_code=404, detail="Silme isteği bulunamadı")
+        raise HTTPException(status_code=404, detail="Silme isteği bulunamadı.")
     
     await db.deletion_requests.delete_one({"id": request_id})
-    return {"message": "Silme isteği temizlendi"}
+    return {"message": "Silme isteği temizlendi."}
 
 # ============= ADMIN ACCOUNT DELETION REQUESTS =============
 @api_router.get("/admin/account-deletion-requests")
@@ -1645,10 +1645,10 @@ async def approve_account_deletion(request_id: str, admin = Depends(verify_admin
     """Approve account deletion request and delete user"""
     request = await db.account_deletion_requests.find_one({"id": request_id}, {"_id": 0})
     if not request:
-        raise HTTPException(status_code=404, detail="Silme talebi bulunamadı")
+        raise HTTPException(status_code=404, detail="Silme talebi bulunamadı.")
     
     if request["status"] != "pending":
-        raise HTTPException(status_code=400, detail="Bu talep zaten işlenmiş")
+        raise HTTPException(status_code=400, detail="Bu talep zaten işlenmiş.")
     
     user_id = request["user_id"]
     
@@ -1668,17 +1668,17 @@ async def approve_account_deletion(request_id: str, admin = Depends(verify_admin
         {"$set": {"status": "approved", "approved_at": datetime.now(timezone.utc).isoformat()}}
     )
     
-    return {"message": "Hesap silme talebi onaylandı ve kullanıcı silindi"}
+    return {"message": "Hesap silme talebi onaylandı ve kullanıcı silindi."}
 
 @api_router.post("/admin/account-deletion-requests/{request_id}/reject")
 async def reject_account_deletion(request_id: str, admin = Depends(verify_admin)):
     """Reject account deletion request"""
     request = await db.account_deletion_requests.find_one({"id": request_id}, {"_id": 0})
     if not request:
-        raise HTTPException(status_code=404, detail="Silme talebi bulunamadı")
+        raise HTTPException(status_code=404, detail="Silme talebi bulunamadı.")
     
     if request["status"] != "pending":
-        raise HTTPException(status_code=400, detail="Bu talep zaten işlenmiş")
+        raise HTTPException(status_code=400, detail="Bu talep zaten işlenmiş.")
     
     await db.account_deletion_requests.update_one(
         {"id": request_id},
@@ -1688,18 +1688,18 @@ async def reject_account_deletion(request_id: str, admin = Depends(verify_admin)
     # Notify user
     await create_notification(
         request["user_id"],
-        "Hesap Silme Reddedildi",
+        "Hesap Silme Reddedildi.",
         "Hesap silme talebiniz reddedildi.",
         "account_deletion_rejected"
     )
     
-    return {"message": "Hesap silme talebi reddedildi"}
+    return {"message": "Hesap silme talebi reddedildi."}
 
 @api_router.delete("/admin/account-deletion-requests/{request_id}")
 async def clear_account_deletion_request(request_id: str, admin = Depends(verify_admin)):
     """Clear an account deletion request"""
     await db.account_deletion_requests.delete_one({"id": request_id})
-    return {"message": "Hesap silme talebi temizlendi"}
+    return {"message": "Hesap silme talebi temizlendi."}
 
 # ============= ADMIN MANAGEMENT ENDPOINTS =============
 class CreateAdmin(BaseModel):
@@ -1735,7 +1735,7 @@ async def get_current_admin(admin = Depends(verify_admin)):
     """Get current admin's profile"""
     current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0, "password_hash": 0})
     if not current_admin:
-        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+        raise HTTPException(status_code=404, detail="Admin bulunamadı.")
     return current_admin
 
 @api_router.post("/admin/admins")
@@ -1744,7 +1744,7 @@ async def create_admin(data: CreateAdmin, admin = Depends(verify_admin)):
     # Only main admin can create admins
     current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
     if not current_admin or current_admin.get("role") != "main_admin":
-        raise HTTPException(status_code=403, detail="Sadece ana admin yeni admin oluşturabilir")
+        raise HTTPException(status_code=403, detail="Sadece ana admin yeni admin oluşturabilir.")
     
     # Validate username is a gov.tr email
     import re
@@ -1758,17 +1758,17 @@ async def create_admin(data: CreateAdmin, admin = Depends(verify_admin)):
     # Check if username exists
     existing = await db.admins.find_one({"username": username})
     if existing:
-        raise HTTPException(status_code=400, detail="Bu e-posta adresi zaten kullanılıyor")
+        raise HTTPException(status_code=400, detail="Bu e-posta adresi zaten kullanılıyor.")
     
     # Validate password
     if len(data.password) < 8:
-        raise HTTPException(status_code=400, detail="Şifre en az 8 karakter olmalıdır")
+        raise HTTPException(status_code=400, detail="Şifre en az 8 karakter olmalıdır.")
     
     if not re.search(r'[A-Z]', data.password):
-        raise HTTPException(status_code=400, detail="Şifre en az 1 büyük harf içermelidir")
+        raise HTTPException(status_code=400, detail="Şifre en az 1 büyük harf içermelidir.")
     
     if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/]', data.password):
-        raise HTTPException(status_code=400, detail="Şifre en az 1 özel karakter içermelidir")
+        raise HTTPException(status_code=400, detail="Şifre en az 1 özel karakter içermelidir.")
     
     # New admins can only be regular admins, not main_admin
     new_role = "admin"
@@ -1793,52 +1793,52 @@ async def update_admin_password(admin_id: str, data: UpdateAdminPassword, admin 
     """Update admin password"""
     target_admin = await db.admins.find_one({"id": admin_id}, {"_id": 0})
     if not target_admin:
-        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+        raise HTTPException(status_code=404, detail="Admin bulunamadı.")
     
     # Check if current admin is trying to change main admin's password
     current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
     
     # Normal admin cannot change main admin's password
     if target_admin.get("role") == "main_admin" and current_admin.get("role") != "main_admin":
-        raise HTTPException(status_code=403, detail="Ana admin şifresini değiştirme yetkiniz yok")
+        raise HTTPException(status_code=403, detail="Ana admin şifresini değiştirme yetkiniz yok.")
     
     # Validate password
     if len(data.new_password) < 8:
-        raise HTTPException(status_code=400, detail="Şifre en az 8 karakter olmalıdır")
+        raise HTTPException(status_code=400, detail="Şifre en az 8 karakter olmalıdır.")
     
     import re
     if not re.search(r'[A-Z]', data.new_password):
-        raise HTTPException(status_code=400, detail="Şifre en az 1 büyük harf içermelidir")
+        raise HTTPException(status_code=400, detail="Şifre en az 1 büyük harf içermelidir.")
     
     if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/]', data.new_password):
-        raise HTTPException(status_code=400, detail="Şifre en az 1 özel karakter içermelidir")
+        raise HTTPException(status_code=400, detail="Şifre en az 1 özel karakter içermelidir.")
     
     await db.admins.update_one(
         {"id": admin_id},
         {"$set": {"password_hash": get_password_hash(data.new_password)}}
     )
     
-    return {"message": "Admin şifresi güncellendi"}
+    return {"message": "Admin şifresi güncellendi."}
 
 @api_router.delete("/admin/admins/{admin_id}")
 async def delete_admin(admin_id: str, admin = Depends(verify_admin)):
     """Delete an admin"""
     target_admin = await db.admins.find_one({"id": admin_id}, {"_id": 0})
     if not target_admin:
-        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+        raise HTTPException(status_code=404, detail="Admin bulunamadı.")
     
     # Prevent deleting the main admin (check role only, not username)
     if target_admin.get("role") == "main_admin":
-        raise HTTPException(status_code=400, detail="Ana admin silinemez")
+        raise HTTPException(status_code=400, detail="Ana admin silinemez.")
     
     # Only main admin can delete other admins
     current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
     if not current_admin or current_admin.get("role") != "main_admin":
-        raise HTTPException(status_code=403, detail="Sadece ana admin diğer adminleri silebilir")
+        raise HTTPException(status_code=403, detail="Sadece ana admin diğer adminleri silebilir.")
     
     # Prevent self-deletion
     if target_admin["username"] == admin["username"]:
-        raise HTTPException(status_code=400, detail="Kendinizi silemezsiniz")
+        raise HTTPException(status_code=400, detail="Kendinizi silemezsiniz.")
     
     await db.admins.delete_one({"id": admin_id})
     return {"message": "Admin silindi"}
@@ -1851,14 +1851,14 @@ async def update_admin_role(admin_id: str, data: UpdateAdminRole, admin = Depend
     is_main_admin = current_admin and current_admin.get("role") == "main_admin"
     
     if not is_main_admin:
-        raise HTTPException(status_code=403, detail="Sadece ana admin yetki değiştirebilir")
+        raise HTTPException(status_code=403, detail="Sadece ana admin yetki değiştirebilir.")
     
     target_admin = await db.admins.find_one({"id": admin_id}, {"_id": 0})
     if not target_admin:
-        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+        raise HTTPException(status_code=404, detail="Admin bulunamadı.")
     
     if data.new_role not in ["admin", "main_admin"]:
-        raise HTTPException(status_code=400, detail="Geçersiz rol. 'admin' veya 'main_admin' olmalı")
+        raise HTTPException(status_code=400, detail="Geçersiz rol. 'admin' veya 'main_admin' olmalı.")
     
     # Cannot change own role to regular admin (would lose main admin)
     if target_admin["username"] == admin["username"] and data.new_role == "admin":
@@ -1869,7 +1869,7 @@ async def update_admin_role(admin_id: str, data: UpdateAdminRole, admin = Depend
         {"$set": {"role": data.new_role}}
     )
     
-    return {"message": f"Admin yetkisi '{data.new_role}' olarak güncellendi"}
+    return {"message": f"Admin yetkisi '{data.new_role}' olarak güncellendi."}
 
 @api_router.post("/admin/transfer-main-admin")
 async def transfer_main_admin(data: TransferMainAdmin, admin = Depends(verify_admin)):
@@ -1879,20 +1879,20 @@ async def transfer_main_admin(data: TransferMainAdmin, admin = Depends(verify_ad
     is_main_admin = current_admin and current_admin.get("role") == "main_admin"
     
     if not is_main_admin:
-        raise HTTPException(status_code=403, detail="Sadece ana admin bu işlemi yapabilir")
+        raise HTTPException(status_code=403, detail="Sadece ana admin bu işlemi yapabilir.")
     
     # Verify password - check database password hash
     if not current_admin or not verify_password(data.password, current_admin.get("password_hash", "")):
-        raise HTTPException(status_code=401, detail="Şifre hatalı")
+        raise HTTPException(status_code=401, detail="Şifre hatalı.")
     
     # Get target admin
     target_admin = await db.admins.find_one({"id": data.new_main_admin_id}, {"_id": 0})
     if not target_admin:
-        raise HTTPException(status_code=404, detail="Hedef admin bulunamadı")
+        raise HTTPException(status_code=404, detail="Hedef admin bulunamadı.")
     
     # Cannot transfer to self
     if target_admin["username"] == admin["username"]:
-        raise HTTPException(status_code=400, detail="Kendinize devir yapamazsınız")
+        raise HTTPException(status_code=400, detail="Kendinize devir yapamazsınız.")
     
     # Update target admin to main_admin
     await db.admins.update_one(
@@ -1906,7 +1906,7 @@ async def transfer_main_admin(data: TransferMainAdmin, admin = Depends(verify_ad
         {"$set": {"role": "admin"}}
     )
     
-    return {"message": f"Ana admin yetkisi '{target_admin['display_name'] or target_admin['username']}' kullanıcısına devredildi"}
+    return {"message": f"Ana admin yetkisi '{target_admin['display_name'] or target_admin['username']}' kullanıcısına devredildi."}
 
 @api_router.put("/admin/profile")
 async def update_admin_profile(data: UpdateAdminProfile, admin = Depends(verify_admin)):
@@ -1920,7 +1920,7 @@ async def update_admin_profile(data: UpdateAdminProfile, admin = Depends(verify_
         update_data["avatar_url"] = data.avatar_url
     
     if not update_data:
-        raise HTTPException(status_code=400, detail="Güncellenecek veri yok")
+        raise HTTPException(status_code=400, detail="Güncellenecek veri yok.")
     
     result = await db.admins.update_one(
         {"username": admin["username"]},
@@ -1928,7 +1928,7 @@ async def update_admin_profile(data: UpdateAdminProfile, admin = Depends(verify_
     )
     
     if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+        raise HTTPException(status_code=404, detail="Admin bulunamadı.")
     
     return {"message": "Profil güncellendi"}
 
@@ -1938,12 +1938,12 @@ async def upload_admin_avatar(file: UploadFile = File(...), admin = Depends(veri
     # Validate file type
     allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
     if file.content_type not in allowed_types:
-        raise HTTPException(status_code=400, detail="Sadece JPEG, PNG, WebP veya GIF dosyaları kabul edilir")
+        raise HTTPException(status_code=400, detail="Sadece JPEG, PNG, WebP veya GIF dosyaları kabul edilir.")
     
     # Validate file size (max 5MB)
     content = await file.read()
     if len(content) > 5 * 1024 * 1024:
-        raise HTTPException(status_code=400, detail="Dosya boyutu 5MB'dan küçük olmalıdır")
+        raise HTTPException(status_code=400, detail="Dosya boyutu 5MB'dan küçük olmalıdır.")
     
     # Generate unique filename
     file_ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
@@ -1976,7 +1976,7 @@ async def delete_admin_avatar(admin = Depends(verify_admin)):
     """Delete admin profile avatar"""
     current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
     if not current_admin or not current_admin.get("avatar_url"):
-        raise HTTPException(status_code=404, detail="Profil fotoğrafı bulunamadı")
+        raise HTTPException(status_code=404, detail="Profil fotoğrafı bulunamadı.")
     
     # Delete file
     filename = current_admin["avatar_url"].split("/")[-1]
@@ -1990,7 +1990,7 @@ async def delete_admin_avatar(admin = Depends(verify_admin)):
         {"$set": {"avatar_url": None}}
     )
     
-    return {"message": "Profil fotoğrafı silindi"}
+    return {"message": "Profil fotoğrafı silindi."}
 
 @api_router.delete("/notifications/{notification_id}")
 async def delete_notification(notification_id: str, current_user: dict = Depends(get_current_user)):
@@ -2000,7 +2000,7 @@ async def delete_notification(notification_id: str, current_user: dict = Depends
     })
     
     if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Bildirim bulunamadı")
+        raise HTTPException(status_code=404, detail="Bildirim bulunamadı.")
     
     return {"message": "Bildirim silindi"}
 
@@ -2144,7 +2144,7 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
                 if block:
                     await websocket.send_json({
                         "type": "error",
-                        "message": "Bu kullanıcıya mesaj gönderemezsiniz"
+                        "message": "Bu kullanıcıya mesaj gönderemezsiniz."
                     })
                     continue
                 
