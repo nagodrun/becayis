@@ -7,6 +7,7 @@ import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
 import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
+import { getErrorMessage } from '../lib/api';
 import { Mail, AlertTriangle, Users, MapPin, MessageSquare, Shield } from 'lucide-react';
 
 const Login = () => {
