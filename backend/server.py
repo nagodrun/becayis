@@ -1025,6 +1025,11 @@ async def get_messages(conversation_id: str, current_user: dict = Depends(get_cu
 
 @api_router.post("/messages")
 async def send_message(data: SendMessage, current_user: dict = Depends(get_current_user)):
+    # Check if current user is blocked by admin
+    current_user_data = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    if current_user_data and current_user_data.get("blocked"):
+        raise HTTPException(status_code=403, detail="Hesabınız engellenmiş. Mesaj gönderemezsiniz.")
+    
     # Verify access
     conversation = await db.conversations.find_one({"id": data.conversation_id}, {"_id": 0})
     if not conversation:
@@ -1033,7 +1038,7 @@ async def send_message(data: SendMessage, current_user: dict = Depends(get_curre
     if current_user["id"] not in conversation["participants"]:
         raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok")
     
-    # Check if blocked
+    # Check if blocked (user-to-user block)
     other_user_id = [p for p in conversation["participants"] if p != current_user["id"]][0]
     block = await db.blocks.find_one({
         "blocker_id": other_user_id,
