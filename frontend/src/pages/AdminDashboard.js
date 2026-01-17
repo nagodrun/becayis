@@ -1083,7 +1083,7 @@ const AdminDashboard = () => {
               </div>
 
               <p className="text-sm text-slate-500 mb-6">
-                Bu sayfadan tüm kullanıcılara toplu bildirim gönderebilirsiniz. Gönderilen bildirimler kullanıcıların panellerindeki "Bildirimler" sekmesinde görünecektir.
+                Bu sayfadan tüm kullanıcılara toplu bildirim gönderebilirsiniz. Gönderilen bildirimler kullanıcıların panellerindeki Bildirimler sekmesinde görünecektir.
               </p>
 
               <h3 className="text-lg font-semibold mb-4">Gönderilen Toplu Bildirimler</h3>
@@ -1693,7 +1693,7 @@ const AdminDashboard = () => {
                 İlanı Reddet
               </DialogTitle>
               <DialogDescription>
-                "{selectedListingForReject?.title}" başlıklı ilanı reddetmek üzeresiniz.
+                &ldquo;{selectedListingForReject?.title}&rdquo; başlıklı ilanı reddetmek üzeresiniz.
               </DialogDescription>
             </DialogHeader>
             
