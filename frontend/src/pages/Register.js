@@ -208,7 +208,6 @@ const Register = () => {
                         onKeyUp={handleKeyDown}
                         placeholder="Güçlü bir şifre oluşturun"
                         required
-                        showIcon={true}
                         data-testid="register-password-input"
                       />
                       
@@ -255,7 +254,6 @@ const Register = () => {
                         onChange={(e) => setFormData({ ...formData, passwordConfirm: e.target.value })}
                         placeholder="Şifrenizi tekrar girin"
                         required
-                        showIcon={true}
                         data-testid="register-password-confirm-input"
                       />
                     </div>

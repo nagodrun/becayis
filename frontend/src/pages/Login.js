@@ -95,7 +95,6 @@ const Login = () => {
                       onKeyDown={handleKeyDown}
                       onKeyUp={handleKeyDown}
                       required
-                      showIcon={true}
                       data-testid="login-password-input"
                     />
                     
