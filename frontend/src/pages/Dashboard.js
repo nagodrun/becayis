@@ -237,7 +237,7 @@ const Dashboard = () => {
       }
       toast.success('Davet silindi');
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Davet silinemedi.');
+      toast.error(getErrorMessage(error, 'Davet silinemedi.'));
     }
   };
 
