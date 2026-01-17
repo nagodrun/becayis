@@ -682,7 +682,7 @@ const AdminDashboard = () => {
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Kullanıcılar ({users.length})</h2>
               <div className="space-y-4">
                 {users.map((user) => (
-                  <div key={user.id} className="border rounded-lg p-4 flex items-center justify-between" data-testid="admin-user-row">
+                  <div key={user.id} className="border rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4" data-testid="admin-user-row">
                     <div className="flex-1">
                       <div className="font-semibold">{user.profile?.display_name || user.email}</div>
                       <div className="text-sm text-slate-500">{user.email} • {user.phone}</div>
@@ -696,7 +696,19 @@ const AdminDashboard = () => {
                         {user.blocked && <Badge variant="destructive">Engellenmiş</Badge>}
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2 justify-end">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedUserForMessage(user);
+                          setShowUserMessageDialog(true);
+                        }}
+                        data-testid={`admin-message-user-${user.id}`}
+                      >
+                        <Mail className="w-4 h-4 sm:mr-1" />
+                        <span className="hidden sm:inline">Mesaj</span>
+                      </Button>
                       <Button
                         variant={user.blocked ? 'outline' : 'destructive'}
                         size="sm"
