@@ -466,7 +466,7 @@ const Dashboard = () => {
       // Refresh user data
       if (fetchUser) fetchUser();
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Profil fotoğrafı yüklenemedi.');
+      toast.error(getErrorMessage(error, 'Profil fotoğrafı yüklenemedi.'));
     } finally {
       setUploadingAvatar(false);
     }
