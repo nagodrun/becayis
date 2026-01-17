@@ -13,14 +13,18 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - Password strength validation (8+ chars, 1 uppercase, 1 special char)
 - Caps Lock detection on password fields
 - Forgot Password flow (mocked email)
+- **Password visibility toggle (eye icon) on all password fields**
 
 ### User Dashboard
 - Profile management with avatar upload
 - Listings management (create, edit, request deletion)
+- **Maximum 3 active listings per user**
+- **District field is optional when creating listings**
 - Invitations (sent/received) with delete functionality
 - Conversations/Messages
 - Notifications
 - Security tab for password change
+- **Scrollable tabs on mobile**
 
 ### Home Page & Listings
 - Recent listings display
@@ -57,6 +61,8 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
   - Change admin passwords
 - **Profile Tab**: Edit display name, upload avatar
 - Caps Lock detection on admin login
+- **Scrollable tabs on mobile**
+- **Responsive admin action buttons**
 
 ## Tech Stack
 - Frontend: React, TailwindCSS, Shadcn/UI
@@ -74,10 +80,14 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - [x] Listing cards with masked names
 - [x] Profile avatar upload with preview
 - [x] Province/District dynamic dropdowns
+- [x] **Password visibility toggle on all password fields**
+- [x] **Scrollable tabs on mobile (user & admin dashboards)**
+- [x] **Responsive admin action buttons**
 
 ### Core Functionality
 - [x] User registration with email verification (mocked)
 - [x] User login/logout
+- [x] **3 listing limit per user**
 - [x] Profile CRUD
 - [x] Listing CRUD with deletion requests
 - [x] Invitation system with location matching warning
