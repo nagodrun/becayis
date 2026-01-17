@@ -172,9 +172,9 @@ class CreateListing(BaseModel):
     institution: str
     role: str
     current_province: str
-    current_district: str
+    current_district: Optional[str] = None  # Optional district
     desired_province: str
-    desired_district: str
+    desired_district: Optional[str] = None  # Optional district
     notes: Optional[str] = None
 
 class UpdateListing(BaseModel):
