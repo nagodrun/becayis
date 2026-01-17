@@ -1225,7 +1225,14 @@ async def admin_login(username: str, password: str):
         
         # Get actual role from database
         actual_role = existing.get("role", "admin")
-        access_token = create_access_token(data={"sub": "admin", "is_admin": True, "username": username})
+        admin_id = existing.get("id", str(uuid.uuid4()))
+        access_token = create_access_token(data={
+            "sub": "admin", 
+            "is_admin": True, 
+            "username": username,
+            "admin_id": admin_id,
+            "display_name": existing.get("display_name", "Admin")
+        })
         return {
             "access_token": access_token,
             "token_type": "bearer",
@@ -1235,7 +1242,13 @@ async def admin_login(username: str, password: str):
     # Check admins collection
     admin = await db.admins.find_one({"username": username}, {"_id": 0})
     if admin and verify_password(password, admin.get("password_hash", "")):
-        access_token = create_access_token(data={"sub": "admin", "is_admin": True, "username": username})
+        access_token = create_access_token(data={
+            "sub": "admin", 
+            "is_admin": True, 
+            "username": username,
+            "admin_id": admin.get("id"),
+            "display_name": admin.get("display_name", "Admin")
+        })
         return {
             "access_token": access_token,
             "token_type": "bearer",
