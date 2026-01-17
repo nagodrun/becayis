@@ -604,21 +604,21 @@ const Dashboard = () => {
             handleMarkAllNotificationsRead();
           }
         }}>
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="profile" data-testid="tab-profile">Profil</TabsTrigger>
-            <TabsTrigger value="listings" data-testid="tab-listings">İlanlarım</TabsTrigger>
-            <TabsTrigger value="invitations" data-testid="tab-invitations">
+          <TabsList className="flex w-full overflow-x-auto scrollbar-hide">
+            <TabsTrigger value="profile" data-testid="tab-profile" className="flex-shrink-0">Profil</TabsTrigger>
+            <TabsTrigger value="listings" data-testid="tab-listings" className="flex-shrink-0">İlanlarım</TabsTrigger>
+            <TabsTrigger value="invitations" data-testid="tab-invitations" className="flex-shrink-0">
               Davetler {invitations.received.filter(i => i.status === 'pending').length > 0 && (
                 <Badge className="ml-2 bg-amber-500">{invitations.received.filter(i => i.status === 'pending').length}</Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="conversations" data-testid="tab-conversations">Mesajlar</TabsTrigger>
-            <TabsTrigger value="notifications" data-testid="tab-notifications">
+            <TabsTrigger value="conversations" data-testid="tab-conversations" className="flex-shrink-0">Mesajlar</TabsTrigger>
+            <TabsTrigger value="notifications" data-testid="tab-notifications" className="flex-shrink-0">
               Bildirimler {unreadNotifications > 0 && (
                 <Badge className="ml-2 bg-red-500">{unreadNotifications}</Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="security" data-testid="tab-security">
+            <TabsTrigger value="security" data-testid="tab-security" className="flex-shrink-0">
               <KeyRound className="w-4 h-4 mr-1" />
               Güvenlik
             </TabsTrigger>
