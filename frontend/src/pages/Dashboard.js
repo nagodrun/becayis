@@ -574,6 +574,31 @@ const Dashboard = () => {
           </Card>
         )}
 
+        {/* Admin Notification Banners */}
+        {adminBannerNotifications.map((notif) => (
+          <Card key={notif.id} className="p-6 mb-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 relative" data-testid="admin-notification-banner">
+            <button
+              onClick={() => handleDismissAdminBanner(notif.id)}
+              className="absolute top-4 right-4 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+              data-testid={`dismiss-banner-${notif.id}`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="flex items-start space-x-4 pr-8">
+              <div className="flex-shrink-0">
+                <Bell className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">{notif.title}</h3>
+                <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed">{notif.message}</p>
+                <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">{formatDate(notif.created_at)}</p>
+              </div>
+            </div>
+          </Card>
+        ))}
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="p-6">
