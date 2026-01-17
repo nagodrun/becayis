@@ -769,6 +769,80 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
 
+          {/* Pending Listings Tab */}
+          <TabsContent value="pending-listings">
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
+                <Clock className="w-5 h-5 inline mr-2 text-amber-500" />
+                Onay Bekleyen İlanlar ({pendingListings.length})
+              </h2>
+              {pendingListings.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                  <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
+                  <p>Onay bekleyen ilan yok</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {pendingListings.map((listing) => (
+                    <div key={listing.id} className="border rounded-lg p-4" data-testid={`pending-listing-${listing.id}`}>
+                      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="font-semibold text-lg">{listing.title}</span>
+                            <Badge className="bg-amber-500">Onay Bekliyor</Badge>
+                          </div>
+                          <div className="text-sm text-slate-600">
+                            <strong>Kullanıcı:</strong> {listing.user_profile?.display_name || listing.user?.email}
+                          </div>
+                          <div className="text-sm text-slate-600 mt-1">
+                            <strong>Kurum:</strong> {listing.institution}
+                          </div>
+                          <div className="text-sm text-slate-600">
+                            <strong>Pozisyon:</strong> {listing.role}
+                          </div>
+                          <div className="text-sm text-slate-500 mt-2">
+                            <strong>Konum:</strong> {listing.current_province}/{listing.current_district || '-'} → {listing.desired_province}/{listing.desired_district || '-'}
+                          </div>
+                          {listing.notes && (
+                            <div className="mt-2 p-2 bg-slate-50 dark:bg-slate-800 rounded text-sm">
+                              <strong>Notlar:</strong> {listing.notes}
+                            </div>
+                          )}
+                          <div className="text-xs text-slate-400 mt-2">
+                            Oluşturulma: {formatDate(listing.created_at)}
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-2 justify-end">
+                          <Button
+                            className="bg-emerald-600 hover:bg-emerald-700"
+                            size="sm"
+                            onClick={() => handleApproveListing(listing.id)}
+                            data-testid={`approve-listing-${listing.id}`}
+                          >
+                            <Check className="w-4 h-4 mr-1" />
+                            Onayla
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedListingForReject(listing);
+                              setShowRejectDialog(true);
+                            }}
+                            data-testid={`reject-listing-${listing.id}`}
+                          >
+                            <X className="w-4 h-4 mr-1" />
+                            Reddet
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </TabsContent>
+
           <TabsContent value="deletions">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
