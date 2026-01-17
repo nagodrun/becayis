@@ -81,18 +81,10 @@ const CreateEditListing = () => {
   useEffect(() => {
     if (formData.desired_province) {
       fetchDistricts(formData.desired_province);
-      // Auto-generate title prefix when desired province is selected (only for new listings)
-      if (!isEdit && profileData.current_province) {
-        const prefix = `${profileData.current_province} - ${formData.desired_province}`;
-        // Only set if title is empty or starts with a province prefix pattern
-        if (!formData.title || formData.title.match(/^[A-ZÇĞİÖŞÜa-zçğıöşü]+\s*-\s*[A-ZÇĞİÖŞÜa-zçğıöşü]+/)) {
-          setFormData(prev => ({ ...prev, title: prefix }));
-        }
-      }
     } else {
       setDistricts([]);
     }
-  }, [formData.desired_province, profileData.current_province, isEdit]);
+  }, [formData.desired_province]);
 
   const fetchProvinces = async () => {
     try {
