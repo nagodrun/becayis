@@ -1706,8 +1706,17 @@ async def create_admin(data: CreateAdmin, admin = Depends(verify_admin)):
     if not current_admin or current_admin.get("role") != "main_admin":
         raise HTTPException(status_code=403, detail="Sadece ana admin yeni admin oluşturabilir")
     
+    # Validate username is a gov.tr email
+    import re
+    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.gov\.tr$'
+    if not re.match(email_pattern, data.username.lower()):
+        raise HTTPException(status_code=400, detail="Admin kullanıcı adı .gov.tr uzantılı bir e-posta adresi olmalıdır (örn: admin@kurum.gov.tr)")
+    
+    # Normalize username to lowercase
+    username = data.username.lower()
+    
     # Check if username exists
-    existing = await db.admins.find_one({"username": data.username})
+    existing = await db.admins.find_one({"username": username})
     if existing:
         raise HTTPException(status_code=400, detail="Bu kullanıcı adı zaten kullanılıyor")
     
