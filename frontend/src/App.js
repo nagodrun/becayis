@@ -27,19 +27,13 @@ import KVKKBasvuru from './pages/KVKKBasvuru';
 import Cookies from './pages/Cookies';
 import MembershipAgreement from './pages/MembershipAgreement';
 
-// Scroll restoration component
+// Scroll to top component - always scroll to top on any navigation
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   
   useEffect(() => {
-    // Only scroll to top on route change, not on page refresh
-    const isPageRefresh = performance.navigation?.type === 1 || 
-                          (performance.getEntriesByType && 
-                           performance.getEntriesByType('navigation')[0]?.type === 'reload');
-    
-    if (!isPageRefresh) {
-      window.scrollTo(0, 0);
-    }
+    // Always scroll to top on route change or page refresh
+    window.scrollTo(0, 0);
   }, [pathname]);
   
   return null;
