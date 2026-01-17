@@ -11,7 +11,7 @@ import { Badge } from '../components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { SearchableSelect } from '../components/ui/searchable-select';
 import { ListingCard } from '../components/ListingCard';
-import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Trash2, Camera, X, KeyRound, AlertTriangle } from 'lucide-react';
+import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Trash2, Camera, X, KeyRound, AlertTriangle, HelpCircle, MessageCircle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -34,6 +34,7 @@ const Dashboard = () => {
   const [conversations, setConversations] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [deletionRequests, setDeletionRequests] = useState([]);
+  const [supportTickets, setSupportTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [deletionDialogOpen, setDeletionDialogOpen] = useState(false);
@@ -42,6 +43,16 @@ const Dashboard = () => {
   const [showWarning, setShowWarning] = useState(() => {
     return localStorage.getItem('hideWarning') !== 'true';
   });
+  
+  // Support ticket dialog state
+  const [showSupportDialog, setShowSupportDialog] = useState(false);
+  const [supportFormData, setSupportFormData] = useState({
+    subject: '',
+    message: '',
+    category: 'general'
+  });
+  const [submittingTicket, setSubmittingTicket] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState(null);
   
   // Admin notifications banner state - track dismissed notifications
   const [dismissedBanners, setDismissedBanners] = useState(() => {
