@@ -132,7 +132,7 @@ const ForgotPassword = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="ornek@adalet.gov.tr"
+                  placeholder="ornek@kurum.gov.tr"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required

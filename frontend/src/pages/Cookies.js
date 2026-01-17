@@ -44,8 +44,7 @@ const Cookies = () => {
             </div>
 
             <div className="prose dark:prose-invert max-w-none space-y-6 text-muted-foreground">
-              <p className="text-sm text-slate-500">Son Güncelleme: Ocak 2025</p>
-
+              
               <section>
                 <h2 className="text-xl font-semibold text-foreground mt-8 mb-4">1. Çerez Nedir?</h2>
                 <p>
@@ -163,6 +162,7 @@ const Cookies = () => {
                   adresinden bizimle iletişime geçebilirsiniz.
                 </p>
               </section>
+              <p className="text-sm text-slate-500">Son Güncelleme: Ocak 2026</p>
             </div>
           </CardContent>
         </Card>

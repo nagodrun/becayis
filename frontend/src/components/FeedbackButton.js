@@ -120,7 +120,7 @@ export const FeedbackButton = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="ornek@adalet.gov.tr"
+                  placeholder="ornek@kurum.gov.tr"
                 />
               </div>
             )}

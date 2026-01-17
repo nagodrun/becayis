@@ -44,8 +44,7 @@ const KVKK = () => {
             </div>
 
             <div className="prose dark:prose-invert max-w-none space-y-6 text-muted-foreground">
-              <p className="text-sm text-slate-500">Son Güncelleme: Ocak 2025</p>
-
+              
               <section>
                 <h2 className="text-xl font-semibold text-foreground mt-8 mb-4">1. Veri Sorumlusu</h2>
                 <p>
@@ -128,6 +127,7 @@ const KVKK = () => {
                   'nu kullanabilir veya <strong>kvkk@becayis.org.tr</strong> adresine e-posta gönderebilirsiniz.
                 </p>
               </section>
+              <p className="text-sm text-slate-500">Son Güncelleme: Ocak 2026</p>
             </div>
           </CardContent>
         </Card>

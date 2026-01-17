@@ -190,7 +190,7 @@ const Register = () => {
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="ornek@adalet.gov.tr"
+                        placeholder="ornek@kurum.gov.tr"
                         required
                         data-testid="register-email-input"
                       />

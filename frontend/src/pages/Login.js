@@ -75,7 +75,7 @@ const Login = () => {
                         id="email"
                         type="email"
                         value={formData.email}
-                        placeholder="ornek@adalet.gov.tr"
+                        placeholder="ornek@kurum.gov.tr"
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         required
                         className="pl-10"
