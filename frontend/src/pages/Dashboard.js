@@ -274,7 +274,7 @@ const Dashboard = () => {
       toast.success('Şifreniz başarıyla değiştirildi');
       setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Şifre değiştirilemedi');
+      toast.error(getErrorMessage(error, 'Şifre değiştirilemedi'));
     } finally {
       setChangingPassword(false);
     }
