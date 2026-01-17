@@ -9,6 +9,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { SearchableSelect } from '../components/ui/searchable-select';
 import { ListingCard } from '../components/ListingCard';
 import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Trash2, Camera, X, KeyRound, AlertTriangle } from 'lucide-react';
 import {
