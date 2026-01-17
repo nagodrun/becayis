@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import { PasswordInput } from '../components/ui/password-input';
 import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
 import { toast } from 'sonner';
@@ -33,19 +34,7 @@ const Register = () => {
   const passwordIsValid = passwordHasMinLength && passwordHasUppercase && passwordHasSpecialChar;
 
   const handleKeyDown = (e) => {
-    if (e.getModifierState('CapsLock')) {
-      setCapsLockOn(true);
-    } else {
-      setCapsLockOn(false);
-    }
-  };
-
-  const handleKeyUp = (e) => {
-    if (e.getModifierState('CapsLock')) {
-      setCapsLockOn(true);
-    } else {
-      setCapsLockOn(false);
-    }
+    setCapsLockOn(e.getModifierState('CapsLock'));
   };
 
   const handleStep1 = async (e) => {
@@ -196,13 +185,12 @@ const Register = () => {
 
               <div>
                 <Label htmlFor="password">Şifre</Label>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   onKeyDown={handleKeyDown}
-                  onKeyUp={handleKeyUp}
+                  onKeyUp={handleKeyDown}
                   placeholder="Güçlü bir şifre oluşturun"
                   required
                   data-testid="register-password-input"
@@ -244,9 +232,8 @@ const Register = () => {
 
               <div>
                 <Label htmlFor="passwordConfirm">Şifre Tekrar</Label>
-                <Input
+                <PasswordInput
                   id="passwordConfirm"
-                  type="password"
                   value={formData.passwordConfirm}
                   onChange={(e) => setFormData({ ...formData, passwordConfirm: e.target.value })}
                   placeholder="Şifrenizi tekrar girin"
