@@ -34,13 +34,24 @@ const CreateEditListing = () => {
     current_district: ''
   });
 
-  // Block digits in title and notes with character limits
+  // Block digits and province/district names in title with character limits
   const handleTextChange = (field, value) => {
     // Remove any digits from the input
-    const sanitizedValue = value.replace(/[0-9]/g, '');
+    let sanitizedValue = value.replace(/[0-9]/g, '');
     
-    // Apply character limits
+    // For title field, also remove province/district names
     if (field === 'title') {
+      // Get all province names to filter out
+      const allProvinceNames = provinces.map(p => p.toLowerCase());
+      
+      // Split by common separators and filter out province names
+      const words = sanitizedValue.split(/[\s\-–—,]+/);
+      const filteredWords = words.filter(word => {
+        const lowerWord = word.toLowerCase().trim();
+        return !allProvinceNames.includes(lowerWord) && lowerWord.length > 0;
+      });
+      
+      sanitizedValue = filteredWords.join(' ').trim();
       setFormData({ ...formData, [field]: sanitizedValue.slice(0, 45) });
     } else if (field === 'notes') {
       setFormData({ ...formData, [field]: sanitizedValue.slice(0, 140) });
@@ -190,13 +201,15 @@ const CreateEditListing = () => {
               <p className="text-sm text-muted-foreground">İlanınızın başlığı ve açıklaması</p>
               
               <div>
-                <Label htmlFor="title">İlan Başlığı * <span className="text-muted-foreground font-normal">({formData.title.length}/45)</span></Label>
+                <Label htmlFor="title">İlan Başlığı <span className="text-muted-foreground font-normal">({formData.title.length}/45)</span></Label>
+                <p className="text-xs text-blue-600 dark:text-blue-400 mb-2">
+                  📍 Mevcut konumunuz ve istediğiniz il başlığa otomatik olarak eklenecektir.
+                </p>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => handleTextChange('title', e.target.value)}
-                  placeholder="Örn: Ankara - İstanbul Becayiş"
-                  required
+                  placeholder="Ek açıklama ekleyebilirsiniz (isteğe bağlı)"
                   maxLength={45}
                   data-testid="listing-title-input"
                 />
