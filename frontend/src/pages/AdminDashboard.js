@@ -554,7 +554,21 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-500">Kabul Edilen Davetler</p>
-                <p className="text-3xl font-bold mt-1">{stats.accepted_invitations}/{stats.total_invitations}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-3xl font-bold">{stats.accepted_invitations}/{stats.total_invitations}</p>
+                  {stats.accepted_invitations > 0 && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-slate-400 hover:text-red-500 p-1 h-auto"
+                      onClick={handleResetAcceptedInvitations}
+                      title="Kabul edilen davetleri sıfırla"
+                      data-testid="reset-accepted-invitations"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
               <Shield className="w-10 h-10 text-emerald-600" />
             </div>
