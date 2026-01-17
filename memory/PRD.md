@@ -97,6 +97,7 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - [x] Province names blocked in listing title field
 - [x] Helper text for auto-generated title
 - [x] Space key enabled in title input
+- [x] **NEW: Login, Register, Admin Login pages redesigned** - Modern 2-column layout with gradient backgrounds, feature cards, and improved UX
 
 ### Previous Updates
 - [x] Admin role management (main_admin vs admin)
