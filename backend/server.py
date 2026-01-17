@@ -1314,6 +1314,65 @@ async def admin_get_stats(admin = Depends(verify_admin)):
         "pending_deletions": pending_deletions
     }
 
+@api_router.delete("/admin/stats/accepted-invitations")
+async def reset_accepted_invitations_count(admin = Depends(verify_admin)):
+    """Reset accepted invitations by deleting all accepted invitations"""
+    result = await db.invitations.delete_many({"status": "accepted"})
+    return {"message": f"{result.deleted_count} kabul edilmiş davet silindi", "deleted_count": result.deleted_count}
+
+class BulkNotification(BaseModel):
+    title: str
+    message: str
+
+@api_router.post("/admin/notifications/bulk")
+async def send_bulk_notification(data: BulkNotification, admin = Depends(verify_admin)):
+    """Send notification to all users"""
+    users = await db.users.find({}, {"_id": 0, "id": 1}).to_list(None)
+    
+    notifications = []
+    for user in users:
+        notification = {
+            "id": str(uuid.uuid4()),
+            "user_id": user["id"],
+            "title": data.title,
+            "message": data.message,
+            "type": "admin_broadcast",
+            "read": False,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        notifications.append(notification)
+    
+    if notifications:
+        await db.notifications.insert_many(notifications)
+    
+    return {"message": f"{len(notifications)} kullanıcıya bildirim gönderildi", "count": len(notifications)}
+
+@api_router.get("/admin/notifications")
+async def get_admin_notifications(admin = Depends(verify_admin)):
+    """Get all admin broadcast notifications"""
+    notifications = await db.notifications.find(
+        {"type": "admin_broadcast"}, 
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    return notifications
+
+@api_router.delete("/admin/notifications/{notification_id}")
+async def delete_admin_notification(notification_id: str, admin = Depends(verify_admin)):
+    """Delete a specific admin notification from all users"""
+    # Find the notification to get its details
+    notification = await db.notifications.find_one({"id": notification_id}, {"_id": 0})
+    if not notification:
+        raise HTTPException(status_code=404, detail="Bildirim bulunamadı")
+    
+    # Delete all notifications with the same title, message, and type that were created around the same time
+    result = await db.notifications.delete_many({
+        "title": notification["title"],
+        "message": notification["message"],
+        "type": "admin_broadcast"
+    })
+    
+    return {"message": f"Bildirim silindi ({result.deleted_count} kayıt)", "deleted_count": result.deleted_count}
+
 @api_router.get("/admin/deletion-requests")
 async def admin_get_deletion_requests(admin = Depends(verify_admin)):
     requests = await db.deletion_requests.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
