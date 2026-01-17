@@ -578,7 +578,7 @@ const Dashboard = () => {
       setDeletionReasonAccount('');
       setAccountDeletionPending(true);
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Talep gönderilemedi.');
+      toast.error(getErrorMessage(error, 'Talep gönderilemedi.'));
     }
   };
 
