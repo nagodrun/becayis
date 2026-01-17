@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import { PasswordInput } from '../components/ui/password-input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Label } from '../components/ui/label';
-import { Mail, ArrowLeft, KeyRound, Check } from 'lucide-react';
+import { Mail, ArrowLeft, KeyRound, Check, AlertTriangle } from 'lucide-react';
 import api from '../lib/api';
 import { toast } from 'sonner';
 
@@ -17,6 +18,17 @@ const ForgotPassword = () => {
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [capsLockOn, setCapsLockOn] = useState(false);
+
+  // Password validation
+  const passwordHasMinLength = newPassword.length >= 8;
+  const passwordHasUppercase = /[A-Z]/.test(newPassword);
+  const passwordHasSpecialChar = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/]/.test(newPassword);
+  const passwordIsValid = passwordHasMinLength && passwordHasUppercase && passwordHasSpecialChar;
+
+  const handleKeyDown = (e) => {
+    setCapsLockOn(e.getModifierState('CapsLock'));
+  };
 
   const handleSendCode = async (e) => {
     e.preventDefault();
@@ -65,8 +77,8 @@ const ForgotPassword = () => {
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    if (newPassword.length < 6) {
-      toast.error('Şifre en az 6 haneli olmalıdır.');
+    if (!passwordIsValid) {
+      toast.error('Lütfen tüm şifre gereksinimlerini karşılayın');
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -171,22 +183,55 @@ const ForgotPassword = () => {
             <form onSubmit={handleResetPassword} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="newPassword">Yeni Şifre</Label>
-                <Input
+                <PasswordInput
                   id="newPassword"
-                  type="password"
-                  placeholder="En az 6 karakter"
+                  placeholder="Güçlü bir şifre oluşturun"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  onKeyUp={handleKeyDown}
                   required
                   data-testid="new-password-input"
                 />
+                
+                {/* Caps Lock Warning */}
+                {capsLockOn && (
+                  <div className="mt-2 flex items-center gap-2 text-amber-600 dark:text-amber-400 text-xs">
+                    <AlertTriangle className="w-4 h-4" />
+                    <span>Caps Lock açık</span>
+                  </div>
+                )}
+
+                {/* Password Requirements */}
+                <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                  <p className="text-xs font-medium text-foreground mb-2">Şifre Gereksinimleri:</p>
+                  <ul className="space-y-1.5">
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasMinLength ? 'text-emerald-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasMinLength ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                        {passwordHasMinLength ? '✓' : '✗'}
+                      </span>
+                      En az 8 karakter
+                    </li>
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasUppercase ? 'text-emerald-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasUppercase ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                        {passwordHasUppercase ? '✓' : '✗'}
+                      </span>
+                      En az 1 büyük harf (A-Z)
+                    </li>
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasSpecialChar ? 'text-emerald-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasSpecialChar ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                        {passwordHasSpecialChar ? '✓' : '✗'}
+                      </span>
+                      En az 1 özel karakter (!@#$%^&* vb.)
+                    </li>
+                  </ul>
+                </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Şifre Tekrar</Label>
-                <Input
+                <PasswordInput
                   id="confirmPassword"
-                  type="password"
                   placeholder="Şifrenizi tekrar girin"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -195,7 +240,7 @@ const ForgotPassword = () => {
                 />
               </div>
 
-              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading} data-testid="reset-password-btn">
+              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading || !passwordIsValid} data-testid="reset-password-btn">
                 {loading ? 'Kaydediliyor...' : 'Şifreyi Değiştir'}
               </Button>
             </form>
