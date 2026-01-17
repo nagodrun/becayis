@@ -660,15 +660,23 @@ async def create_listing(data: CreateListing, current_user: dict = Depends(get_c
         "desired_province": data.desired_province,
         "desired_district": data.desired_district or "",
         "notes": data.notes,
-        "status": "active",
+        "status": "pending_approval",  # Requires admin approval
         "created_at": datetime.now(timezone.utc).isoformat(),
         "updated_at": datetime.now(timezone.utc).isoformat()
     }
     await db.listings.insert_one(listing)
     
+    # Create notification for user
+    await create_notification(
+        current_user["id"],
+        "İlan Onay Bekliyor",
+        "İlanınız oluşturuldu ve admin onayı bekliyor. Onaylandıktan sonra yayınlanacaktır.",
+        "listing_pending"
+    )
+    
     # Remove MongoDB _id before returning
     listing.pop("_id", None)
-    return {"message": "İlan oluşturuldu", "listing": listing}
+    return {"message": "İlan oluşturuldu ve admin onayı bekliyor", "listing": listing}
 
 @api_router.get("/listings")
 async def get_listings(
