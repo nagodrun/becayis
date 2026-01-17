@@ -171,7 +171,7 @@ const AdminDashboard = () => {
       const adminsRes = await api.get('/admin/admins');
       setAdmins(adminsRes.data || []);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Admin oluşturulamadı');
+      toast.error(getErrorMessage(error, 'Admin oluşturulamadı');
     }
   };
 
@@ -196,7 +196,7 @@ const AdminDashboard = () => {
       setSelectedAdmin(null);
       setNewPassword('');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Şifre güncellenemedi');
+      toast.error(getErrorMessage(error, 'Şifre güncellenemedi');
     }
   };
 
@@ -208,7 +208,7 @@ const AdminDashboard = () => {
       setAdmins(prev => prev.filter(a => a.id !== adminId));
       toast.success('Admin silindi');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Admin silinemedi');
+      toast.error(getErrorMessage(error, 'Admin silinemedi');
     }
   };
 
@@ -228,7 +228,7 @@ const AdminDashboard = () => {
       const adminsRes = await api.get('/admin/admins');
       setAdmins(adminsRes.data || []);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Yetki güncellenemedi');
+      toast.error(getErrorMessage(error, 'Yetki güncellenemedi');
     }
   };
 
@@ -253,7 +253,7 @@ const AdminDashboard = () => {
       const currentAdminRes = await api.get('/admin/me');
       setCurrentAdmin(currentAdminRes.data);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Devir işlemi başarısız');
+      toast.error(getErrorMessage(error, 'Devir işlemi başarısız');
     }
   };
 
@@ -292,7 +292,7 @@ const AdminDashboard = () => {
       const adminsRes = await api.get('/admin/admins');
       setAdmins(adminsRes.data || []);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Profil güncellenemedi');
+      toast.error(getErrorMessage(error, 'Profil güncellenemedi');
     } finally {
       setSavingProfile(false);
     }
@@ -326,7 +326,7 @@ const AdminDashboard = () => {
         avatar_url: currentAdminRes.data?.avatar_url || ''
       });
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fotoğraf silinemedi');
+      toast.error(getErrorMessage(error, 'Fotoğraf silinemedi');
     }
   };
 
@@ -353,7 +353,7 @@ const AdminDashboard = () => {
       const notificationsRes = await api.get('/admin/notifications');
       setAdminNotifications(notificationsRes.data || []);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Bildirim gönderilemedi');
+      toast.error(getErrorMessage(error, 'Bildirim gönderilemedi');
     } finally {
       setSendingNotification(false);
     }
@@ -365,7 +365,7 @@ const AdminDashboard = () => {
       setAdminNotifications(prev => prev.filter(n => n.id !== notificationId));
       toast.success('Bildirim silindi');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Bildirim silinemedi');
+      toast.error(getErrorMessage(error, 'Bildirim silinemedi');
     }
   };
 
@@ -375,7 +375,7 @@ const AdminDashboard = () => {
       setAdminUserMessages(prev => prev.filter(n => n.id !== notificationId));
       toast.success('Mesaj silindi');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Mesaj silinemedi');
+      toast.error(getErrorMessage(error, 'Mesaj silinemedi');
     }
   };
 
@@ -409,7 +409,7 @@ const AdminDashboard = () => {
       setSelectedTicket(null);
       setTicketReplyMessage('');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Yanıt gönderilemedi');
+      toast.error(getErrorMessage(error, 'Yanıt gönderilemedi');
     } finally {
       setSendingTicketReply(false);
     }
@@ -421,7 +421,7 @@ const AdminDashboard = () => {
       setSupportTickets(prev => prev.map(t => t.id === ticketId ? {...t, status: 'closed'} : t));
       toast.success('Destek talebi kapatıldı');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'İşlem başarısız');
+      toast.error(getErrorMessage(error, 'İşlem başarısız');
     }
   };
 
@@ -431,7 +431,7 @@ const AdminDashboard = () => {
       setSupportTickets(prev => prev.filter(t => t.id !== ticketId));
       toast.success('Destek talebi silindi');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Silinemedi');
+      toast.error(getErrorMessage(error, 'Silinemedi');
     }
   };
 
@@ -468,7 +468,7 @@ const AdminDashboard = () => {
       const statsRes = await api.get('/admin/stats');
       setStats(statsRes.data);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'İşlem başarısız');
+      toast.error(getErrorMessage(error, 'İşlem başarısız');
     }
   };
 
@@ -479,7 +479,7 @@ const AdminDashboard = () => {
       setPendingListings(prev => prev.filter(l => l.id !== listingId));
       toast.success('İlan onaylandı');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'İlan onaylanamadı');
+      toast.error(getErrorMessage(error, 'İlan onaylanamadı');
     }
   };
 
@@ -496,7 +496,7 @@ const AdminDashboard = () => {
       setSelectedListingForReject(null);
       setRejectReason('');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'İlan reddedilemedi');
+      toast.error(getErrorMessage(error, 'İlan reddedilemedi');
     }
   };
 
@@ -519,7 +519,7 @@ const AdminDashboard = () => {
       setSelectedUserForMessage(null);
       setUserMessageData({ title: '', message: '' });
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Mesaj gönderilemedi');
+      toast.error(getErrorMessage(error, 'Mesaj gönderilemedi');
     } finally {
       setSendingUserMessage(false);
     }
