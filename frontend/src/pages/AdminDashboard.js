@@ -4,9 +4,10 @@ import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
-import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut, X, UserPlus, KeyRound, Trash2, Camera, User, Crown, ArrowRightLeft } from 'lucide-react';
+import { Users, FileText, MessageSquare, Shield, AlertTriangle, LogOut, X, UserPlus, KeyRound, Trash2, Camera, User, Crown, ArrowRightLeft, Bell, Send, RefreshCw } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -48,6 +49,12 @@ const AdminDashboard = () => {
   const [showTransferMainAdminDialog, setShowTransferMainAdminDialog] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [newAdminData, setNewAdminData] = useState({ username: '', password: '', display_name: '' });
+  
+  // Bulk notification state
+  const [showBulkNotificationDialog, setShowBulkNotificationDialog] = useState(false);
+  const [bulkNotificationData, setBulkNotificationData] = useState({ title: '', message: '' });
+  const [sendingNotification, setSendingNotification] = useState(false);
+  const [adminNotifications, setAdminNotifications] = useState([]);
   const [newPassword, setNewPassword] = useState('');
   const [newRole, setNewRole] = useState('');
   const [transferPassword, setTransferPassword] = useState('');
