@@ -836,7 +836,12 @@ async def send_invitation(data: SendInvitation, current_user: dict = Depends(get
     if listing["user_id"] == current_user["id"]:
         raise HTTPException(status_code=400, detail="Kendi ilanınıza davet gönderemezsiniz")
     
-    # Check if user is blocked
+    # Check if current user is blocked by admin
+    current_user_data = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    if current_user_data and current_user_data.get("blocked"):
+        raise HTTPException(status_code=403, detail="Hesabınız engellenmiş. Talep gönderemezsiniz.")
+    
+    # Check if user is blocked (user-to-user block)
     block = await db.blocks.find_one({
         "$or": [
             {"blocker_id": listing["user_id"], "blocked_id": current_user["id"]},
