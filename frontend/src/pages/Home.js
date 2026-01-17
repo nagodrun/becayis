@@ -168,7 +168,7 @@ const Home = () => {
                   value={filters.position || "all"} 
                   onValueChange={(val) => setFilters({ ...filters, position: val === "all" ? "" : val })}
                 >
-                  <SelectTrigger className="h-11 sm:h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm sm:text-base" data-testid="filter-position">
+                  <SelectTrigger className="h-12 sm:h-12 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm sm:text-base" data-testid="filter-position">
                     <SelectValue placeholder="Pozisyon Seçin" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">

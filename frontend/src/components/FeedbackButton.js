@@ -31,7 +31,7 @@ export const FeedbackButton = () => {
     <>
       <Button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 rounded-full w-14 h-14 shadow-lg bg-blue-600 hover:bg-blue-700 z-50"
+        className="fixed bottom-6 right-6 rounded-full w-14 h-14 shadow-lg bg-gradient-to-r from-amber-800 to-orange-700 hover:from-amber-600 hover:to-orange-600"
         data-testid="feedback-button"
       >
         <MessageCircle className="w-6 h-6" />
