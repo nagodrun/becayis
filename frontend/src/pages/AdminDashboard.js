@@ -379,6 +379,85 @@ const AdminDashboard = () => {
     }
   };
 
+  // Support ticket functions
+  const handleReplyToTicket = async () => {
+    if (!selectedTicket || !ticketReplyMessage.trim()) {
+      toast.error('Yanıt mesajı zorunludur');
+      return;
+    }
+    
+    setSendingTicketReply(true);
+    try {
+      const response = await api.post(`/admin/support-tickets/${selectedTicket.id}/reply`, {
+        message: ticketReplyMessage
+      });
+      
+      // Update ticket in state with new reply
+      setSupportTickets(prev => prev.map(t => {
+        if (t.id === selectedTicket.id) {
+          return {
+            ...t,
+            status: 'answered',
+            replies: [...(t.replies || []), response.data.reply]
+          };
+        }
+        return t;
+      }));
+      
+      toast.success('Yanıt gönderildi');
+      setShowTicketReplyDialog(false);
+      setSelectedTicket(null);
+      setTicketReplyMessage('');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Yanıt gönderilemedi');
+    } finally {
+      setSendingTicketReply(false);
+    }
+  };
+
+  const handleCloseTicket = async (ticketId) => {
+    try {
+      await api.put(`/admin/support-tickets/${ticketId}/close`);
+      setSupportTickets(prev => prev.map(t => t.id === ticketId ? {...t, status: 'closed'} : t));
+      toast.success('Destek talebi kapatıldı');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'İşlem başarısız');
+    }
+  };
+
+  const handleDeleteTicket = async (ticketId) => {
+    try {
+      await api.delete(`/admin/support-tickets/${ticketId}`);
+      setSupportTickets(prev => prev.filter(t => t.id !== ticketId));
+      toast.success('Destek talebi silindi');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Silinemedi');
+    }
+  };
+
+  const getTicketStatusBadge = (status) => {
+    switch (status) {
+      case 'open':
+        return <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">Açık</Badge>;
+      case 'answered':
+        return <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">Yanıtlandı</Badge>;
+      case 'closed':
+        return <Badge className="bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400">Kapatıldı</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  const getCategoryLabel = (category) => {
+    switch (category) {
+      case 'general': return 'Genel';
+      case 'bug': return 'Hata Bildirimi';
+      case 'suggestion': return 'Öneri';
+      case 'complaint': return 'Şikayet';
+      default: return category;
+    }
+  };
+
   const handleResetAcceptedInvitations = async () => {
     if (!window.confirm('Tüm kabul edilmiş davetleri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) return;
 
