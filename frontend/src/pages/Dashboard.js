@@ -536,7 +536,7 @@ const Dashboard = () => {
       // Refresh user data without page reload - stay on profile tab
       if (fetchUser) await fetchUser();
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Profil güncellenemedi.');
+      toast.error(getErrorMessage(error, 'Profil güncellenemedi.'));
     }
   };
 
