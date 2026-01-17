@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { User, LogOut, Moon, Sun, ArrowLeftRight } from 'lucide-react';
+import { User, LogOut, Moon, Sun, ArrowLeftRight, Shield } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import api from '../lib/api';
@@ -55,9 +55,20 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
+  
+  // Check if we're on admin pages and if admin is logged in
+  const isAdminPage = location.pathname.startsWith('/admin');
+  const isAdminLoggedIn = localStorage.getItem('is_admin') === 'true' && localStorage.getItem('admin_token');
+
+  const handleAdminLogout = () => {
+    localStorage.removeItem('admin_token');
+    localStorage.removeItem('is_admin');
+    navigate('/admin/login');
+  };
 
   const fetchUnreadCounts = useCallback(async () => {
-    if (!user) {
+    // Don't fetch notifications for admin pages or if admin is logged in on admin pages
+    if (!user || isAdminPage) {
       setUnreadCount(0);
       return;
     }
@@ -85,7 +96,7 @@ export const Navbar = () => {
     } catch {
       // Silently fail - don't show error for notification fetch
     }
-  }, [user]);
+  }, [user, isAdminPage]);
 
   // Fetch unread counts when user changes or location changes
   useEffect(() => {
@@ -99,9 +110,9 @@ export const Navbar = () => {
     
     doFetch();
 
-    // Set up polling every 30 seconds only if user exists
+    // Set up polling every 30 seconds only if user exists and not on admin page
     let interval;
-    if (user) {
+    if (user && !isAdminPage) {
       interval = setInterval(doFetch, 30000);
     }
     
@@ -109,10 +120,93 @@ export const Navbar = () => {
       isMounted = false;
       if (interval) clearInterval(interval);
     };
-  }, [user, location.pathname, fetchUnreadCounts]);
+  }, [user, location.pathname, fetchUnreadCounts, isAdminPage]);
 
   const isActive = (path) => location.pathname === path;
 
+  // Render admin navbar for admin pages
+  if (isAdminPage && isAdminLoggedIn) {
+    return (
+      <nav className="bg-slate-900 border-b border-slate-700 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link to="/admin/dashboard" className="flex items-center space-x-3 group">
+              <div className="relative w-9 h-9 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-red-500 to-red-700" />
+                <Shield className="relative z-10 w-5 h-5 text-white" />
+              </div>
+              <div className="text-2xl font-extrabold text-white transition-colors group-hover:text-red-400" style={{ fontFamily: 'Manrope' }}>
+                Admin Panel
+              </div>
+            </Link>
+
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                className="text-slate-300 hover:text-white hover:bg-slate-800"
+                data-testid="theme-toggle"
+              >
+                {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+              </Button>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-800" data-testid="admin-menu-button">
+                    <Shield className="w-5 h-5" />
+                    <span className="hidden md:inline">Admin</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate('/admin/dashboard')} data-testid="admin-menu-dashboard">
+                    <User className="w-4 h-4 mr-2" />
+                    Admin Paneli
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleAdminLogout} data-testid="admin-menu-logout">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Çıkış Yap
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
+  // Render admin login page navbar (minimal)
+  if (isAdminPage && !isAdminLoggedIn) {
+    return (
+      <nav className="bg-slate-900 border-b border-slate-700 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link to="/" className="flex items-center space-x-3 group">
+              <SwapIcon />
+              <div className="text-2xl font-extrabold text-white transition-colors group-hover:text-amber-500" style={{ fontFamily: 'Manrope' }}>
+                Becayiş
+              </div>
+            </Link>
+
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                className="text-slate-300 hover:text-white hover:bg-slate-800"
+                data-testid="theme-toggle"
+              >
+                {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
+  // Regular user navbar
   return (
     <nav className="bg-card border-b border-border sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
