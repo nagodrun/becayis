@@ -626,14 +626,32 @@ const Dashboard = () => {
 
           <TabsContent value="listings" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold" style={{ fontFamily: 'Manrope' }}>İlanlarım</h2>
-              <Link to="/listings/create">
-                <Button className="bg-slate-900 hover:bg-slate-800" data-testid="create-listing-button">
+              <div>
+                <h2 className="text-2xl font-bold" style={{ fontFamily: 'Manrope' }}>İlanlarım</h2>
+                <p className="text-sm text-muted-foreground">{myListings.filter(l => l.status === 'active').length} / 3 aktif ilan</p>
+              </div>
+              {myListings.filter(l => l.status === 'active').length >= 3 ? (
+                <Button disabled className="bg-slate-400 cursor-not-allowed" data-testid="create-listing-button-disabled">
                   <Plus className="w-4 h-4 mr-2" />
-                  Yeni İlan
+                  Limit Doldu (3/3)
                 </Button>
-              </Link>
+              ) : (
+                <Link to="/listings/create">
+                  <Button className="bg-slate-900 hover:bg-slate-800" data-testid="create-listing-button">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Yeni İlan
+                  </Button>
+                </Link>
+              )}
             </div>
+
+            {myListings.filter(l => l.status === 'active').length >= 3 && (
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  <strong>Bilgi:</strong> Maksimum 3 aktif ilan oluşturabilirsiniz. Yeni ilan eklemek için mevcut ilanlarınızdan birini silmeniz gerekiyor.
+                </p>
+              </div>
+            )}
 
             {myListings.length === 0 ? (
               <Card className="p-12 text-center">
