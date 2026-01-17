@@ -1990,6 +1990,63 @@ const AdminDashboard = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Ticket Reply Dialog */}
+        <Dialog open={showTicketReplyDialog} onOpenChange={setShowTicketReplyDialog}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle>Destek Talebine Yanıt Ver</DialogTitle>
+              <DialogDescription>
+                {selectedTicket && (
+                  <span className="block mt-2">
+                    <strong>Konu:</strong> {selectedTicket.subject}
+                  </span>
+                )}
+              </DialogDescription>
+            </DialogHeader>
+            
+            {selectedTicket && (
+              <div className="space-y-4">
+                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
+                  <p className="text-xs font-medium text-muted-foreground mb-2">Kullanıcı Mesajı:</p>
+                  <p className="text-sm text-foreground whitespace-pre-wrap">{selectedTicket.message}</p>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="ticket-reply">Yanıtınız *</Label>
+                  <Textarea
+                    id="ticket-reply"
+                    value={ticketReplyMessage}
+                    onChange={(e) => setTicketReplyMessage(e.target.value)}
+                    placeholder="Kullanıcıya yanıtınızı yazın..."
+                    rows={5}
+                    maxLength={1000}
+                    data-testid="ticket-reply-input"
+                  />
+                  <p className="text-xs text-muted-foreground text-right">{ticketReplyMessage.length}/1000</p>
+                </div>
+              </div>
+            )}
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setShowTicketReplyDialog(false);
+                setSelectedTicket(null);
+                setTicketReplyMessage('');
+              }}>
+                İptal
+              </Button>
+              <Button
+                onClick={handleReplyToTicket}
+                disabled={sendingTicketReply || !ticketReplyMessage.trim()}
+                className="bg-emerald-600 hover:bg-emerald-700"
+                data-testid="send-ticket-reply-btn"
+              >
+                {sendingTicketReply ? 'Gönderiliyor...' : 'Yanıt Gönder'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
