@@ -1747,6 +1747,13 @@ async def update_admin_password(admin_id: str, data: UpdateAdminPassword, admin 
     if not target_admin:
         raise HTTPException(status_code=404, detail="Admin bulunamadı")
     
+    # Check if current admin is trying to change main admin's password
+    current_admin = await db.admins.find_one({"username": admin["username"]}, {"_id": 0})
+    
+    # Normal admin cannot change main admin's password
+    if target_admin.get("role") == "main_admin" and current_admin.get("role") != "main_admin":
+        raise HTTPException(status_code=403, detail="Ana admin şifresini değiştirme yetkiniz yok")
+    
     # Validate password
     if len(data.new_password) < 8:
         raise HTTPException(status_code=400, detail="Şifre en az 8 karakter olmalıdır")
