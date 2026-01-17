@@ -1035,6 +1035,107 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
 
+          {/* Support Tickets Tab */}
+          <TabsContent value="support-tickets">
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold" style={{ fontFamily: 'Manrope' }}>
+                  Destek Talepleri ({supportTickets.length})
+                </h2>
+                <div className="flex gap-2">
+                  <Badge className="bg-amber-100 text-amber-800">{supportTickets.filter(t => t.status === 'open').length} Açık</Badge>
+                  <Badge className="bg-emerald-100 text-emerald-800">{supportTickets.filter(t => t.status === 'answered').length} Yanıtlandı</Badge>
+                  <Badge className="bg-slate-100 text-slate-800">{supportTickets.filter(t => t.status === 'closed').length} Kapalı</Badge>
+                </div>
+              </div>
+
+              {supportTickets.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                  <HelpCircle className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <p>Henüz destek talebi yok</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {supportTickets.map((ticket) => (
+                    <div key={ticket.id} className="border rounded-lg p-4" data-testid={`admin-ticket-${ticket.id}`}>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            {getTicketStatusBadge(ticket.status)}
+                            <Badge variant="outline" className="text-xs">{getCategoryLabel(ticket.category)}</Badge>
+                          </div>
+                          <h3 className="font-semibold text-foreground">{ticket.subject}</h3>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            <span className="font-medium">{ticket.user_name || ticket.user_email}</span>
+                            {' • '}{formatDate(ticket.created_at)}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          {ticket.status !== 'closed' && (
+                            <Button
+                              size="sm"
+                              className="bg-emerald-600 hover:bg-emerald-700"
+                              onClick={() => {
+                                setSelectedTicket(ticket);
+                                setShowTicketReplyDialog(true);
+                              }}
+                              data-testid={`reply-ticket-${ticket.id}`}
+                            >
+                              <MessageCircle className="w-4 h-4 mr-1" />
+                              Yanıtla
+                            </Button>
+                          )}
+                          {ticket.status === 'answered' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleCloseTicket(ticket.id)}
+                              data-testid={`close-ticket-${ticket.id}`}
+                            >
+                              <Check className="w-4 h-4 mr-1" />
+                              Kapat
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            onClick={() => handleDeleteTicket(ticket.id)}
+                            data-testid={`delete-ticket-${ticket.id}`}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      {/* Original message */}
+                      <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 mb-3">
+                        <p className="text-sm text-foreground whitespace-pre-wrap">{ticket.message}</p>
+                      </div>
+                      
+                      {/* Replies */}
+                      {ticket.replies?.length > 0 && (
+                        <div className="space-y-3 ml-4">
+                          <p className="text-xs font-medium text-muted-foreground">Yanıtlar ({ticket.replies.length})</p>
+                          {ticket.replies.map((reply) => (
+                            <div key={reply.id} className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Badge className="bg-emerald-600 text-white text-xs">Admin</Badge>
+                                <span className="text-xs text-muted-foreground">{reply.admin_name}</span>
+                                <span className="text-xs text-muted-foreground">• {formatDate(reply.created_at)}</span>
+                              </div>
+                              <p className="text-sm text-foreground whitespace-pre-wrap">{reply.message}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </TabsContent>
+
           <TabsContent value="reports">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Raporlar ({reports.length})</h2>
