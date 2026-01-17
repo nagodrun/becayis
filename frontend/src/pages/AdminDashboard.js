@@ -767,6 +767,12 @@ const AdminDashboard = () => {
               <Bell className="w-4 h-4 mr-1" />
               Bildirimler
             </TabsTrigger>
+            <TabsTrigger value="support-tickets" data-testid="admin-tab-support" className="flex-shrink-0">
+              <HelpCircle className="w-4 h-4 mr-1" />
+              Destek {supportTickets.filter(t => t.status === 'open').length > 0 && (
+                <Badge className="ml-2 bg-amber-500">{supportTickets.filter(t => t.status === 'open').length}</Badge>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="reports" data-testid="admin-tab-reports" className="flex-shrink-0">Raporlar</TabsTrigger>
             <TabsTrigger value="admins" data-testid="admin-tab-admins" className="flex-shrink-0">
               <Shield className="w-4 h-4 mr-1" />
