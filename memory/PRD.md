@@ -25,6 +25,7 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - Notifications
 - Security tab for password change
 - **Scrollable tabs on mobile**
+- **Admin notification banners** - Admin broadcast and private messages shown as blue banners at top of dashboard, dismissible to notifications tab
 
 ### Home Page & Listings
 - Recent listings display
@@ -35,8 +36,16 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - Dynamic "Most Listed Positions" and "Most Listed Institutions" sections
 - Unregistered users redirected to registration when clicking "Talep Gönder"
 
+### Listing Creation
+- **Auto-generated title**: Current Province - Desired Province prefix added automatically on submit
+- **Province/district names blocked** in title input field
+- Helper text explains auto-generation
+- Title max 45 chars, Notes max 140 chars
+- No digits allowed in title/notes
+
 ### Swap Invitation System
 - Profile completion required to send invitations
+- **Position matching required** - Users can only send invitations to listings with same position
 - Location mismatch warning when user's current province doesn't match listing's desired province
 - Duplicate invitation prevention
 - Rate limiting (10 invitations/day)
@@ -48,8 +57,8 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - User blocking functionality
 
 ### Admin Panel
-- **Main Admin**: nuno / Nuno1234! (role: main_admin)
-- **Regular Admin**: becayis / 1234 (role: admin)
+- **Main Admin**: nuno@adalet.gov.tr (role: main_admin)
+- **Regular Admin**: becayis (role: admin)
 - User management (view, block/unblock, delete)
 - **Send individual messages to users**
 - Listing management
@@ -57,33 +66,21 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - Deletion request approval (listings and accounts)
 - Platform statistics with reset functionality
 - **Admin Management (Main Admin Only)**:
-  - Create new admins
+  - Create new admins (must use gov.tr email)
   - Delete other admins
   - Transfer main admin role (with password confirmation)
-  - Change admin passwords
+  - Change admin passwords (normal admin cannot change main admin password)
 - **Profile Tab**: Edit display name, upload avatar
 - **Bulk Notifications**: Send notifications to all users
+- **Delete Notifications/Messages** (Main Admin Only): Can delete sent bulk notifications and private messages
 - **Accepted Invitations Reset**: Clear counter in stats
 - Caps Lock detection on admin login
 - **Admin login error stays on admin page (no redirect to user login)**
 - **Scrollable tabs on mobile**
 - **Responsive admin action buttons**
 
-### Listing Approval System
-- New listings created with status `pending_approval`
-- Admin can approve or reject listings
-- User receives notification when listing is approved/rejected
-- Rejection can include a reason message
-
-### Blocked User Restrictions
-- Admin-blocked users cannot send swap invitations
-- Admin-blocked users cannot send messages
-- Block status stored in user document (`blocked: true`)
-
-### Searchable Dropdowns
-- **Institution selection**: Searchable dropdown for public institutions
-- **Position selection**: Searchable dropdown for job positions
-- Search endpoints: `/api/institutions/search`, `/api/positions/search`
+### Scroll Behavior
+- **Always scroll to top** on page navigation and refresh
 
 ## Tech Stack
 - Frontend: React, TailwindCSS, Shadcn/UI
@@ -91,58 +88,34 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - Database: MongoDB
 - Real-time: WebSockets
 
-## What's Implemented (December 2025)
+## What's Implemented (January 2025)
 
-### UI/UX
-- [x] Dark/light theme toggle
-- [x] Responsive design (mobile-first)
-- [x] FAQ section (single column, responsive)
-- [x] Search section (responsive grid)
-- [x] Listing cards with masked names
-- [x] Profile avatar upload with preview
-- [x] Province/District dynamic dropdowns
-- [x] **Password visibility toggle on all password fields**
-- [x] **Scrollable tabs on mobile (user & admin dashboards)**
-- [x] **Responsive admin action buttons**
+### Latest Updates (Jan 17, 2025)
+- [x] Admin notification banners on user dashboard
+- [x] Scroll to top on all navigation (removed refresh retention)
+- [x] Main admin can delete bulk notifications and private messages
+- [x] Province names blocked in listing title field
+- [x] Helper text for auto-generated title
+- [x] Space key enabled in title input
 
-### Core Functionality
-- [x] User registration with email verification (mocked)
-- [x] User login/logout
-- [x] **3 listing limit per user**
-- [x] Profile CRUD
-- [x] Listing CRUD with deletion requests
-- [x] Invitation system with location matching warning
-- [x] Real-time chat via WebSocket
-- [x] User blocking
-- [x] Admin panel with full moderation capabilities
-
-### Recent Updates (Jan 2025)
-- [x] FAQ dropdowns: Single column responsive layout
-- [x] Search section: Full responsive grid (1/2/3 columns)
-- [x] Province filter: Searches both current AND desired province
-- [x] Invitation deletion: Local state update (no page refresh)
-- [x] Location mismatch warning: Formal toast message when sending invitation
+### Previous Updates
+- [x] Admin role management (main_admin vs admin)
+- [x] Normal admin cannot change main admin password
+- [x] Admin gov.tr email validation
+- [x] Position matching for invitations
+- [x] Listing approval workflow
+- [x] User blocking by admin
+- [x] Bulk notification system
+- [x] Private messaging to users
+- [x] Password visibility toggle
+- [x] Mobile responsive tabs
+- [x] 3 listing limit per user
+- [x] District optional
 
 ## Mocked Features
 - Email notifications (SendGrid planned)
 - Real OTP verification (Twilio planned)
 - SMS notifications
-
-## Backlog
-
-### P1 - High Priority
-- [ ] Email notifications (SendGrid integration)
-- [ ] Real OTP verification (Twilio integration)
-
-### P2 - Medium Priority
-- [ ] Mobile app conversion (React Native / PWA)
-- [ ] Push notifications
-- [ ] Advanced search filters
-
-### P3 - Low Priority
-- [ ] Analytics dashboard
-- [ ] Export functionality
-- [ ] Multi-language support
 
 ## API Endpoints
 
@@ -174,6 +147,18 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - DELETE /api/conversations/{id}
 - WebSocket: /ws/{token}
 
+### Admin
+- POST /api/admin/login
+- GET /api/admin/users
+- GET /api/admin/listings
+- GET /api/admin/stats
+- GET /api/admin/notifications (bulk notifications)
+- DELETE /api/admin/notifications/{id}
+- **GET /api/admin/user-messages** (private messages sent to users)
+- **DELETE /api/admin/user-messages/{id}**
+- POST /api/admin/users/{user_id}/message
+- POST /api/admin/notifications/bulk
+
 ### Utility
 - GET /api/provinces
 - GET /api/districts/{province}
@@ -181,9 +166,17 @@ Build a production-ready web app MVP for a "Public Employee Location Swap" platf
 - GET /api/utility/positions
 - GET /api/faq
 
-### Admin
-- POST /api/admin/login
-- GET /api/admin/users
-- GET /api/admin/listings
-- GET /api/admin/stats
-- Various moderation endpoints
+## Backlog
+
+### P1 - High Priority
+- [ ] Email notifications (SendGrid integration)
+- [ ] Real OTP verification (Twilio integration)
+
+### P2 - Medium Priority
+- [ ] Backend refactor (split server.py into modules)
+- [ ] Mobile app conversion (React Native / PWA)
+
+### P3 - Low Priority
+- [ ] Analytics dashboard
+- [ ] Export functionality
+- [ ] Multi-language support
