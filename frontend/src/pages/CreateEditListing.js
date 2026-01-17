@@ -39,19 +39,29 @@ const CreateEditListing = () => {
     // Remove any digits from the input
     let sanitizedValue = value.replace(/[0-9]/g, '');
     
-    // For title field, also remove province/district names
+    // For title field, also remove province/district names but preserve spaces
     if (field === 'title') {
       // Get all province names to filter out
       const allProvinceNames = provinces.map(p => p.toLowerCase());
       
-      // Split by common separators and filter out province names
-      const words = sanitizedValue.split(/[\s\-–—,]+/);
-      const filteredWords = words.filter(word => {
-        const lowerWord = word.toLowerCase().trim();
-        return !allProvinceNames.includes(lowerWord) && lowerWord.length > 0;
+      // Check each word but preserve the original spacing
+      const words = sanitizedValue.split(' ');
+      const filteredWords = words.map(word => {
+        // Remove dashes and special chars for comparison
+        const cleanWord = word.replace(/[\-–—,]/g, '').toLowerCase().trim();
+        // If word matches a province name, remove it (return empty string)
+        if (allProvinceNames.includes(cleanWord)) {
+          return '';
+        }
+        return word;
       });
       
-      sanitizedValue = filteredWords.join(' ').trim();
+      // Join with single space, but don't trim to allow trailing space while typing
+      sanitizedValue = filteredWords.join(' ').replace(/\s+/g, ' ');
+      
+      // Only trim leading spaces, allow trailing space for typing
+      sanitizedValue = sanitizedValue.replace(/^\s+/, '');
+      
       setFormData({ ...formData, [field]: sanitizedValue.slice(0, 45) });
     } else if (field === 'notes') {
       setFormData({ ...formData, [field]: sanitizedValue.slice(0, 140) });
