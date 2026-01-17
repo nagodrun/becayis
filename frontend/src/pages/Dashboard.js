@@ -159,12 +159,13 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [listingsRes, invitationsRes, conversationsRes, notificationsRes, deletionReqRes] = await Promise.all([
+      const [listingsRes, invitationsRes, conversationsRes, notificationsRes, deletionReqRes, ticketsRes] = await Promise.all([
         api.get('/listings/my'),
         api.get('/invitations'),
         api.get('/conversations'),
         api.get('/notifications'),
-        api.get('/listings/deletion-requests/my')
+        api.get('/listings/deletion-requests/my'),
+        api.get('/support-tickets')
       ]);
 
       setMyListings(listingsRes.data);
@@ -172,6 +173,7 @@ const Dashboard = () => {
       setConversations(conversationsRes.data);
       setNotifications(notificationsRes.data);
       setDeletionRequests(deletionReqRes.data);
+      setSupportTickets(ticketsRes.data);
     } catch (error) {
       toast.error('Veriler yüklenirken hata oluştu');
     } finally {
