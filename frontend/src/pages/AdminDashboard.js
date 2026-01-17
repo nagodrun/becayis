@@ -371,6 +371,59 @@ const AdminDashboard = () => {
     }
   };
 
+  // Listing approval functions
+  const handleApproveListing = async (listingId) => {
+    try {
+      await api.post(`/admin/listings/${listingId}/approve`);
+      setPendingListings(prev => prev.filter(l => l.id !== listingId));
+      toast.success('İlan onaylandı');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'İlan onaylanamadı');
+    }
+  };
+
+  const handleRejectListing = async () => {
+    if (!selectedListingForReject) return;
+
+    try {
+      await api.post(`/admin/listings/${selectedListingForReject.id}/reject`, {
+        reason: rejectReason || null
+      });
+      setPendingListings(prev => prev.filter(l => l.id !== selectedListingForReject.id));
+      toast.success('İlan reddedildi');
+      setShowRejectDialog(false);
+      setSelectedListingForReject(null);
+      setRejectReason('');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'İlan reddedilemedi');
+    }
+  };
+
+  // User message function
+  const handleSendUserMessage = async () => {
+    if (!selectedUserForMessage || !userMessageData.title.trim() || !userMessageData.message.trim()) {
+      toast.error('Başlık ve mesaj zorunludur');
+      return;
+    }
+
+    setSendingUserMessage(true);
+    try {
+      await api.post(`/admin/users/${selectedUserForMessage.id}/message`, {
+        user_id: selectedUserForMessage.id,
+        title: userMessageData.title,
+        message: userMessageData.message
+      });
+      toast.success('Mesaj gönderildi');
+      setShowUserMessageDialog(false);
+      setSelectedUserForMessage(null);
+      setUserMessageData({ title: '', message: '' });
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Mesaj gönderilemedi');
+    } finally {
+      setSendingUserMessage(false);
+    }
+  };
+
   const handleBlockUser = async (userId, isBlocked) => {
     try {
       if (isBlocked) {
