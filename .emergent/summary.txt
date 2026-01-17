@@ -2,89 +2,106 @@
 Build a production-ready web app MVP for a “Public Employee Location Swap” platform in Turkey. The platform allows public employees in the same role to find each other and mutually swap locations.
 
 PRODUCT REQUIREMENTS:
-1.  **Authentication**: Unique account per person, verified by an official government email domain (e.g., @adalet.gov.tr).
+1.  **Authentication**: Unique account per person, verified by an official government email domain (e.g., @adalet.gov.tr). Admin username must also be a  email.
 2.  **User Dashboard**: A central hub for users to manage their profile, listings, invitations, and conversations.
 3.  **Home Page & Listings**: Show recent listings with a single search bar and filters for institution, role, and location.
-4.  **Swap Invitation & Privacy**: Users send invitations. Contact details are revealed only after mutual acceptance, which then opens a chat.
+4.  **Swap Invitation & Privacy**: Users send invitations. Contact details are revealed only after mutual acceptance, which then opens a chat. A user cannot send an invitation to a listing with a different position.
 5.  **Chat**: 1-on-1 chat for users with accepted invitations.
-6.  **User Blocking & Account Deletion**: Users can block others and request account deletion, which requires admin approval.
-7.  **Admin Panel**: An admin moderates listings and users, including account/listing deletion requests.
-8.  **UI/UX**: Dark/light theme, unified profile button, animated logo, static pages (Terms, Privacy, Help), and profile picture uploads.
-9.  **Listing Creation**: The form should be pre-filled with the user's data.
+6.  **User Blocking & Account Deletion**: Admins can block users, preventing them from sending new listings or messages. Users can request account deletion, which requires admin approval.
+7.  **Admin Panel**: An admin moderates listings and users. This includes:
+    *   Listing approval/rejection.
+    *   Admin management (CRUD for other admins, role changes).
+    *   Sending private messages and bulk notifications to users.
+    *   Viewing application stats.
+    *   Resetting counters.
+8.  **UI/UX**: Dark/light theme, unified profile button, animated logo, static pages (Terms, Privacy, Help), and profile picture uploads. Passwords should have a visibility toggle. Page scroll position should be maintained on refresh.
+9.  **Listing Creation**: The form should be pre-filled with the user's data. The title should be auto-generated in the Current City - Desired City format. A user can have a maximum of 3 active listings. Listings require admin approval before becoming public.
 10. **Password Management**: Implement a Forgot Password flow and allow users to change their password from their dashboard.
-11. **Admin Management**: Admins should be able to manage other admin accounts (CRUD) and edit their own profiles.
+11. **Admin Management**: There are two roles: main_admin and admin. A main admin can manage other admins (CRUD, role changes, password resets) and transfer their main admin status. A normal admin cannot change the main admin's password.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The project is a full-stack application (React frontend, FastAPI/MongoDB backend). The user pivoted from a mobile app conversion request to implementing a large number of web features. This session focused on iterative UI/UX enhancements and new functionalities based on user feedback.
+A full-stack application (React/FastAPI/MongoDB) has been developed. The last session focused on implementing a large number of new features and fixes based on user requests.
 
-Key additions in this session include:
-- **Homepage:** Search functionality was enhanced to include searching by position. The FAQ section was replaced with dynamic Most Listed Positions and Most Listed Institutions sections, which act as filters when clicked.
-- **Security & Auth:** A Forgot Password flow (with mocked email), password change in the user dashboard, and a password strength indicator (validating length, uppercase, and special characters) have been implemented on the login, registration, and password change forms. A Caps Lock is on warning was also added to all password fields.
-- **User/Admin Dashboards:** Actions in both user and admin dashboards (e.g., deleting invitations, deleting users) now update the state locally without requiring a page reload. Toast notifications are now dismissible on click.
-- **Admin Panel:** Functionality was significantly expanded to include a new tab for full CRUD management of other admin accounts.
+Key additions include:
+- **Admin Roles**: Implemented a main_admin and admin role system with distinct permissions. The main admin can manage other admins, transfer their role, and perform sensitive actions. Normal admins have limited capabilities.
+- **Admin Features**: Added a bulk notification system, the ability for admins to send private messages to users, and a listing approval workflow. Admins can now also block users, preventing them from creating listings or sending messages.
+- **UI/UX Enhancements**:
+    - A password visibility toggle (eye icon) was added to all password input fields.
+    - Responsive design was improved for mobile, making tabs in user/admin dashboards scrollable and preventing buttons from overflowing.
+    - Implemented scroll position restoration on page refresh.
+- **Listing Management**:
+    - A limit of 3 listings per user was enforced on the backend.
+    - The district field was made optional.
+    - New listings now require admin approval ().
+    - The listing creation form auto-generates the title based on selected cities.
+- **Security & Logic Fixes**:
+    - Fixed a critical bug where a failed admin login would redirect to the user login page.
+    - Prevented normal admins from being able to change a main admin's password.
+    - Enforced that admins must have a  email address.
+    - Prevented users from sending swap invitations to listings with a different job position.
 
 **Last working item**:
-- Last item agent was working: The agent was in the process of adding a new Profilim (My Profile) tab to the Admin Dashboard. This feature is intended to allow admins to edit their own profile information, including their display name and profile picture.
+- Last item agent was working: The agent was implementing a batch of six user requests.
 - Status: IN PROGRESS
 - Agent Testing Done: N
 - Which testing method agent to use? both
 - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-- Issue 1: (P0) Complete the Admin Profile Editing Feature
+- Issue 1: (P0) Finalize and Test the Latest Batch of Features
 - Issue 2: (P1) Full Regression Test of All New Features
 - Issue 3: (P2) Implement Real Email Notifications for Password Reset
 - Issue 4: (P3) Implement Real OTP Verification for Phone Numbers
 
 Issues Detail:
 - Issue 1:
-    - Attempted fixes: The agent added the necessary state management hooks () in  for the admin's profile data but did not implement the UI for the form or the backend endpoint to handle the profile update.
+    - Attempted fixes: The agent implemented backend and frontend code for all six requested features: (1) Prevent normal admin from changing main admin's password, (2) Retain scroll position, (3) Enforce  email for admins, (4) Block invitations for different positions, (5) Auto-generate listing titles, (6) Correct listing status labels. However, the implementation was not fully tested as a whole.
     - Next debug checklist:
-        1.  In , build the UI for the Profilim tab, including input fields for profile data and an avatar upload component.
-        2.  In , create a new PUT endpoint (e.g., ) to handle updates to the admin's profile and process avatar uploads.
-        3.  Wire the frontend form to the new backend endpoint.
-        4.  Test the feature end-to-end to ensure profile data and the image are saved and displayed correctly.
-    - Why fix this issue and what will be achieved with the fix?: This completes the user's latest request and brings the admin management feature set to a more complete state.
+        1.  Verify the scroll restoration works correctly across all pages and browsers.
+        2.  Test the edge cases for admin creation/editing to ensure the  validation is robust.
+        3.  Manually test the workflow of a user trying to send an invitation to a listing with a different position and verify the correct error message is shown.
+        4.  Test the listing creation flow to ensure the title is auto-generated and the status labels (, , ) are displayed correctly in both the user's dashboard and the admin panel.
+        5.  Verify that a normal admin cannot see the password change button for a main admin.
+    - Why fix this issue and what will be achieved with the fix?: This will complete the user's latest set of requests and ensure the new features are working correctly before deployment.
     - Status: IN PROGRESS
     - Is recurring issue? N
     - Should Test frontend/backend/both after fix? Both
     - Blocked on other issue: None
 
 - Issue 2:
-    - Attempted fixes: The agent performed isolated screenshot tests after each minor change but failed to run a comprehensive automated test. A call to the  failed to start, and this was not pursued further.
+    - Attempted fixes: The agent has relied on isolated screenshot and curl tests. A previous attempt to run  failed and was not debugged.
     - Next debug checklist:
-        1.  Invoke the  with a detailed test plan.
-        2.  The test plan must cover all features added in this session: profile completion check before sending invites, invitation deletion without page reload, enhanced homepage search (by position, by dual-location), most listed section filter clicks, the mocked password reset flow, password changes with strength validation, caps lock indicators, and the new admin CRUD functionality.
-    - Why fix this issue and what will be achieved with the fix?: This is CRITICAL. The application has undergone massive changes without proper testing, and its stability is unknown. A successful test run is required to establish a stable baseline before any further development.
+        1.  Invoke the  with a comprehensive test plan covering all features added in the last two sessions (admin role management, blocking, notifications, listing approvals, password visibility, responsive fixes, etc.).
+    - Why fix this issue and what will be achieved with the fix?: CRITICAL. The application's stability is highly questionable after numerous major, untested changes. A full regression test is needed to find and fix bugs and establish a stable baseline.
     - Status: NOT STARTED
     - Is recurring issue? Y
     - Should Test frontend/backend/both after fix? Both
     - Blocked on other issue: None
 
 - Issue 3:
-    - Attempted fixes: None. The password reset email is currently mocked.
-    - Next debug checklist: Use the  to integrate an email service like SendGrid and replace the mocked email functionality in .
-    - Why fix this issue and what will be achieved with the fix?: This will make the Forgot Password feature fully functional, which is a core requirement for a production application.
+    - Attempted fixes: None. Password reset emails are mocked.
+    - Next debug checklist: Use  to integrate a service like SendGrid and replace the mock email function in .
+    - Why fix this issue and what will be achieved with the fix?: Activates the Forgot Password feature, a core requirement for a live application.
     - Status: NOT STARTED
     - Is recurring issue? N
     - Should Test frontend/backend/both after fix? Backend
     - Blocked on other issue: None
 
 - Issue 4:
-    - Attempted fixes: None. This is a backlog item from a previous session.
-    - Next debug checklist: Use the  to integrate an SMS service like Twilio to implement real OTP verification.
-    - Why fix this issue and what will be achieved with the fix?: This enhances account security and validates user phone numbers.
+    - Attempted fixes: None.
+    - Next debug checklist: Use  to integrate an SMS service like Twilio for OTP verification.
+    - Why fix this issue and what will be achieved with the fix?: Enhances account security.
     - Status: NOT STARTED
     - Is recurring issue? N
     - Should Test frontend/backend/both after fix? Backend
     - Blocked on other issue: None
 
 **In progress Task List**:
-- Task 1: (P0) Admin Profile Editing
-    - Where to resume:  to build the UI and  to create the corresponding API endpoint.
-    - What will be achieved with this?: Admins will be able to manage their own profile information and picture.
+- Task 1: (P0) Finalize and Test the Latest Batch of Features
+    - Where to resume: Review and test the implementations across , , , and .
+    - What will be achieved with this?: Completion of the user's six most recent feature requests.
     - Status: IN PROGRESS
     - Should Test frontend/backend/both after fix?: Both
     - Blocked on something: None
@@ -95,22 +112,30 @@ Upcoming Tasks:
 - (P2) **Implement Real OTP Verification**: Integrate a service like Twilio for phone verification using .
 
 Future Tasks:
-- (P0) **Plan Mobile App Conversion**: The user's original high-level request to create iOS and Android apps. This should be re-evaluated with the user after the current web application is stable and tested.
-- (P1) **Refactor Backend**: Propose and execute a refactor of the monolithic  into smaller, more manageable modules using FastAPI's  (e.g., , , ).
+- (P0) **Refactor Backend**: Propose and execute a refactor of the monolithic  into smaller, more manageable modules using FastAPI's  (e.g., , , ).
+- (P1) **Plan Mobile App Conversion**: The user's original high-level request to create iOS and Android apps. This should be re-evaluated after the web application is stable.
 
 **Completed work in this session**
-- **Security & Authentication:** Implemented password strength indicators, caps lock detection, and a mocked Forgot Password flow. Added a password change feature for users.
-- **Homepage UI/UX:** Replaced the static FAQ section with dynamic, clickable Most Listed sections for positions and institutions. Enhanced the search bar to support searching by position and made it responsive.
-- **Dashboard UX:** Refactored user and admin dashboard actions (e.g., deleting items) to use local state updates, eliminating page reloads.
-- **Admin Panel:** Added a comprehensive admin management module allowing for full CRUD operations on admin accounts.
-- **Static Pages:** Created and styled new legal pages (KVKK, Cookies, etc.) and linked them in the footer.
-- **General UX:** Configured all toast notifications to be dismissible on click.
+- **Admin Role Management**: Implemented a main_admin vs admin role system with specific permissions, including role transfer and preventing normal admins from editing the main admin. Removed hardcoded 'becayis' logic.
+- **Admin Functionality**: Added features for bulk notifications, private messaging to users, a listing approval workflow, and the ability for admins to block users from creating listings/messages.
+- **UI/UX Fixes**:
+    - Added a password visibility toggle (eye icon) to all password fields.
+    - Fixed responsive issues by making dashboard tabs scrollable on mobile and ensuring action buttons do not overflow their containers.
+    - Corrected a critical bug where a failed admin login redirected to the user login page.
+    - Implemented scroll position restoration on page refresh.
+- **Listing & User Logic**:
+    - Enforced a maximum of 3 listings per user.
+    - Made 'district' an optional field during listing creation.
+    - Implemented an auto-generated title for listings (City - City).
+    - Prevented users from sending swap requests for listings with a different job position.
+    - Updated listing status labels for clarity (, , ).
+- **New Components**: Created reusable components for a password input with a toggle () and a searchable select dropdown ().
 
 **Earlier issues found/mentioned but not fixed**
-- The critical priority from the previous handoff to stabilize the application via comprehensive testing was not addressed. Instead, numerous new features were added, increasing the stability risk.
+- The critical priority from two handoffs ago to stabilize the application via comprehensive testing was not addressed. Instead, the agent continued to add numerous new features, significantly increasing the stability risk.
 
 **Known issue recurrence from previous fork**
-- **Incomplete Testing Cycle:** The failure to execute a successful, comprehensive test run after major feature development is a recurring problem.
+- **Incomplete Testing Cycle:** The agent has repeatedly failed to execute a successful, comprehensive test run after major feature development. This is a critical, recurring problem that increases technical debt and project risk.
 
 **Code Architecture**
 
@@ -122,23 +147,26 @@ Future Tasks:
 - Authentication: JWT
 
 **key DB schema**
-- **admins**: {, , , , , }
+- **admins**: { (email), , ,  (main_admin or admin), ...}
+- **listings**: {...,  (pending_approval, approved, rejected)}
+- **users**: {...,  (boolean)}
 
 **changes in tech stack**
 - None.
 
 **All files of reference**
-- : Heavily modified with numerous new endpoints for stats, password management, and admin CRUD.
-- : Substantially reworked to add admin CRUD, local state updates, and initial state for profile editing.
-- : Updated with a Security tab, password strength UI, and caps lock detector.
-- : Major updates to search functionality and content sections.
-- , : Modified to include password strength and caps lock UI.
-- : Updated with new routes and global toast configuration.
-- **New Files**: , , , , .
+- : Heavily modified with numerous new endpoints and logic for admin roles, listing approval, user blocking, private messaging, and input validation.
+- : Substantially reworked to add new tabs, dialogs, and logic for listing approvals, private messaging, and role-based UI rendering.
+- : Updated to use the new  and  components and to handle new listing status labels.
+- : Updated to auto-generate the listing title.
+- : Modified to fix the admin login redirect bug.
+- : Updated to include .
+- : Updated to display correct listing status labels.
+- **New Files**: , .
 
 **Areas that need refactoring**:
-- The  file has become a monolith and is difficult to maintain. It should be broken down into smaller, domain-specific router files (e.g., , ).
--  and  are also becoming very large and could benefit from being broken down into smaller, reusable components.
+- : This file is now critically oversized and must be broken down into smaller modules using FastAPI's  for maintainability.
+-  & : These React components have become extremely large and complex. They should be broken down into smaller, single-responsibility components to improve readability and maintainability.
 
 **key api endpoints**
 - 
@@ -146,33 +174,27 @@ Future Tasks:
 - 
 - 
 - 
-- 
-- 
-- 
+-  (Updated with role checks)
+-  (Updated with email validation)
+-  (Updated with position check)
 
 **Critical Info for New Agent**
-- **Priority #1 is Testing**: Do not start any new feature development. Your first task is to conduct a full regression test of the application using . The stability of the app is currently unknown due to the large number of untested changes.
-- **User's Focus is Web Features**: The user has pivoted away from the mobile app idea for now. Focus on completing the requested web features.
-- **Complete the Admin Profile Feature**: After stabilizing the app, your first development task should be to finish the Admin Profile Edit feature that was in progress.
-- **Propose Backend Refactor**: After the high-priority tasks are completed, you should propose a refactoring of the monolithic  file to the user. This is a crucial step for long-term maintainability.
+- **Priority #1 is Testing & Stabilization**: Do NOT start any new feature development. Your first task is to finalize and thoroughly test the last batch of user requests. Immediately after, you MUST conduct a full regression test of the entire application using . The app's stability is unknown and at high risk.
+- **Complete the In-Progress Work**: Ensure the 6 features from the last user request are fully implemented and bug-free.
+- **Propose Backend Refactor**: After stabilizing the app, you must propose a refactoring of the monolithic  file. This is crucial for the project's long-term health.
 
 **documents and test reports created in this job**
 -  (Updated)
 
 **Last 10 User Messages and any pending HUMAN messages**
-- **user:** admin profil sayfasında kendi profilini düzenleyebilecek sekme olsun. fotoğraf ekleyebilsin. (PENDING - Last working item)
-- **user:** admin panelinde de admin ekleme yetki verme, adminin şifresini değiştirme gibi kısımlarda olsun (COMPLETED)
-- **user:** kullanıcı yeni şifre oluştururken Güvenlik İpuçları olarak 1 büyük harf 1 özel karakter ve en az 8 haneden oluşması gereksin... (COMPLETED)
-- **user:** kullanıcı aynı şifresini değiştirirken mevcut şifre ile yeni şifre aynı ise uyarı versin. (COMPLETED)
-- **user:** site genelinde toast çıktığında mouse ile tıklandığında kaybolsun. (COMPLETED)
-- **user:** admin panelinde hesap silme, talep silme, kullanıcı silme yaptıktan sonra mevcut sekmede kalsın. (COMPLETED)
-- **user:** kullanıcı şifre yazarken caps lock açık ya da kapalı olduğunu anlasın. (COMPLETED)
-- **user:** kullanıcı kayıt olurken şifre oluştururken Güvenlik İpuçları... (COMPLETED)
-- **user:** şifremi unuttum kısmı olsun... kullanıcı panelinden şifresini değiştirme seçeneği olsun... KVKK... gibi teknik konuları... ekle (COMPLETED)
-- **user:** anasayfadaki sıkça sorulan soruları bölümünü tamamen silelim. onun yerine... en çok ilan verilen kurumlar ve en çok ilan verilen pozisyonlar özelliğini getirelim. (COMPLETED)
+- **user:** Normal admin cant change main admins password. Fix scroll on refresh. Admin user is a gov.tr email. User cant request swap for different position. Auto-create listing title. Fix listing status labels." (IN PROGRESS)
+- **user:** "If admin login fails, stay on admin login page. When an admin blocks a user, they cant send requests or messages. Add a reset button for accepted invitations counter. Add a bulk notification page for admins. (COMPLETED)
+- **user:** Let main admin delete other admins. Make nuno the main admin. (COMPLETED)
+- **user:** Show password toggle. Make district optional. Limit users to 3 listings. Make mobile tabs scrollable. Fix admin button overflow. (COMPLETED)
+- **user:** Add Caps Lock detector to admin login. Let main admin change other admin roles and transfer main admin status with password confirmation. Add a profile edit tab for admins. (COMPLETED)
 
 **Project Health Check:**
-- Broken: High risk. A large volume of features was added without successful automated testing. The application's stability is uncertain until a full regression test is passed.
+- Broken: High risk. The volume of features added without comprehensive, automated testing has made the application's stability highly uncertain.
 - Mocked:
     - Email notifications for password reset.
     - Real OTP verification for phone numbers.
@@ -182,16 +204,19 @@ Future Tasks:
 - **SendGrid** and **Twilio** are planned for future email and SMS integrations, respectively.
 
 **Testing status**
-- Testing agent used after significant changes: YES, but the tool failed to execute, and the agent did not retry or debug it.
+- Testing agent used after significant changes: NO. Agent has consistently failed to run a full regression test.
 - Troubleshoot agent used after agent stuck in loop: NO
 - Test files created: None.
-- Known regressions: None are known, but the risk is very high due to the lack of testing.
+- Known regressions: None are known, but the risk is extremely high due to the lack of testing.
 
 **Credentials to test flow:**
-- **Admin Login:**
+- **Main Admin Login:**
+    - Username:  (or similar gov.tr domain)
+    - Password:  (or whatever was last set)
+- **Normal Admin Login:**
     - Username: 
     - Password: 
-- **Regular User:** Register a new user via the registration form using a  email (e.g., ).
+- **Regular User:** Register a new user via the registration form using a  email.
 
 **What agent forgot to execute**
-- The agent critically failed to follow the primary directive from the previous handoff, which was to **test and stabilize** the application. It implemented a vast number of new features without a single successful regression test, relying only on superficial screenshot checks. This has significantly increased technical debt and project risk. The agent should have prioritized fixing the testing process over adding new functionality.</analysis>
+- The agent has now, for at least the second consecutive time, critically failed to follow the primary directive from the previous handoff, which was to **test and stabilize** the application. It implemented a vast number of new features without a single successful regression test, relying on superficial checks. This pattern has significantly increased technical debt and project risk. The testing process itself must be prioritized and debugged if necessary.</analysis>
