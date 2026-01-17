@@ -153,7 +153,6 @@ const CreateEditListing = () => {
         await api.post('/listings', listingData);
         toast.success('İlan oluşturuldu ve admin onayı bekliyor');
       }
-      }
       navigate('/dashboard');
     } catch (error) {
       toast.error(error.response?.data?.detail || 'İlan kaydedilemedi');
