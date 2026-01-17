@@ -24,7 +24,12 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // Don't redirect for login endpoints - let the component handle the error
+    const isLoginEndpoint = error.config?.url?.includes('/login') || 
+                           error.config?.url?.includes('/auth/login') ||
+                           error.config?.url?.includes('/admin/login');
+    
+    if (error.response?.status === 401 && !isLoginEndpoint) {
       const isAdmin = localStorage.getItem('is_admin');
       if (isAdmin) {
         localStorage.removeItem('admin_token');
