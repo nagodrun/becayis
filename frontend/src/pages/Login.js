@@ -41,7 +41,7 @@ const Login = () => {
           
           {/* Sol taraf - Form */}
           <div className="w-full max-w-md mx-auto lg:mx-0">
-            <Card className="shadow-xl border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-8">
+            <Card className="shadow-xl border border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-8">
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: 'Manrope' }}>
                   <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 bg-clip-text text-transparent">

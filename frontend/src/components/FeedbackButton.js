@@ -24,6 +24,7 @@ export const FeedbackButton = () => {
   const [email, setEmail] = useState('');
   const [category, setCategory] = useState('general');
   const [submitting, setSubmitting] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,13 +65,20 @@ export const FeedbackButton = () => {
 
   return (
     <>
-      <Button
+      <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 rounded-full w-14 h-14 shadow-lg bg-gradient-to-r from-amber-800 to-orange-700 hover:from-amber-600 hover:to-orange-600 z-50"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium text-sm transition-all duration-300 ring-4 ring-blue-300/30 dark:ring-blue-500/20"
+        aria-label="Geri bildirim gönder"
         data-testid="feedback-button"
       >
-        <MessageCircle className="w-6 h-6" />
-      </Button>
+        <MessageCircle className="w-5 h-5" />
+        <span className="hidden sm:inline">Geri Bildirim</span>
+        {/* Animated ping effect */}
+        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping" />
+        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
+      </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
