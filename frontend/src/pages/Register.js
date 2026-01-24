@@ -252,11 +252,28 @@ const Register = () => {
                     />
                   </div>
 
+                  {/* Terms and Conditions Checkbox */}
+                  <div className="flex items-start space-x-2">
+                    <Checkbox
+                      id="terms"
+                      checked={termsAccepted}
+                      onCheckedChange={(checked) => setTermsAccepted(checked)}
+                      className="mt-1"
+                      data-testid="terms-checkbox"
+                    />
+                    <label htmlFor="terms" className="text-sm text-gray-600 dark:text-gray-300 leading-tight cursor-pointer">
+                      <Link to="/terms" className="text-amber-600 hover:underline" target="_blank">Kullanım Şartları</Link>
+                      {' '}ve{' '}
+                      <Link to="/privacy" className="text-amber-600 hover:underline" target="_blank">Gizlilik Politikası</Link>
+                      &apos;nı okudum ve kabul ediyorum <span className="text-red-500">*</span>
+                    </label>
+                  </div>
+
                   {/* Submit Button */}
                   <Button 
                     type="submit" 
                     className="w-full h-11 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 hover:from-amber-600 hover:via-orange-600 hover:to-amber-600 text-white font-medium" 
-                    disabled={loading || !passwordIsValid} 
+                    disabled={loading || !passwordIsValid || !termsAccepted} 
                     data-testid="register-step1-button"
                   >
                     {loading ? 'İşleniyor...' : 'Devam Et'}
