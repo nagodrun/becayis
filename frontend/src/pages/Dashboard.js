@@ -335,6 +335,41 @@ const Dashboard = () => {
     n => (n.type === 'admin_broadcast' || n.type === 'admin_message') && !dismissedBanners.includes(n.id)
   );
 
+  // Support ticket helper functions
+  const handleDeleteSupportTicket = async (ticketId) => {
+    try {
+      await api.delete(`/support-tickets/${ticketId}`);
+      setSupportTickets(supportTickets.filter(t => t.id !== ticketId));
+      setSelectedTicket(null);
+      toast.success('Destek talebi silindi');
+    } catch (error) {
+      toast.error('Destek talebi silinemedi');
+    }
+  };
+
+  const getTicketStatusBadge = (status) => {
+    switch (status) {
+      case 'open':
+        return <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">Açık</Badge>;
+      case 'answered':
+        return <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">Yanıtlandı</Badge>;
+      case 'closed':
+        return <Badge className="bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400">Kapatıldı</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  const getCategoryLabel = (category) => {
+    switch (category) {
+      case 'general': return 'Genel';
+      case 'bug': return 'Hata Bildirimi';
+      case 'suggestion': return 'Öneri';
+      case 'complaint': return 'Şikayet';
+      default: return category;
+    }
+  };
+
   // State for pending avatar upload
   const [pendingAvatarFile, setPendingAvatarFile] = useState(null);
   const [pendingAvatarPreview, setPendingAvatarPreview] = useState(null);
