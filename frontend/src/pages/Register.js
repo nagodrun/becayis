@@ -367,7 +367,7 @@ const Register = () => {
 
             <div className="space-y-6">
               {/* Feature Card 1 */}
-              <div className="flex items-start space-x-4 p-5 bg-white/60 dark:bg-gray-800/60 rounded-xl backdrop-blur-sm">
+              <div className="flex items-start space-x-4 p-5 bg-white/60 dark:bg-gray-800/60 rounded-xl backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50">
                 <div className="flex-shrink-0">
                   <CircleCheck className="w-7 h-7 text-emerald-500" />
                 </div>
@@ -378,7 +378,7 @@ const Register = () => {
               </div>
 
               {/* Feature Card 2 */}
-              <div className="flex items-start space-x-4 p-5 bg-white/60 dark:bg-gray-800/60 rounded-xl backdrop-blur-sm">
+              <div className="flex items-start space-x-4 p-5 bg-white/60 dark:bg-gray-800/60 rounded-xl backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50">
                 <div className="flex-shrink-0">
                   <Users className="w-7 h-7 text-amber-500" />
                 </div>
@@ -389,7 +389,7 @@ const Register = () => {
               </div>
 
               {/* Feature Card 3 */}
-              <div className="flex items-start space-x-4 p-5 bg-white/60 dark:bg-gray-800/60 rounded-xl backdrop-blur-sm">
+              <div className="flex items-start space-x-4 p-5 bg-white/60 dark:bg-gray-800/60 rounded-xl backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50">
                 <div className="flex-shrink-0">
                   <Shield className="w-7 h-7 text-blue-500" />
                 </div>
@@ -400,7 +400,7 @@ const Register = () => {
               </div>
 
               {/* Feature Card 4 */}
-              <div className="flex items-start space-x-4 p-5 bg-white/60 dark:bg-gray-800/60 rounded-xl backdrop-blur-sm">
+              <div className="flex items-start space-x-4 p-5 bg-white/60 dark:bg-gray-800/60 rounded-xl backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50">
                 <div className="flex-shrink-0">
                   <MapPin className="w-7 h-7 text-purple-500" />
                 </div>

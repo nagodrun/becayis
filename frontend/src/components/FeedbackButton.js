@@ -69,7 +69,7 @@ export const FeedbackButton = () => {
         onClick={() => setOpen(true)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium text-sm transition-all duration-300 ring-4 ring-blue-300/30 dark:ring-blue-500/20"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-medium text-sm transition-all duration-300 ring-4 ring-amber-300/30 dark:ring-amber-500/20"
         aria-label="Geri bildirim gönder"
         data-testid="feedback-button"
       >
