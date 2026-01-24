@@ -5,6 +5,7 @@ import { Input } from '../components/ui/input';
 import { PasswordInput } from '../components/ui/password-input';
 import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
+import { Checkbox } from '../components/ui/checkbox';
 import { toast } from 'sonner';
 import api, { getErrorMessage } from '../lib/api';
 import { Mail, RefreshCw, CircleCheck, Users, Shield, MapPin } from 'lucide-react';
@@ -15,6 +16,7 @@ const Register = () => {
   const [verificationId, setVerificationId] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -34,6 +36,11 @@ const Register = () => {
 
   const handleStep1 = async (e) => {
     e.preventDefault();
+    
+    if (!termsAccepted) {
+      toast.error('Kullanım şartlarını kabul etmelisiniz');
+      return;
+    }
     
     if (!passwordIsValid) {
       toast.error('Lütfen tüm şifre gereksinimlerini karşılayın');
