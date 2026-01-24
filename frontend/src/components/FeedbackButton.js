@@ -114,7 +114,7 @@ export const FeedbackButton = () => {
               </>
             ) : (
               <div>
-                <Label htmlFor="feedback_email">E-posta (İsteğe bağlı)</Label>
+                <Label htmlFor="feedback_email">E-posta (Zorunlu)</Label>
                 <Input
                   id="feedback_email"
                   type="email"

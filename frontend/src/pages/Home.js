@@ -222,7 +222,7 @@ const Home = () => {
                 </div>
                 
                 {!user && (
-                  <Link to="/register">
+                  <Link to="/login">
                     <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white" data-testid="hero-register-button">
                       Hemen Başla
                     </Button>
