@@ -46,7 +46,7 @@ const AdminLogin = () => {
           
           {/* Sol taraf - Form */}
           <div className="w-full max-w-md mx-auto lg:mx-0">
-            <Card className="shadow-xl border-slate-700 bg-slate-800/80 backdrop-blur-sm p-8">
+            <Card className="shadow-xl border border-slate-600/50 bg-slate-800/80 backdrop-blur-sm p-8">
               <div className="text-center mb-8">
                 <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Shield className="w-7 h-7 text-white" />
