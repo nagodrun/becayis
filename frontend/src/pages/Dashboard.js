@@ -1305,6 +1305,100 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
+          {/* Support Tickets Tab */}
+          <TabsContent value="support" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold" style={{ fontFamily: 'Manrope' }}>Destek Taleplerim</h2>
+                <p className="text-sm text-muted-foreground">Geri bildirimleriniz ve destek talepleriniz</p>
+              </div>
+            </div>
+
+            {supportTickets.length === 0 ? (
+              <Card className="p-12 text-center">
+                <HelpCircle className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+                <p className="text-muted-foreground">Henüz destek talebiniz bulunmuyor.</p>
+                <p className="text-sm text-muted-foreground mt-2">Sağ alttaki "Geri Bildirim" butonu ile yeni talep oluşturabilirsiniz.</p>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {supportTickets.map((ticket) => (
+                  <Card 
+                    key={ticket.id} 
+                    className={`p-4 cursor-pointer transition-all hover:shadow-md ${selectedTicket?.id === ticket.id ? 'ring-2 ring-amber-500' : ''}`}
+                    onClick={() => setSelectedTicket(selectedTicket?.id === ticket.id ? null : ticket)}
+                    data-testid={`support-ticket-${ticket.id}`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          {getTicketStatusBadge(ticket.status)}
+                          <Badge variant="outline" className="text-xs">{getCategoryLabel(ticket.category)}</Badge>
+                        </div>
+                        <h3 className="font-semibold text-foreground">{ticket.subject}</h3>
+                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{ticket.message}</p>
+                        <p className="text-xs text-muted-foreground mt-2">{formatDate(ticket.created_at)}</p>
+                      </div>
+                      <div className="flex items-center gap-2 ml-4">
+                        {ticket.replies?.length > 0 && (
+                          <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                            <MessageCircle className="w-3 h-3 mr-1" />
+                            {ticket.replies.length} yanıt
+                          </Badge>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteSupportTicket(ticket.id);
+                          }}
+                          data-testid={`delete-ticket-${ticket.id}`}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    {/* Expanded view with replies */}
+                    {selectedTicket?.id === ticket.id && (
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <div className="space-y-4">
+                          {/* Original message */}
+                          <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-xs font-medium text-muted-foreground">Sizin mesajınız</span>
+                            </div>
+                            <p className="text-sm text-foreground whitespace-pre-wrap">{ticket.message}</p>
+                          </div>
+                          
+                          {/* Replies */}
+                          {ticket.replies?.length > 0 ? (
+                            ticket.replies.map((reply) => (
+                              <div key={reply.id} className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4 ml-4">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Badge className="bg-emerald-600 text-white text-xs">Admin Yanıtı</Badge>
+                                  <span className="text-xs text-muted-foreground">{reply.admin_name}</span>
+                                  <span className="text-xs text-muted-foreground">• {formatDate(reply.created_at)}</span>
+                                </div>
+                                <p className="text-sm text-foreground whitespace-pre-wrap">{reply.message}</p>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="text-center py-4 text-muted-foreground text-sm">
+                              Henüz yanıt verilmedi. En kısa sürede size dönüş yapılacaktır.
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
           {/* Security Tab - Password Change */}
           <TabsContent value="security" className="space-y-6">
             <Card className="p-6">
