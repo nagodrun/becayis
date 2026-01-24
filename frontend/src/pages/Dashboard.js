@@ -1318,7 +1318,7 @@ const Dashboard = () => {
               <Card className="p-12 text-center">
                 <HelpCircle className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
                 <p className="text-muted-foreground">Henüz destek talebiniz bulunmuyor.</p>
-                <p className="text-sm text-muted-foreground mt-2">Sağ alttaki "Geri Bildirim" butonu ile yeni talep oluşturabilirsiniz.</p>
+                <p className="text-sm text-muted-foreground mt-2">Sağ alttaki &quot;Geri Bildirim&quot; butonu ile yeni talep oluşturabilirsiniz.</p>
               </Card>
             ) : (
               <div className="space-y-4">
