@@ -39,6 +39,15 @@ const ScrollToTop = () => {
   return null;
 };
 
+// Conditional Feedback Button - hide on admin pages
+const ConditionalFeedbackButton = () => {
+  const { pathname } = useLocation();
+  const isAdminPage = pathname.startsWith('/admin');
+  
+  if (isAdminPage) return null;
+  return <FeedbackButton />;
+};
+
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
@@ -141,7 +150,7 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <AppContent />
-          <FeedbackButton />
+          <ConditionalFeedbackButton />
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
