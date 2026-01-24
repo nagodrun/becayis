@@ -34,6 +34,7 @@ const Dashboard = () => {
   const [conversations, setConversations] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [deletionRequests, setDeletionRequests] = useState([]);
+  const [supportTickets, setSupportTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [deletionDialogOpen, setDeletionDialogOpen] = useState(false);
@@ -42,6 +43,9 @@ const Dashboard = () => {
   const [showWarning, setShowWarning] = useState(() => {
     return localStorage.getItem('hideWarning') !== 'true';
   });
+  
+  // Support ticket state
+  const [selectedTicket, setSelectedTicket] = useState(null);
   
   // Admin notifications banner state - track dismissed notifications
   const [dismissedBanners, setDismissedBanners] = useState(() => {
