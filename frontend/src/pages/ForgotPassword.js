@@ -105,11 +105,11 @@ const ForgotPassword = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 px-4 py-12">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             {step === 3 ? (
-              <KeyRound className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+              <KeyRound className="w-8 h-8 text-amber-600 dark:text-amber-400" />
             ) : (
-              <Mail className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+              <Mail className="w-8 h-8 text-amber-600 dark:text-amber-400" />
             )}
           </div>
           <CardTitle className="text-2xl" style={{ fontFamily: 'Manrope' }}>
@@ -140,7 +140,7 @@ const ForgotPassword = () => {
                 />
               </div>
 
-              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading} data-testid="send-code-btn">
+              <Button type="submit" className="w-full bg-amber-500 hover:bg-amber-600" disabled={loading} data-testid="send-code-btn">
                 {loading ? 'Gönderiliyor...' : 'Kod Gönder'}
               </Button>
             </form>
@@ -163,7 +163,7 @@ const ForgotPassword = () => {
                 />
               </div>
 
-              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading} data-testid="verify-code-btn">
+              <Button type="submit" className="w-full bg-amber-500 hover:bg-amber-600" disabled={loading} data-testid="verify-code-btn">
                 {loading ? 'Doğrulanıyor...' : 'Kodu Doğrula'}
               </Button>
 
@@ -206,20 +206,20 @@ const ForgotPassword = () => {
                 <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
                   <p className="text-xs font-medium text-foreground mb-2">Şifre Gereksinimleri:</p>
                   <ul className="space-y-1.5">
-                    <li className={`flex items-center gap-2 text-xs ${passwordHasMinLength ? 'text-emerald-600' : 'text-red-500'}`}>
-                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasMinLength ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasMinLength ? 'text-amber-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasMinLength ? 'bg-amber-100' : 'bg-red-100'}`}>
                         {passwordHasMinLength ? '✓' : '✗'}
                       </span>
                       En az 8 karakter
                     </li>
-                    <li className={`flex items-center gap-2 text-xs ${passwordHasUppercase ? 'text-emerald-600' : 'text-red-500'}`}>
-                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasUppercase ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasUppercase ? 'text-amber-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasUppercase ? 'bg-amber-100' : 'bg-red-100'}`}>
                         {passwordHasUppercase ? '✓' : '✗'}
                       </span>
                       En az 1 büyük harf (A-Z)
                     </li>
-                    <li className={`flex items-center gap-2 text-xs ${passwordHasSpecialChar ? 'text-emerald-600' : 'text-red-500'}`}>
-                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasSpecialChar ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                    <li className={`flex items-center gap-2 text-xs ${passwordHasSpecialChar ? 'text-amber-600' : 'text-red-500'}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${passwordHasSpecialChar ? 'bg-amber-100' : 'bg-red-100'}`}>
                         {passwordHasSpecialChar ? '✓' : '✗'}
                       </span>
                       En az 1 özel karakter (!@#$%^&* vb.)
@@ -240,14 +240,14 @@ const ForgotPassword = () => {
                 />
               </div>
 
-              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading || !passwordIsValid} data-testid="reset-password-btn">
+              <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700" disabled={loading || !passwordIsValid} data-testid="reset-password-btn">
                 {loading ? 'Kaydediliyor...' : 'Şifreyi Değiştir'}
               </Button>
             </form>
           )}
 
           <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
-            <Link to="/login" className="text-emerald-600 hover:underline font-medium">
+            <Link to="/login" className="text-amber-600 hover:underline font-medium">
               Giriş sayfasına dön
             </Link>
           </div>

@@ -337,7 +337,7 @@ const Register = () => {
               )}
 
               {/* Login Link */}
-              <div className="text-center mt-4">
+              <div className="text-center p-2">
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   Zaten hesabınız var mı?{' '}
                   <Link to="/login" className="text-amber-600 hover:underline font-medium" data-testid="login-link">
@@ -345,6 +345,10 @@ const Register = () => {
                   </Link>
                 </p>
               </div>
+              <div role="alert" class="relative w-full rounded-lg border p-4 [&amp;&gt;svg~*]:pl-7 [&amp;&gt;svg+div]:translate-y-[-3px] [&amp;&gt;svg]:absolute [&amp;&gt;svg]:left-4 [&amp;&gt;svg]:top-4 [&amp;&gt;svg]:text-foreground text-foreground border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert h-4 w-4 text-amber-600">
+              <circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>
+              <div class="text-sm [&amp;_p]:leading-relaxed text-amber-800 dark:text-amber-200">Kayıt olduktan sonra e-posta adresinize gönderilen doğrulama bağlantısına tıklayarak hesabınızı aktifleştirin.</div></div>
             </Card>
           </div>
 
