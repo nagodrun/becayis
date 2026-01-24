@@ -34,7 +34,6 @@ const Dashboard = () => {
   const [conversations, setConversations] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [deletionRequests, setDeletionRequests] = useState([]);
-  const [supportTickets, setSupportTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [deletionDialogOpen, setDeletionDialogOpen] = useState(false);
@@ -43,16 +42,6 @@ const Dashboard = () => {
   const [showWarning, setShowWarning] = useState(() => {
     return localStorage.getItem('hideWarning') !== 'true';
   });
-  
-  // Support ticket dialog state
-  const [showSupportDialog, setShowSupportDialog] = useState(false);
-  const [supportFormData, setSupportFormData] = useState({
-    subject: '',
-    message: '',
-    category: 'general'
-  });
-  const [submittingTicket, setSubmittingTicket] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState(null);
   
   // Admin notifications banner state - track dismissed notifications
   const [dismissedBanners, setDismissedBanners] = useState(() => {
@@ -159,13 +148,12 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [listingsRes, invitationsRes, conversationsRes, notificationsRes, deletionReqRes, ticketsRes] = await Promise.all([
+      const [listingsRes, invitationsRes, conversationsRes, notificationsRes, deletionReqRes] = await Promise.all([
         api.get('/listings/my'),
         api.get('/invitations'),
         api.get('/conversations'),
         api.get('/notifications'),
-        api.get('/listings/deletion-requests/my'),
-        api.get('/support-tickets')
+        api.get('/listings/deletion-requests/my')
       ]);
 
       setMyListings(listingsRes.data);
@@ -173,7 +161,6 @@ const Dashboard = () => {
       setConversations(conversationsRes.data);
       setNotifications(notificationsRes.data);
       setDeletionRequests(deletionReqRes.data);
-      setSupportTickets(ticketsRes.data);
     } catch (error) {
       toast.error('Veriler yüklenirken hata oluştu');
     } finally {
