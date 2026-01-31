@@ -182,6 +182,7 @@ POSITIONS = [
     "Hizmetli",
     "Hostes",
     "İcra Memuru",
+    "İcra Kâtibi",
     "İdare Memuru",
     "İdari Büro Görevlisi",
     "İmam-Hatip",
@@ -359,7 +360,7 @@ FAQ_DATA = [
     },
     {
         "question": "İletişim bilgilerim ne zaman paylaşılır?",
-        "answer": "İletişim bilgileriniz (telefon, e-posta) gizlidir ve sadece gönderdiğiniz veya aldığınız bir daveti KABUL ETTİĞİNİZDE karşı tarafla paylaşılır. Davet kabul edilmeden bilgileriniz kimseyle paylaşılmaz."
+        "answer": "İletişim bilgileriniz (telefon, e-posta) gizlidir ve sadece gönderdiğiniz veya aldığınız bir talebi kabul ettiğinizde karşı tarafla paylaşılır. Talep kabul edilmeden bilgileriniz kimseyle paylaşılmaz."
     },
     {
         "question": "Platformda kaç hesap açabilirim?",

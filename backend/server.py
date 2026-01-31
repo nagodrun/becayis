@@ -834,7 +834,7 @@ async def send_invitation(data: SendInvitation, current_user: dict = Depends(get
     user_invitations = [inv for inv in user_invitations if now - inv < timedelta(days=1)]
     
     if len(user_invitations) >= INVITATION_LIMIT_PER_DAY:
-        raise HTTPException(status_code=429, detail=f"Günlük davet limiti ({INVITATION_LIMIT_PER_DAY}) aşıldı")
+        raise HTTPException(status_code=429, detail=f"Günlük talep limiti ({INVITATION_LIMIT_PER_DAY}) aşıldı")
     
     # Get listing
     listing = await db.listings.find_one({"id": data.listing_id}, {"_id": 0})
@@ -842,7 +842,7 @@ async def send_invitation(data: SendInvitation, current_user: dict = Depends(get
         raise HTTPException(status_code=404, detail="İlan bulunamadı")
     
     if listing["user_id"] == current_user["id"]:
-        raise HTTPException(status_code=400, detail="Kendi ilanınıza davet gönderemezsiniz")
+        raise HTTPException(status_code=400, detail="Kendi ilanınıza talep gönderemezsiniz")
     
     # Check if current user is blocked by admin
     current_user_data = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
@@ -857,7 +857,7 @@ async def send_invitation(data: SendInvitation, current_user: dict = Depends(get
         ]
     })
     if block:
-        raise HTTPException(status_code=400, detail="Bu kullanıcıya davet gönderemezsiniz")
+        raise HTTPException(status_code=400, detail="Bu kullanıcıya talep gönderemezsiniz")
     
     # Check if already invited (any status - prevent duplicate invitations)
     existing = await db.invitations.find_one({
@@ -866,11 +866,11 @@ async def send_invitation(data: SendInvitation, current_user: dict = Depends(get
     })
     if existing:
         if existing["status"] == "pending":
-            raise HTTPException(status_code=400, detail="Bu ilana zaten bekleyen bir davetiniz var")
+            raise HTTPException(status_code=400, detail="Bu ilana zaten bekleyen bir talebiniz var")
         elif existing["status"] == "accepted":
-            raise HTTPException(status_code=400, detail="Bu davet zaten kabul edilmiş")
+            raise HTTPException(status_code=400, detail="Bu talep zaten kabul edilmiş")
         elif existing["status"] == "rejected":
-            raise HTTPException(status_code=400, detail="Bu ilana daha önce davet gönderdiniz ve reddedildi")
+            raise HTTPException(status_code=400, detail="Bu ilana daha önce talep gönderdiniz ve reddedildi")
     
     # Check if positions match
     sender_profile = await db.profiles.find_one({"user_id": current_user["id"]}, {"_id": 0})
@@ -880,10 +880,10 @@ async def send_invitation(data: SendInvitation, current_user: dict = Depends(get
         
         if sender_position and listing_position and sender_position != listing_position:
             raise HTTPException(
-                status_code=400, 
-                detail=f"Bu ilana talep gönderemezsiniz. İlan sahibinin pozisyonu ({listing.get('role')}) sizin pozisyonunuz ({sender_profile.get('role')}) ile eşleşmiyor. Becayiş talebi yalnızca aynı pozisyondaki kişiler arasında gönderilebilir."
-            )
-    
+            status_code=400, 
+            detail=f"Bu ilana talep gönderemezsiniz. İlan sahibinin pozisyonu ({listing.get('role')}) ile sizin pozisyonunuz ({sender_profile.get('role')}) eşleşmiyor. Becayiş talebi yalnızca aynı pozisyondaki kişiler arasında gönderilebilir."
+        )
+
     # Create invitation
     invitation = {
         "id": str(uuid.uuid4()),
@@ -901,12 +901,12 @@ async def send_invitation(data: SendInvitation, current_user: dict = Depends(get
     # Send notification
     await create_notification(
         listing["user_id"],
-        "Yeni Davet",
-        "İlanınıza yeni bir değişim daveti aldınız",
+        "Yeni Talep",
+        "İlanınıza yeni bir becayiş talebi aldınız",
         "invitation"
     )
     
-    return {"message": "Davet gönderildi", "invitation_id": invitation["id"]}
+    return {"message": "Talep gönderildi", "invitation_id": invitation["id"]}
 
 @api_router.get("/invitations")
 async def get_invitations(current_user: dict = Depends(get_current_user)):
@@ -930,26 +930,26 @@ async def delete_invitation(invitation_id: str, current_user: dict = Depends(get
     """Delete an invitation (sent or received)"""
     invitation = await db.invitations.find_one({"id": invitation_id}, {"_id": 0})
     if not invitation:
-        raise HTTPException(status_code=404, detail="Davet bulunamadı")
+        raise HTTPException(status_code=404, detail="Becayiş talebi bulunamadı")
     
     # Check if user is sender or receiver
     if invitation["sender_id"] != current_user["id"] and invitation["receiver_id"] != current_user["id"]:
         raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok.")
     
     await db.invitations.delete_one({"id": invitation_id})
-    return {"message": "Davet silindi"}
+    return {"message": "Becayiş talebi silindi"}
 
 @api_router.post("/invitations/respond")
 async def respond_invitation(data: RespondInvitation, current_user: dict = Depends(get_current_user)):
     invitation = await db.invitations.find_one({"id": data.invitation_id}, {"_id": 0})
     if not invitation:
-        raise HTTPException(status_code=404, detail="Davet bulunamadı.")
+        raise HTTPException(status_code=404, detail="Becayiş talebi bulunamadı.")
     
     if invitation["receiver_id"] != current_user["id"]:
         raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok.")
     
     if invitation["status"] != "pending":
-        raise HTTPException(status_code=400, detail="Bu davet zaten yanıtlanmış.")
+        raise HTTPException(status_code=400, detail="Bu talep zaten yanıtlanmış.")
     
     if data.action not in ["accept", "reject"]:
         raise HTTPException(status_code=400, detail="Geçersiz işlem.")
@@ -973,22 +973,22 @@ async def respond_invitation(data: RespondInvitation, current_user: dict = Depen
         # Send notification to sender
         await create_notification(
             invitation["sender_id"],
-            "Davet Kabul Edildi",
-            "Gönderdiğiniz değişim daveti kabul edildi. Artık mesajlaşabilirsiniz!",
+            "Becayiş Talebi Kabul Edildi",
+            "Gönderdiğiniz becayiş talebi kabul edildi. Artık mesajlaşabilirsiniz!",
             "invitation_accepted"
         )
         
-        return {"message": "Davet kabul edildi.", "conversation_id": conversation["id"]}
+        return {"message": "Becayiş talebi kabul edildi.", "conversation_id": conversation["id"]}
     else:
         # Send notification to sender
         await create_notification(
             invitation["sender_id"],
-            "Davet Reddedildi.",
-            "Gönderdiğiniz değişim daveti reddedildi.",
+            "Talep Reddedildi.",
+            "Gönderdiğiniz becayiş talebi reddedildi.",
             "invitation_rejected"
         )
         
-        return {"message": "Davet reddedildi."}
+        return {"message": "Talep reddedildi."}
 
 # ============= CHAT ENDPOINTS =============
 @api_router.get("/conversations")
@@ -1351,7 +1351,7 @@ async def admin_get_stats(admin = Depends(verify_admin)):
 async def reset_accepted_invitations_count(admin = Depends(verify_admin)):
     """Reset accepted invitations by deleting all accepted invitations"""
     result = await db.invitations.delete_many({"status": "accepted"})
-    return {"message": f"{result.deleted_count} kabul edilmiş davet silindi.", "deleted_count": result.deleted_count}
+    return {"message": f"{result.deleted_count} kabul edilmiş talep silindi.", "deleted_count": result.deleted_count}
 
 class BulkNotification(BaseModel):
     title: str

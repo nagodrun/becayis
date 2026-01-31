@@ -361,8 +361,7 @@ const Register = () => {
                 </span>
               </h2>
               <p className="text-gray-600 dark:text-gray-300">
-                Türkiye genelinde güvenilir becayiş platformu
-              </p>
+                Türkiye genelinde güvenilir becayiş platformu</p>
             </div>
 
             <div className="space-y-6">
@@ -373,7 +372,7 @@ const Register = () => {
                 </div>
                 <div>
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">Güvenli ve Hızlı</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">Kurumsal e-posta doğrulaması ile sadece gerçek kamu çalışanları</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Kurumsal e-posta doğrulama sistemi aracılığıyla yalnızca kamu personelinin erişimine izin verilen, güvenli ve kontrollü bir kullanım ortamı sağlanmaktadır.</p>
                 </div>
               </div>
 
@@ -383,8 +382,8 @@ const Register = () => {
                   <Users className="w-7 h-7 text-amber-500" />
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">Geniş Ağ</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">Tüm Türkiye genelinde aktif becayiş ilanları</p>
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">Geniş ve Kapsamlı Ağ</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Türkiye genelinde görev yapan kamu personeline yönelik yayımlanan becayiş ilanları ile geniş kapsamlı ve erişilebilir bir ağ oluşturulmaktadır.</p>
                 </div>
               </div>
 
@@ -395,7 +394,7 @@ const Register = () => {
                 </div>
                 <div>
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">Gizlilik Öncelikli</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">İletişim bilgileriniz sadece karşılıklı onay sonrası paylaşılır</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Kullanıcılara ait kişisel ve iletişim bilgileri, ilgili mevzuat hükümleri çerçevesinde korunmakta olup yalnızca karşılıklı onay alınması hâlinde paylaşılmaktadır.</p>
                 </div>
               </div>
 
@@ -405,8 +404,8 @@ const Register = () => {
                   <MapPin className="w-7 h-7 text-purple-500" />
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">Konum Eşleştirme</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">Otomatik eşleşme önerileri ile kolay becayiş bulma</p>
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">Konum ve Unvan Eşleştirme</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Görev yeri ve unvan bilgileri esas alınarak sunulan otomatik eşleştirme önerileri sayesinde, uygun becayiş taleplerine etkin ve düzenli şekilde erişim sağlanmaktadır.</p>
                 </div>
               </div>
             </div>

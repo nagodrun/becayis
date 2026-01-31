@@ -459,7 +459,7 @@ const AdminDashboard = () => {
   };
 
   const handleResetAcceptedInvitations = async () => {
-    if (!window.confirm('Tüm kabul edilmiş davetleri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) return;
+    if (!window.confirm('Tüm kabul edilmiş talepleri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) return;
 
     try {
       const response = await api.delete('/admin/stats/accepted-invitations');
@@ -721,7 +721,7 @@ const AdminDashboard = () => {
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Kabul Edilen Davetler</p>
+                <p className="text-sm text-slate-500">Kabul Edilen Talepler</p>
                 <div className="flex items-center gap-2">
                   <p className="text-3xl font-bold">{stats.accepted_invitations}/{stats.total_invitations}</p>
                   {stats.accepted_invitations > 0 && (
@@ -730,7 +730,7 @@ const AdminDashboard = () => {
                       variant="ghost"
                       className="text-slate-400 hover:text-red-500 p-1 h-auto"
                       onClick={handleResetAcceptedInvitations}
-                      title="Kabul edilen davetleri sıfırla"
+                      title="Kabul edilen talepleri sıfırla"
                       data-testid="reset-accepted-invitations"
                     >
                       <RefreshCw className="w-4 h-4" />

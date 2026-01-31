@@ -76,7 +76,7 @@ const Terms = () => {
             <h2 className="text-xl font-semibold text-foreground mt-8 mb-4">5. Gizlilik ve İletişim</h2>
             <p className="text-muted-foreground mb-6">
               Kullanıcıların iletişim bilgileri (telefon, e-posta) gizlidir ve yalnızca karşılıklı 
-              davet kabul edildikten sonra paylaşılır. Davet kabul edilmeden iletişim bilgileriniz 
+              talep kabul edildikten sonra paylaşılır. Talep kabul edilmeden iletişim bilgileriniz 
               diğer kullanıcılara gösterilmez.
             </p>
 
@@ -84,7 +84,7 @@ const Terms = () => {
             <p className="text-muted-foreground mb-6">
               Kullanıcılar hesaplarını silmek için talepte bulunabilir. Hesap silme talepleri admin 
               onayına tabidir. Onaylanan talepler sonucunda tüm kullanıcı verileri (ilanlar, mesajlar, 
-              davetler) kalıcı olarak silinir.
+              talepler) kalıcı olarak silinir.
             </p>
 
             <h2 className="text-xl font-semibold text-foreground mt-8 mb-4">7. Yaptırımlar</h2>

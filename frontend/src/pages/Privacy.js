@@ -69,8 +69,8 @@ const Privacy = () => {
             <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800 mb-6">
               <p className="text-blue-800 dark:text-blue-200 text-sm">
                 <strong>Önemli:</strong> Telefon numaranız ve e-posta adresiniz varsayılan olarak GİZLİDİR. 
-                İletişim bilgileriniz yalnızca siz bir daveti kabul ettiğinizde veya size gönderilen 
-                bir davet kabul edildiğinde karşı tarafla paylaşılır.
+                İletişim bilgileriniz yalnızca siz bir talebi kabul ettiğinizde veya size gönderilen 
+                bir talep kabul edildiğinde karşı tarafla paylaşılır.
               </p>
             </div>
 

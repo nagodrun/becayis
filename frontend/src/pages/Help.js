@@ -27,11 +27,11 @@ const Help = () => {
     },
     {
       icon: MessageSquare,
-      title: "Davet ve Mesajlaşma",
+      title: "Talep ve Mesajlaşma",
       items: [
-        { q: "Birisiyle nasıl iletişime geçerim?", a: "İlgilendiğiniz ilana 'Talep Gönder' butonuyla davet gönderin. Karşı taraf daveti kabul ederse mesajlaşma başlar." },
-        { q: "İletişim bilgilerim ne zaman paylaşılır?", a: "İletişim bilgileriniz (telefon, e-posta) yalnızca karşılıklı davet kabul edildikten sonra görünür hale gelir." },
-        { q: "Daveti nasıl kabul ederim?", a: "Dashboard > Davetler sekmesinden gelen davetleri görebilir ve 'Kabul Et' veya 'Reddet' butonlarıyla yanıtlayabilirsiniz." },
+        { q: "Birisiyle nasıl iletişime geçerim?", a: "İlgilendiğiniz ilana 'Talep Gönder' butonuyla talep gönderin. Karşı taraf talebi kabul ederse mesajlaşma başlar." },
+        { q: "İletişim bilgilerim ne zaman paylaşılır?", a: "İletişim bilgileriniz (telefon, e-posta) yalnızca karşılıklı talep kabul edildikten sonra görünür hale gelir." },
+        { q: "Talebi nasıl kabul ederim?", a: "Dashboard > Talepler sekmesinden gelen talepleri görebilir ve 'Kabul Et' veya 'Reddet' butonlarıyla yanıtlayabilirsiniz." },
         { q: "Mesajlarımı nasıl görebilirim?", a: "Dashboard > Mesajlar sekmesinden tüm aktif konuşmalarınızı görebilir ve mesajlaşabilirsiniz." }
       ]
     },

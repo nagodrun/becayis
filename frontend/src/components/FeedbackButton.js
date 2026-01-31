@@ -76,8 +76,8 @@ export const FeedbackButton = () => {
         <MessageCircle className="w-5 h-5" />
         <span className="hidden sm:inline">Geri Bildirim</span>
         {/* Animated ping effect */}
-        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping" />
-        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
+        <span className="absolute -top-1 -right-1 w-3 h-3 bg-amber-500 rounded-full animate-ping" />
+        <span className="absolute -top-1 -right-1 w-3 h-3 bg-amber-500 rounded-full" />
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>

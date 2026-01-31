@@ -52,11 +52,11 @@ const FAQ = () => {
     },
     {
       question: "İletişim bilgilerim ne zaman paylaşılır?",
-      answer: "İletişim bilgileriniz e-posta gizlidir ve sadece gönderdiğiniz veya aldığınız bir daveti kabul ettiğinizde karşı tarafla paylaşılır. Davet reddedilirse hiçbir bilgi paylaşılmaz."
+      answer: "İletişim bilgileriniz e-posta gizlidir ve sadece gönderdiğiniz veya aldığınız bir talebi kabul ettiğinizde karşı tarafla paylaşılır. Talep reddedilirse hiçbir bilgi paylaşılmaz."
     },
     {
-      question: "Davet sistemi nasıl çalışır?",
-      answer: "Bir ilana davet gönderdiğinizde, ilan sahibi bildirim alır. Kabul ederse, her iki tarafın iletişim bilgileri paylaşılır ve mesajlaşma başlatılabilir."
+      question: "Talep sistemi nasıl çalışır?",
+      answer: "Bir ilana talep gönderdiğinizde, ilan sahibi bildirim alır. Kabul ederse, her iki tarafın iletişim bilgileri paylaşılır ve mesajlaşma başlatılabilir."
     },
     {
       question: "İlanımı nasıl silebilirim?",
@@ -64,7 +64,7 @@ const FAQ = () => {
     },
     {
       question: "Mesajlaşma nasıl çalışır?",
-      answer: "Davet kabul edildikten sonra otomatik olarak bir sohbet başlatılır. Dashboard'daki 'Mesajlar' bölümünden tüm konuşmalarınıza erişebilirsiniz. Mesajlar gerçek zamanlıya yakın şekilde güncellenir."
+      answer: "Talep kabul edildikten sonra otomatik olarak bir sohbet başlatılır. Dashboard'daki 'Mesajlar' bölümünden tüm konuşmalarınıza erişebilirsiniz. Mesajlar gerçek zamanlıya yakın şekilde güncellenir."
     },
     {
       question: "Bir kullanıcıyı nasıl engellerim?",

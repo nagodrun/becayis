@@ -11,7 +11,7 @@ import { Badge } from '../components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { SearchableSelect } from '../components/ui/searchable-select';
 import { ListingCard } from '../components/ListingCard';
-import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Trash2, Camera, X, KeyRound, AlertTriangle, HelpCircle, MessageCircle } from 'lucide-react';
+import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Trash2, Camera, X, KeyRound, AlertTriangle, HelpCircle, MessageCircle, User, BellPlus, Handshake, Mail, HeartHandshake, Megaphone } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -204,15 +204,15 @@ const Dashboard = () => {
   const handleRespondInvitation = async (invitationId, action) => {
     try {
       await api.post('/invitations/respond', { invitation_id: invitationId, action });
-      toast.success(action === 'accept' ? 'Davet kabul edildi.' : 'Davet reddedildi.');
+      toast.success(action === 'accept' ? 'Talep kabul edildi.' : 'Talep reddedildi.');
       fetchDashboardData();
     } catch (error) {
-      toast.error('Davet yanıtlanamadı');
+      toast.error('Talep yanıtlanamadı');
     }
   };
 
   const handleDeleteInvitation = async (invitationId, type) => {
-    if (!window.confirm('Bu daveti silmek istediğinizden emin misiniz?')) return;
+    if (!window.confirm('Bu talebi silmek istediğinizden emin misiniz?')) return;
     
     try {
       await api.delete(`/invitations/${invitationId}`);
@@ -228,9 +228,9 @@ const Dashboard = () => {
           received: prev.received.filter(inv => inv.id !== invitationId)
         }));
       }
-      toast.success('Davet silindi');
+      toast.success('Talep silindi');
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Davet silinemedi.'));
+      toast.error(getErrorMessage(error, 'Talep silinemedi.'));
     }
   };
 
@@ -569,22 +569,8 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* User Panel Header with Avatar */}
         <div className="mb-8 flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-lg flex-shrink-0">
-            {user?.profile?.avatar_url ? (
-              <img 
-                src={user.profile.avatar_url} 
-                alt="Profil" 
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-white font-bold text-xl">
-                {(user?.first_name?.[0] || '?').toUpperCase()}
-                {(user?.last_name?.[0] || '?').toUpperCase()}
-              </span>
-            )}
-          </div>
           <div>
-            <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>Panel</h1>
+            <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>Kontrol Paneli</h1>
             <p className="text-muted-foreground">Hoş geldiniz, {user?.profile?.display_name || user?.email}</p>
           </div>
         </div>
@@ -655,7 +641,7 @@ const Dashboard = () => {
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Bekleyen Davetler</p>
+                <p className="text-sm text-slate-500">Bekleyen Talepler</p>
                 <p className="text-3xl font-bold mt-1">{invitations.received.filter(i => i.status === 'pending').length}</p>
               </div>
               <Inbox className="w-10 h-10 text-amber-600" />
@@ -691,31 +677,14 @@ const Dashboard = () => {
           }
         }}>
           <TabsList className="flex w-full overflow-x-auto scrollbar-hide">
-            <TabsTrigger value="profile" data-testid="tab-profile" className="flex-shrink-0">Profil</TabsTrigger>
-            <TabsTrigger value="listings" data-testid="tab-listings" className="flex-shrink-0">İlanlarım</TabsTrigger>
-            <TabsTrigger value="invitations" data-testid="tab-invitations" className="flex-shrink-0">
-              Davetler {invitations.received.filter(i => i.status === 'pending').length > 0 && (
-                <Badge className="ml-2 bg-amber-500">{invitations.received.filter(i => i.status === 'pending').length}</Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="conversations" data-testid="tab-conversations" className="flex-shrink-0">Mesajlar</TabsTrigger>
-            <TabsTrigger value="notifications" data-testid="tab-notifications" className="flex-shrink-0">
-              Bildirimler {unreadNotifications > 0 && (
-                <Badge className="ml-2 bg-red-500">{unreadNotifications}</Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="support" data-testid="tab-support" className="flex-shrink-0">
-              <HelpCircle className="w-4 h-4 mr-1" />
-              Destek {supportTickets.filter(t => t.status === 'answered').length > 0 && (
-                <Badge className="ml-2 bg-emerald-500">{supportTickets.filter(t => t.status === 'answered').length}</Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="security" data-testid="tab-security" className="flex-shrink-0">
-              <KeyRound className="w-4 h-4 mr-1" />
-              Güvenlik
-            </TabsTrigger>
+            <TabsTrigger value="profile" data-testid="tab-profile" className="flex-shrink-0"><User className="w-4 h-4 mr-1" />Profil</TabsTrigger>
+            <TabsTrigger value="listings" data-testid="tab-listings" className="flex-shrink-0"><Megaphone className="w-4 h-4 mr-1" />İlanlarım</TabsTrigger>
+            <TabsTrigger value="invitations" data-testid="tab-invitations" className="flex-shrink-0"><Handshake className="w-4 h-4 mr-1" />Talepler</TabsTrigger>
+            <TabsTrigger value="conversations" data-testid="tab-conversations" className="flex-shrink-0"><Mail className="w-4 h-4 mr-1" />Mesajlar</TabsTrigger>
+            <TabsTrigger value="notifications" data-testid="tab-notifications" className="flex-shrink-0"><Bell className="w-4 h-4 mr-1" />Bildirimler</TabsTrigger>
+            <TabsTrigger value="support" data-testid="tab-support" className="flex-shrink-0"><HeartHandshake className="w-4 h-4 mr-1" />Destek</TabsTrigger>
+            <TabsTrigger value="security" data-testid="tab-security" className="flex-shrink-0"><KeyRound className="w-4 h-4 mr-1" />Güvenlik</TabsTrigger>
           </TabsList>
-
           <TabsContent value="listings" className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
@@ -819,10 +788,10 @@ const Dashboard = () => {
 
           <TabsContent value="invitations" className="space-y-6">
             <div>
-              <h3 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Gelen Davetler</h3>
+              <h3 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Gelen Talepler</h3>
               {invitations.received.length === 0 ? (
                 <Card className="p-8 text-center text-slate-500">
-                  Henüz davet almadınız
+                  Henüz talep almadınız.
                 </Card>
               ) : (
                 <div className="space-y-4">
@@ -832,7 +801,7 @@ const Dashboard = () => {
                         onClick={() => handleDeleteInvitation(invitation.id, 'received')}
                         className="absolute top-4 right-4 text-slate-400 hover:text-red-600 transition-colors"
                         data-testid={`delete-received-invitation-${invitation.id}`}
-                        title="Daveti Sil"
+                        title="Talebi Sil"
                       >
                         <X className="w-5 h-5" />
                       </button>
@@ -873,10 +842,10 @@ const Dashboard = () => {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Gönderilen Davetler</h3>
+              <h3 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Gönderilen Talepler</h3>
               {invitations.sent.length === 0 ? (
                 <Card className="p-8 text-center text-slate-500">
-                  Henüz davet göndermediniz.
+                  Henüz talep göndermediniz.
                 </Card>
               ) : (
                 <div className="space-y-4">
@@ -886,7 +855,7 @@ const Dashboard = () => {
                         onClick={() => handleDeleteInvitation(invitation.id, 'sent')}
                         className="absolute top-4 right-4 text-slate-400 hover:text-red-600 transition-colors"
                         data-testid={`delete-sent-invitation-${invitation.id}`}
-                        title="Daveti Sil"
+                        title="Talebi Sil"
                       >
                         <X className="w-5 h-5" />
                       </button>
@@ -1309,14 +1278,13 @@ const Dashboard = () => {
           <TabsContent value="support" className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-2xl font-bold" style={{ fontFamily: 'Manrope' }}>Destek Taleplerim</h2>
-                <p className="text-sm text-muted-foreground">Geri bildirimleriniz ve destek talepleriniz</p>
+                <h2 className="text-2xl font-bold" style={{ fontFamily: 'Manrope' }}>Destek Taleplerim</h2>                
               </div>
             </div>
 
             {supportTickets.length === 0 ? (
               <Card className="p-12 text-center">
-                <HelpCircle className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+                <HeartHandshake className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
                 <p className="text-muted-foreground">Henüz destek talebiniz bulunmuyor.</p>
                 <p className="text-sm text-muted-foreground mt-2">Sağ alttaki &quot;Geri Bildirim&quot; butonu ile yeni talep oluşturabilirsiniz.</p>
               </Card>

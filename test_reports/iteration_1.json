@@ -19,7 +19,7 @@
     "profile_tab": "PASS - Profile tab displays user information correctly",
     "profile_update": "PASS - Profile edit form works, display_name and bio can be updated",
     "listings_tab": "PASS - İlanlarım tab shows user's listings with edit/delete buttons",
-    "invitations_tab": "PASS - Davetler tab shows sent/received invitations sections",
+    "invitations_tab": "PASS - Talepler tab shows sent/received invitations sections",
     "messages_tab": "PASS - Mesajlar tab displays conversations list",
     "notifications_tab": "PASS - Bildirimler tab shows notifications",
     "theme_toggle": "PASS - Dark/Light theme toggle works correctly",

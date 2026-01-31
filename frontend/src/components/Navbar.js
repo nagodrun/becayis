@@ -43,7 +43,7 @@ const NotificationBadge = ({ count }) => {
   if (!count || count <= 0) return null;
   
   return (
-    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full px-1 animate-pulse">
+    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center bg-amber-500 text-white text-xs font-bold rounded-full px-1 animate-pulse">
       {count > 99 ? '99+' : count}
     </span>
   );
@@ -231,10 +231,13 @@ export const Navbar = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative flex items-center space-x-2" data-testid="user-menu-button">
-                    <div className="relative">
-                      <User className="w-5 h-5" />
-                      <NotificationBadge count={unreadCount} />
-                    </div>
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-lg">
+                      {user?.profile?.avatar_url ? (
+                         <img src={user.profile.avatar_url} alt="Profil" className="w-full h-full object-cover" />
+                          ) : (
+                          <span className="text-white font-bold"> {user?.profile?.display_name?.charAt(0).toUpperCase() || "A"} </span>  )}
+                            <NotificationBadge count={unreadCount} />
+                      </div>
                     <span className="hidden md:inline">{user?.profile?.display_name || 'Profil'}</span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -243,7 +246,7 @@ export const Navbar = () => {
                     <User className="w-4 h-4 mr-2" />
                     Profilim
                     {unreadCount > 0 && (
-                      <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                      <span className="ml-auto bg-amber-500 text-white text-xs px-2 py-0.5 rounded-full">
                         {unreadCount}
                       </span>
                     )}
