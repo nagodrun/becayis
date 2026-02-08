@@ -11,7 +11,7 @@ import { Badge } from '../components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { SearchableSelect } from '../components/ui/searchable-select';
 import { ListingCard } from '../components/ListingCard';
-import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Trash2, Camera, X, KeyRound, AlertTriangle, HelpCircle, MessageCircle, User, BellPlus, Handshake, Mail, HeartHandshake, Megaphone } from 'lucide-react';
+import { FileText, Send, Inbox, MessageSquare, Bell, Plus, Clock, Trash2, Camera, X, KeyRound, AlertTriangle, HelpCircle, MessageCircle, User, BellPlus, Handshake, Mail, HeartHandshake, Megaphone } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -24,6 +24,8 @@ import api, { getErrorMessage } from '../lib/api';
 import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDate } from '../lib/utils';
+
+
 
 const Dashboard = () => {
   const { user, fetchUser } = useAuth();
@@ -63,6 +65,16 @@ const Dashboard = () => {
     current_district: ''
   });
   
+  const [profileUpdateStatus, setProfileUpdateStatus] = useState({
+    update_count: 0,
+    remaining_updates: 3,
+    has_pending_request: false,
+    pending_request: null
+  });
+  const [profileUpdateRequests, setProfileUpdateRequests] = useState([]);
+  const [showProfileUpdateDialog, setShowProfileUpdateDialog] = useState(false);
+  const [profileUpdateReason, setProfileUpdateReason] = useState('');
+
   // Password change state
   const [passwordData, setPasswordData] = useState({
     current_password: '',
@@ -97,6 +109,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchDashboardData();
     fetchDropdownData();
+    fetchProfileUpdateStatus();  // YENİ
     if (user?.profile) {
       setProfileData({
         display_name: user.profile.display_name || '',
@@ -114,6 +127,33 @@ const Dashboard = () => {
       }));
     }
   }, [user]);
+
+  useEffect(() => {
+    const fetchMyListings = async () => {
+      try {
+        // await kullanımı için fonksiyonun başında 'async' olmalı
+        const { data, error } = await api.get('/listings/my-listings'); 
+        
+        // Not: Eğer doğrudan supabase kullanıyorsanız:
+        /*
+        const { data, error } = await supabase
+          .from('listings')
+          .select(`
+            *,
+            profile:profiles (display_name, avatar_url)
+          `)
+          .eq('user_id', user.id);
+        */
+
+        if (error) throw error;
+        setMyListings(data);
+      } catch (err) {
+        console.error("Hata:", err);
+      }
+    };
+
+    fetchMyListings();
+  }, []);
 
   // Fetch districts when province changes
   useEffect(() => {
@@ -460,19 +500,86 @@ const Dashboard = () => {
   };
 
   const handleUpdateProfile = async () => {
+    // Profil ilk kez oluşturuluyorsa direkt oluştur
+    if (!user?.profile) {
+      try {
+        // Upload avatar first if exists
+        if (pendingAvatarFile) {
+          setUploadingAvatar(true);
+          try {
+            const formData = new FormData();
+            formData.append('file', pendingAvatarFile);
+            
+            const avatarResponse = await api.post('/profile/avatar', formData, {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            
+            setProfileData(prev => ({ ...prev, avatar_url: avatarResponse.data.avatar_url }));
+            
+            if (pendingAvatarPreview) {
+              URL.revokeObjectURL(pendingAvatarPreview);
+            }
+            setPendingAvatarFile(null);
+            setPendingAvatarPreview(null);
+          } catch (avatarError) {
+            toast.error('Profil fotoğrafı yüklenemedi.');
+          } finally {
+            setUploadingAvatar(false);
+          }
+        }
+
+        await api.post('/profile', {
+          user_id: user?.id,
+          display_name: profileData.display_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim(),
+          institution: profileData.institution,
+          role: profileData.role,
+          current_province: profileData.current_province,
+          current_district: profileData.current_district,
+          bio: profileData.bio
+        });
+        
+        toast.success('Profil oluşturuldu.');
+        setEditingProfile(false);
+        if (fetchUser) await fetchUser();
+      } catch (error) {
+        toast.error(getErrorMessage(error, 'Profil oluşturulamadı.'));
+      }
+    } else {
+      // Profil zaten varsa güncelleme talebi oluştur
+      setShowProfileUpdateDialog(true);
+    }
+  };
+  
+const fetchProfileUpdateStatus = async () => {
     try {
-      // Upload pending avatar first if exists
+      const [statusRes, requestsRes] = await Promise.all([
+        api.get('/profile/update-status'),
+        api.get('/profile/update-requests/my')
+      ]);
+      setProfileUpdateStatus(statusRes.data);
+      setProfileUpdateRequests(requestsRes.data);
+    } catch (error) {
+      console.error('Failed to fetch profile update status:', error);
+    }
+  };
+
+const handleRequestProfileUpdate = async () => {
+    if (!profileUpdateReason.trim()) {
+      toast.error('Lütfen güncelleme sebebini belirtin.');
+      return;
+    }
+
+    try {
+      // Upload avatar if selected
       if (pendingAvatarFile) {
         setUploadingAvatar(true);
         try {
           const formData = new FormData();
           formData.append('file', pendingAvatarFile);
           
-          const avatarResponse = await api.post('/profile/avatar', formData, {
+          await api.post('/profile/avatar', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
           });
-          
-          setProfileData(prev => ({ ...prev, avatar_url: avatarResponse.data.avatar_url }));
           
           // Clear pending avatar
           if (pendingAvatarPreview) {
@@ -487,28 +594,26 @@ const Dashboard = () => {
         }
       }
 
-      // Check if profile exists, if not create, otherwise update
-      if (!user?.profile) {
-        // Create profile
-        await api.post('/profile', {
-          user_id: user?.id,
-          display_name: profileData.display_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim(),
-          institution: profileData.institution,
-          role: profileData.role,
-          current_province: profileData.current_province,
-          current_district: profileData.current_district,
-          bio: profileData.bio
-        });
-      } else {
-        // Update profile
-        await api.put('/profile', profileData);
-      }
-      toast.success('Profil güncellendi.');
+      // Send update request
+      await api.post('/profile/request-update', {
+        display_name: profileData.display_name,
+        institution: profileData.institution,
+        role: profileData.role,
+        current_province: profileData.current_province,
+        current_district: profileData.current_district,
+        bio: profileData.bio,
+        reason: profileUpdateReason
+      });
+
+      toast.success('Profil güncelleme talebiniz gönderildi. Admin onayı bekleniyor.');
+      setShowProfileUpdateDialog(false);
+      setProfileUpdateReason('');
       setEditingProfile(false);
-      // Refresh user data without page reload - stay on profile tab
-      if (fetchUser) await fetchUser();
+      
+      // Refresh status
+      await fetchProfileUpdateStatus();
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Profil güncellenemedi.'));
+      toast.error(getErrorMessage(error, 'Güncelleme talebi gönderilemedi.'));
     }
   };
 
@@ -603,10 +708,10 @@ const Dashboard = () => {
 
         {/* Admin Notification Banners */}
         {adminBannerNotifications.map((notif) => (
-          <Card key={notif.id} className="p-6 mb-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 relative" data-testid="admin-notification-banner">
+          <Card key={notif.id} className="p-6 mb-4 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 relative" data-testid="admin-notification-banner">
             <button
               onClick={() => handleDismissAdminBanner(notif.id)}
-              className="absolute top-4 right-4 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+              className="absolute top-4 right-4 text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300 transition-colors"
               data-testid={`dismiss-banner-${notif.id}`}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -615,12 +720,12 @@ const Dashboard = () => {
             </button>
             <div className="flex items-start space-x-4 pr-8">
               <div className="flex-shrink-0">
-                <Bell className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <Bell className="w-6 h-6 text-amber-600 dark:text-amber-400" />
               </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">{notif.title}</h3>
-                <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed">{notif.message}</p>
-                <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">{formatDate(notif.created_at)}</p>
+              <div className="flex-1"> 
+                <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-100 mb-2">Genel Bildirim.</h3>
+                <p className="text-sm text-amber-800 dark:text-amber-200 leading-relaxed">{notif.message}</p>
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">{formatDate(notif.created_at)}</p>
               </div>
             </div>
           </Card>
@@ -729,10 +834,10 @@ const Dashboard = () => {
                     const hasPendingDeletion = deletionRequests.some(
                       req => req.listing_id === listing.id && req.status === 'pending'
                     );
-                    
+                    const myCustomListing = {...listing, profile: listing.profile || { display_name: user?.display_name || user?.full_name, avatar_url: user?.avatar_url }};                    
                     return (
                       <div key={listing.id}>
-                        <ListingCard listing={listing} showInviteButton={false} />
+                        <ListingCard listing={listing} showInviteButton={false} isDashboard={true}/>
                         <div className="mt-2 flex gap-2">
                           <Link to={`/listings/${listing.id}/edit`} className="flex-1">
                             <Button variant="outline" className="w-full" size="sm" data-testid={`edit-listing-${listing.id}`}>Düzenle</Button>
@@ -1007,10 +1112,15 @@ const Dashboard = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-white font-bold text-2xl">
-                          {(user?.first_name?.[0] || '?').toUpperCase()}
-                          {(user?.last_name?.[0] || '?').toUpperCase()}
-                        </span>
+                        <span className="text-4xl text-white font-bold"> 
+                          {user?.profile?.display_name ? user.profile.display_name
+                          .split(' ')                  // İsmi boşluklardan parçalara ayır
+                          .map(n => n[0])              // Her parçanın ilk harfini al
+                          .join('')                    // Harfleri birleştir
+                          .toUpperCase()               // Hepsini büyük harf yap
+                          : '?' 
+                          } 
+                          </span>
                       )}
                     </div>
                     {pendingAvatarPreview && (
@@ -1164,14 +1274,35 @@ const Dashboard = () => {
                         rows={4}
                         placeholder="Kendinizi kısaca tanıtın..."
                       />
-                    </div>
+                    </div>                    
+                    {editingProfile && user?.profile && (
+                      <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                        <div className="flex items-start gap-3">
+                          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-1">
+                              Profil Güncelleme Hakkı
+                            </h4>
+                            <p className="text-sm text-amber-800 dark:text-amber-200">
+                              Kalan güncelleme hakkınız: <strong>{profileUpdateStatus.remaining_updates}/3</strong>
+                            </p>
+                            {profileUpdateStatus.has_pending_request && (
+                              <p className="text-sm text-amber-700 dark:text-amber-300 mt-2 flex items-center gap-2">
+                                <Clock className="w-4 h-4" />
+                                Bekleyen güncelleme talebiniz var. Yeni talep gönderemezsiniz.
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}                    
                     <div className="flex gap-2 pt-4">
                       <Button 
                         onClick={handleUpdateProfile} 
                         className="bg-emerald-600 hover:bg-emerald-700"
-                        disabled={uploadingAvatar}
+                        disabled={uploadingAvatar || (user?.profile && profileUpdateStatus.has_pending_request) || (user?.profile && profileUpdateStatus.remaining_updates <= 0)}
                       >
-                        {uploadingAvatar ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
+                        {uploadingAvatar ? 'Kaydediliyor...' : user?.profile ? 'Güncelleme Talep Et' : 'Profili Oluştur'}
                       </Button>
                       <Button variant="outline" onClick={() => {
                         setEditingProfile(false);
@@ -1185,7 +1316,7 @@ const Dashboard = () => {
                       <h3 className="text-lg font-semibold mb-4 text-foreground">Kişisel Bilgiler</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-muted-foreground mb-2">Görünen Ad</label>
+                          <label className="block text-sm font-medium text-muted-foreground mb-2">Ad Soyad</label>
                           <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
                             {user?.profile?.display_name || 'Belirtilmemiş'}
                           </div>
@@ -1196,8 +1327,8 @@ const Dashboard = () => {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-muted-foreground mb-2">Telefon</label>
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
-                            {user?.phone || 'Belirtilmemiş'}
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-muted-foreground">
+                            {user?.phone || 'Kullanım Dışı'}
                           </div>
                         </div>
                         <div>
@@ -1250,7 +1381,45 @@ const Dashboard = () => {
                     <div className="pt-4 border-t flex justify-between items-center">
                       <Button onClick={() => setEditingProfile(true)} className="bg-blue-600 hover:bg-blue-700">
                         Profili Düzenle
-                      </Button>
+                      </Button>                      
+                      {!editingProfile && profileUpdateRequests.length > 0 && (
+                        <div className="mt-8 pt-6 border-t">
+                          <h3 className="text-lg font-semibold mb-4 text-foreground">Güncelleme Talep Geçmişi</h3>
+                          <div className="space-y-3">
+                            {profileUpdateRequests.map((req) => (
+                              <Card key={req.id} className="p-4">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <Badge variant={
+                                        req.status === 'pending' ? 'default' : 
+                                        req.status === 'approved' ? 'outline' : 
+                                        'destructive'
+                                      } className={
+                                        req.status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' : ''
+                                      }>
+                                        {req.status === 'pending' ? 'Bekliyor' : 
+                                        req.status === 'approved' ? 'Onaylandı' : 
+                                        'Reddedildi'}
+                                      </Badge>
+                                      <span className="text-xs text-muted-foreground">{formatDate(req.created_at)}</span>
+                                    </div>
+                                    
+                                    <div className="text-sm text-slate-700 dark:text-slate-300 mb-2">
+                                      <strong>Sebep:</strong> {req.reason}
+                                    </div>                                    
+                                    {req.rejection_reason && (
+                                      <div className="text-sm text-red-600 dark:text-red-400 mt-2">
+                                        <strong>Red Sebebi:</strong> {req.rejection_reason}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </Card>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                       <div className="flex items-center gap-2">
                         {accountDeletionPending && (
                           <Badge variant="outline" className="border-amber-500 text-amber-600">
@@ -1549,6 +1718,50 @@ const Dashboard = () => {
             </Button>
           </DialogFooter>
         </DialogContent>
+        
+        <Dialog open={showProfileUpdateDialog} onOpenChange={setShowProfileUpdateDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Profil Güncelleme Talebi</DialogTitle>
+              <DialogDescription>
+                Profilinizi güncellemek için admin onayı gereklidir. Lütfen güncelleme sebebinizi açıklayın.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-sm text-blue-800 dark:text-blue-200">
+                  <strong>Kalan güncelleme hakkınız:</strong> {profileUpdateStatus.remaining_updates}/3
+                </p>
+              </div>
+              <div>
+                <Label htmlFor="update-reason">Güncelleme Sebebi *</Label>
+                <Textarea
+                  id="update-reason"
+                  value={profileUpdateReason}
+                  onChange={(e) => setProfileUpdateReason(e.target.value)}
+                  placeholder="Örn: Yeni kuruma atandım, pozisyon değişti, vs."
+                  rows={4}
+                  data-testid="profile-update-reason-input"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setShowProfileUpdateDialog(false);
+                setProfileUpdateReason('');
+              }}>
+                İptal
+              </Button>
+              <Button 
+                onClick={handleRequestProfileUpdate}
+                disabled={!profileUpdateReason.trim()}
+                data-testid="submit-profile-update-request"
+              >
+                Talep Gönder
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </Dialog>
     </div>
   );
