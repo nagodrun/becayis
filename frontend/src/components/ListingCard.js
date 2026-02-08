@@ -3,21 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { MapPin, Briefcase, Building2, ArrowRight, Send } from 'lucide-react';
+import { User, MapPin, Briefcase, Building2, ArrowRight, Send } from 'lucide-react';
 import { formatDate } from '../lib/utils';
+
+
 
 // Mask name: "Ahmet Yılmaz" -> "A*** Y***"
 const maskName = (name) => {
   if (!name) return 'Anonim';
   return name.split(' ').map(word => {
     if (word.length <= 1) return word;
-    return word[0] + '*'.repeat(Math.min(word.length - 1, 3));
+    return word[0] + '*'.repeat(Math.min(word.length - 1, 2));
   }).join(' ');
 };
 
 export const ListingCard = ({ listing, onInvite, showInviteButton = true, showInviteForGuest = false }) => {
-  const { profile, user_initials } = listing;
+  const { user, profile, user_initials } = listing;
   const navigate = useNavigate();
+
 
   const handleGuestInvite = () => {
     navigate('/register');
@@ -25,7 +28,7 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
 
   // Get avatar URL or use initials
   const avatarUrl = profile?.avatar_url;
-  const initials = user_initials || '??';
+  const initials = user_initials || '';
   const maskedName = maskName(profile?.display_name);
 
   return (
@@ -51,7 +54,15 @@ export const ListingCard = ({ listing, onInvite, showInviteButton = true, showIn
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-white font-bold text-sm">{initials}</span>
+                <span className="text-white font-bold">
+                  {profile?.display_name ? profile.display_name
+                        .split(' ')                  // İsmi boşluklardan parçalara ayır
+                        .map(n => n[0])              // Her parçanın ilk harfini al
+                        .join('')                    // Harfleri birleştir
+                        .toUpperCase()               // Hepsini büyük harf yap
+                    : '?'                            // İsim yoksa soru işareti göster
+                  }
+                </span> 
               )}
             </div>
             <div>
