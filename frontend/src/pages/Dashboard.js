@@ -18,6 +18,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
   DialogFooter,
 } from '../components/ui/dialog';
 import api, { getErrorMessage } from '../lib/api';
@@ -46,6 +47,16 @@ const Dashboard = () => {
     return localStorage.getItem('hideWarning') !== 'true';
   });
   
+  const READY_AVATARS = [
+  'https://avataaars.io/?avatarStyle=transparent&topType=LongHairStraight&accessoriesType=Prescription01&hairColor=Black&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Default&eyebrowType=RaisedExcited&mouthType=Twinkle&skinColor=Light',
+  'https://avataaars.io/?avatarStyle=transparent&topType=LongHairStraight&accessoriesType=Prescription02&hairColor=Platinium&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Default&eyebrowType=RaisedExcited&mouthType=Twinkle&skinColor=Light',
+  'https://avataaars.io/?avatarStyle=transparent&topType=LongHairStraight&accessoriesType=Round&hairColor=Platinum&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Default&eyebrowType=Default&mouthType=Twinkle&skinColor=Light',
+  'https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraight&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Default&eyebrowType=Default&mouthType=Twinkle&skinColor=Light',
+  'https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Round&hairColor=Black&facialHairType=Blank&facialHairColor=Black&clotheType=BlazerSweater&eyeType=Default&eyebrowType=Default&mouthType=Twinkle&skinColor=Light',
+  'https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Prescription01&hairColor=Black&facialHairType=Blank&facialHairColor=Black&clotheType=BlazerSweater&eyeType=Default&eyebrowType=Default&mouthType=Twinkle&skinColor=Light',
+  'https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&facialHairColor=Black&clotheType=BlazerSweater&eyeType=Default&eyebrowType=Default&mouthType=Twinkle&skinColor=Light',
+  'https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortFlat&accessoriesType=Blank&hairColor=Black&facialHairType=Blank&facialHairColor=Black&clotheType=BlazerSweater&eyeType=Default&eyebrowType=Default&mouthType=Twinkle&skinColor=Light'
+  ];
   // Support ticket state
   const [selectedTicket, setSelectedTicket] = useState(null);
   
@@ -671,9 +682,9 @@ const handleRequestProfileUpdate = async () => {
 
   return (
     <div className="min-h-screen bg-background py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col">
         {/* User Panel Header with Avatar */}
-        <div className="mb-8 flex items-center gap-4">
+        <div className="mb-8 flex items-center justify-between order-1">
           <div>
             <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Manrope' }}>Kontrol Paneli</h1>
             <p className="text-muted-foreground">Hoş geldiniz, {user?.profile?.display_name || user?.email}</p>
@@ -732,7 +743,7 @@ const handleRequestProfileUpdate = async () => {
         ))}
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 order-3 p-6 lg:order-1">
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -775,7 +786,7 @@ const handleRequestProfileUpdate = async () => {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="profile" className="space-y-6" onValueChange={(value) => {
+        <Tabs defaultValue="profile" className="space-y-6 order-2 lg:order-2" onValueChange={(value) => {
           // Mark notifications as read when switching to notifications tab
           if (value === 'notifications' && unreadNotifications > 0) {
             handleMarkAllNotificationsRead();
@@ -786,10 +797,13 @@ const handleRequestProfileUpdate = async () => {
             <TabsTrigger value="listings" data-testid="tab-listings" className="flex-shrink-0"><Megaphone className="w-4 h-4 mr-1" />İlanlarım</TabsTrigger>
             <TabsTrigger value="invitations" data-testid="tab-invitations" className="flex-shrink-0"><Handshake className="w-4 h-4 mr-1" />Talepler</TabsTrigger>
             <TabsTrigger value="conversations" data-testid="tab-conversations" className="flex-shrink-0"><Mail className="w-4 h-4 mr-1" />Mesajlar</TabsTrigger>
-            <TabsTrigger value="notifications" data-testid="tab-notifications" className="flex-shrink-0"><Bell className="w-4 h-4 mr-1" />Bildirimler</TabsTrigger>
+            <TabsTrigger value="notifications" data-testid="tab-notifications" className="flex-shrink-0"><Bell className="w-4 h-4 mr-1" />Bildirimler{unreadNotifications > 0 && (
+                <Badge className="ml-2 bg-red-500">{unreadNotifications}</Badge>)}</TabsTrigger>
             <TabsTrigger value="support" data-testid="tab-support" className="flex-shrink-0"><HeartHandshake className="w-4 h-4 mr-1" />Destek</TabsTrigger>
             <TabsTrigger value="security" data-testid="tab-security" className="flex-shrink-0"><KeyRound className="w-4 h-4 mr-1" />Güvenlik</TabsTrigger>
           </TabsList>
+
+          {/* İlanlar Sekmesi */}
           <TabsContent value="listings" className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
@@ -891,6 +905,7 @@ const handleRequestProfileUpdate = async () => {
             )}
           </TabsContent>
 
+          {/* Talepler Sekmesi */}
           <TabsContent value="invitations" className="space-y-6">
             <div>
               <h3 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Gelen Talepler</h3>
@@ -981,6 +996,7 @@ const handleRequestProfileUpdate = async () => {
             </div>
           </TabsContent>
 
+          {/* Mesajlaşma Sekmesi */}
           <TabsContent value="conversations">
             <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Manrope' }}>Mesajlarım</h2>
             {conversations.length === 0 ? (
@@ -1038,6 +1054,7 @@ const handleRequestProfileUpdate = async () => {
             )}
           </TabsContent>
 
+          {/* Bildirimler Sekmesi */}
           <TabsContent value="notifications">
             <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Manrope' }}>Bildirimler</h2>
             {notifications.length === 0 ? (
@@ -1091,359 +1108,253 @@ const handleRequestProfileUpdate = async () => {
             )}
           </TabsContent>
 
-          <TabsContent value="profile">
+          {/* Profil Sekmesi */}
+          <TabsContent value="profile" className="space-y-6">
             <h2 className="text-2xl font-bold mb-6 text-foreground" style={{ fontFamily: 'Manrope' }}>Profil Ayarları</h2>
-            <Card className="p-6">
-              <div className="space-y-6">
-                {/* Avatar Section */}
-                <div className="flex items-center gap-6 pb-6 border-b border-border">
-                  <div className="relative">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-lg">
-                      {pendingAvatarPreview ? (
-                        <img 
-                          src={pendingAvatarPreview} 
-                          alt="Önizleme" 
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (user?.profile?.avatar_url || profileData.avatar_url) ? (
-                        <img 
-                          src={user?.profile?.avatar_url || profileData.avatar_url} 
-                          alt="Profil" 
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <span className="text-4xl text-white font-bold"> 
-                          {user?.profile?.display_name ? user.profile.display_name
-                          .split(' ')                  // İsmi boşluklardan parçalara ayır
-                          .map(n => n[0])              // Her parçanın ilk harfini al
-                          .join('')                    // Harfleri birleştir
-                          .toUpperCase()               // Hepsini büyük harf yap
-                          : '?' 
-                          } 
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+              
+              {/* --- SOL KOLON: KULLANICI ÖZET BİLGİLERİ --- */}
+              <div className="lg:col-span-1 space-y-6">
+                <Card className="p-6">
+                  <div className="flex flex-col items-center text-center">
+                    {/* Avatar Bölümü */}
+                    <div className="relative mb-4">
+                      <div className="w-32 h-32 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center overflow-hidden shadow-lg border-4 border-background">
+                        {pendingAvatarPreview ? (
+                          <img src={pendingAvatarPreview} alt="Önizleme" className="w-full h-full object-cover" />
+                        ) : (user?.profile?.avatar_url || profileData.avatar_url) ? (
+                          <img src={user?.profile?.avatar_url || profileData.avatar_url} alt="Profil" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-4xl text-white font-bold">
+                            {user?.profile?.display_name ? user.profile.display_name.split(' ').map(n => n[0]).join('').toUpperCase() : '?'}
                           </span>
-                      )}
-                    </div>
-                    {pendingAvatarPreview && (
-                      <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                        Yeni
-                      </div>
-                    )}
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp,image/gif"
-                      className="hidden"
-                      onChange={handleAvatarSelect}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1">Profil Fotoğrafı</h3>
-                    {editingProfile ? (
-                      <>
-                        <p className="text-sm text-muted-foreground mb-3">JPEG, PNG, WebP veya GIF. Max 5MB.</p>
-                        <div className="flex gap-2 flex-wrap">
-                          <Button 
-                            size="sm" 
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={uploadingAvatar}
-                            className="bg-amber-500 hover:bg-amber-600"
-                          >
-                            <Camera className="w-4 h-4 mr-2" />
-                            {pendingAvatarPreview ? 'Fotoğrafı Değiştir' : (user?.profile?.avatar_url || profileData.avatar_url) ? 'Fotoğrafı Değiştir' : 'Fotoğraf Seç'}
-                          </Button>
-                          {pendingAvatarPreview && (
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={handleCancelAvatarSelect}
-                            >
-                              <X className="w-4 h-4 mr-2" />
-                              İptal
-                            </Button>
-                          )}
-                          {(user?.profile?.avatar_url || profileData.avatar_url) && !pendingAvatarPreview && (
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={handleDeleteAvatar}
-                              className="text-red-600 hover:text-red-700"
-                            >
-                              <X className="w-4 h-4 mr-2" />
-                              Kaldır
-                            </Button>
-                          )}
-                        </div>
-                        {pendingAvatarPreview && (
-                          <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
-                            Fotoğraf seçildi. Kaydetmek için aşağıdaki &quot;Değişiklikleri Kaydet&quot; butonuna tıklayın.
-                          </p>
                         )}
-                      </>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">
-                        {(user?.profile?.avatar_url || profileData.avatar_url) ? 'Fotoğrafı değiştirmek için "Profili Düzenle" butonuna tıklayın.' : 'Fotoğraf eklemek için "Profili Düzenle" butonuna tıklayın.'}
-                      </p>
+                      </div>
+                      {editingProfile && (
+                        <div className="absolute -bottom-2 -right-2 flex gap-1">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button size="icon" className="h-8 w-8 rounded-full bg-amber-500 hover:bg-amber-600 shadow-lg">
+                      <Camera className="w-4 h-4 text-white" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Profil Fotoğrafı Seç</DialogTitle>
+                      <DialogDescription>Hazır avatarlardan birini seçebilir veya kendi fotoğrafınızı yükleyebilirsiniz.</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid grid-cols-4 gap-4 py-4">
+                      {READY_AVATARS.map((url, i) => (
+                        <button
+                          key={i}
+                          onClick={() => { setPendingAvatarPreview(url); }}
+                          className={`relative rounded-full overflow-hidden border-4 transition-all hover:scale-105 ${pendingAvatarPreview === url ? 'border-amber-500' : 'border-transparent'}`}
+                        >
+                          <img src={url} alt="Avatar" className="w-full h-full" />
+                        </button>
+                      ))}
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="flex flex-col items-center justify-center rounded-full border-2 border-dashed border-slate-300 hover:border-amber-500 transition-colors h-16 w-16"
+                      >
+                        <Plus className="w-6 h-6 text-slate-400" />
+                      </button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+                      )}
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleAvatarSelect}
+                      />
+                    </div>
+
+                    <h3 className="text-xl font-bold text-foreground">{user?.profile?.display_name || 'İsimsiz Kullanıcı'}</h3>
+                    <p className="text-sm text-amber-600 font-medium mb-1">{user?.profile?.role || 'Pozisyon Belirtilmemiş'}</p>
+                    <p className="text-xs text-muted-foreground mb-4">{user?.profile?.institution || 'Kurum Belirtilmemiş'}</p>
+                    
+                    <div className="w-full pt-4 border-t space-y-3 text-left">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Mail className="w-4 h-4" />
+                        <span className="truncate">{user?.email}</span>
+                      </div>
+                      <div className="flex items-center justify-between pt-2">
+                        <span className="text-xs font-medium text-slate-500">Güncelleme Hakkı:</span>
+                        <Badge variant="outline" className="font-bold">
+                          {profileUpdateStatus.remaining_updates}/3
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Bekleyen Talep Uyarıları (Sol Kolon Altı) */}
+                {profileUpdateStatus.has_pending_request && (
+                  <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg flex gap-3">
+                    <Clock className="w-5 h-5 text-amber-600 flex-shrink-0" />
+                    <p className="text-xs text-amber-800 dark:text-amber-200">
+                      Bekleyen bir güncelleme talebiniz bulunmaktadır. İncelendikten sonra yeni işlem yapabilirsiniz.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* --- SAĞ KOLON: DÜZENLEME VE DETAYLAR --- */}
+              <div className="lg:col-span-2 space-y-6">
+                <Card className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg font-semibold">Detaylı Bilgiler</h3>
+                    {!editingProfile && (
+                      <Button onClick={() => setEditingProfile(true)} size="sm" className="bg-blue-600 hover:bg-blue-700">
+                        Profili Düzenle
+                      </Button>
                     )}
                   </div>
-                </div>
 
-                {editingProfile ? (
-                  <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="display_name">Görünen Ad</Label>
-                        <Input
-                          id="display_name"
-                          value={profileData.display_name}
-                          onChange={(e) => setProfileData({ ...profileData, display_name: e.target.value })}
-                          placeholder="Adınız Soyadınız"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="phone">Telefon</Label>
-                        <Input
-                          id="phone"
-                          value={profileData.phone || user?.phone || ''}
-                          disabled
-                          className="bg-slate-100 dark:bg-slate-800"
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">Telefon numarası değiştirilemez</p>
-                      </div>
-                      <div>
-                        <Label htmlFor="institution">Kurumunuzu Seçin</Label>
-                        <SearchableSelect
-                          options={institutions}
-                          value={profileData.institution}
-                          onValueChange={(val) => setProfileData({ ...profileData, institution: val })}
-                          placeholder="Kurum Seçin"
-                          searchPlaceholder="Kurum ara..."
-                          emptyMessage="Kurum bulunamadı."
-                          data-testid="profile-institution-select"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="role">Pozisyonunuzu Seçin</Label>
-                        <SearchableSelect
-                          options={positions}
-                          value={profileData.role}
-                          onValueChange={(val) => setProfileData({ ...profileData, role: val })}
-                          placeholder="Pozisyon Seçin"
-                          searchPlaceholder="Pozisyon ara..."
-                          emptyMessage="Pozisyon bulunamadı."
-                          data-testid="profile-position-select"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="current_province">Bulunduğunuz İli Seçin</Label>
-                        <Select 
-                          value={profileData.current_province || "none"} 
-                          onValueChange={(val) => setProfileData({ ...profileData, current_province: val === "none" ? "" : val, current_district: "" })}
-                        >
-                          <SelectTrigger className="w-full" data-testid="profile-province-select">
-                            <SelectValue placeholder="İl Seçin" />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-[300px]">
-                            <SelectItem value="none">İl Seç</SelectItem>
-                            {provinces.map(prov => <SelectItem key={prov} value={prov}>{prov}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="current_district">Bulunduğunuz İlçeyi Seçin</Label>
-                        <Select 
-                          value={profileData.current_district || "none"} 
-                          onValueChange={(val) => setProfileData({ ...profileData, current_district: val === "none" ? "" : val })}
-                          disabled={!profileData.current_province || districts.length === 0}
-                        >
-                          <SelectTrigger className="w-full" data-testid="profile-district-select">
-                            <SelectValue placeholder={profileData.current_province ? "İlçe Seçin" : "Önce il seçin"} />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-[300px]">
-                            <SelectItem value="none">İlçe Seç</SelectItem>
-                            {districts.map(dist => <SelectItem key={dist} value={dist}>{dist}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="bio">Hakkında</Label>
-                      <Textarea
-                        id="bio"
-                        value={profileData.bio}
-                        onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
-                        rows={4}
-                        placeholder="Kendinizi kısaca tanıtın..."
-                      />
-                    </div>                    
-                    {editingProfile && user?.profile && (
-                      <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-                        <div className="flex items-start gap-3">
-                          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-1">
-                              Profil Güncelleme Hakkı
-                            </h4>
-                            <p className="text-sm text-amber-800 dark:text-amber-200">
-                              Kalan güncelleme hakkınız: <strong>{profileUpdateStatus.remaining_updates}/3</strong>
-                            </p>
-                            {profileUpdateStatus.has_pending_request && (
-                              <p className="text-sm text-amber-700 dark:text-amber-300 mt-2 flex items-center gap-2">
-                                <Clock className="w-4 h-4" />
-                                Bekleyen güncelleme talebiniz var. Yeni talep gönderemezsiniz.
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    )}                    
-                    <div className="flex gap-2 pt-4">
-                      <Button 
-                        onClick={handleUpdateProfile} 
-                        className="bg-emerald-600 hover:bg-emerald-700"
-                        disabled={uploadingAvatar || (user?.profile && profileUpdateStatus.has_pending_request) || (user?.profile && profileUpdateStatus.remaining_updates <= 0)}
-                      >
-                        {uploadingAvatar ? 'Kaydediliyor...' : user?.profile ? 'Güncelleme Talep Et' : 'Profili Oluştur'}
-                      </Button>
-                      <Button variant="outline" onClick={() => {
-                        setEditingProfile(false);
-                        handleCancelAvatarSelect();
-                      }}>İptal</Button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4 text-foreground">Kişisel Bilgiler</h3>
+                  {editingProfile ? (
+                    <div className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Görünen Ad</Label>
+                          <Input
+                            value={profileData.display_name}
+                            onChange={(e) => setProfileData({ ...profileData, display_name: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Telefon</Label>
+                          <Input value={user?.phone || ''} disabled className="bg-slate-100" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Kurum</Label>
+                          <SearchableSelect
+                            options={institutions}
+                            value={profileData.institution}
+                            onValueChange={(val) => setProfileData({ ...profileData, institution: val })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Pozisyon</Label>
+                          <SearchableSelect
+                            options={positions}
+                            value={profileData.role}
+                            onValueChange={(val) => setProfileData({ ...profileData, role: val })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>İl</Label>
+                          <Select 
+                            value={profileData.current_province || "none"} 
+                            onValueChange={(val) => setProfileData({ ...profileData, current_province: val === "none" ? "" : val, current_district: "" })}
+                          >
+                            <SelectTrigger><SelectValue placeholder="İl Seçin" /></SelectTrigger>
+                            <SelectContent>
+                              {provinces.map(prov => <SelectItem key={prov} value={prov}>{prov}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>İlçe</Label>
+                          <Select 
+                            value={profileData.current_district || "none"} 
+                            onValueChange={(val) => setProfileData({ ...profileData, current_district: val === "none" ? "" : val })}
+                            disabled={!profileData.current_province}
+                          >
+                            <SelectTrigger><SelectValue placeholder="İlçe Seçin" /></SelectTrigger>
+                            <SelectContent>
+                              {districts.map(dist => <SelectItem key={dist} value={dist}>{dist}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Hakkında</Label>
+                        <Textarea
+                          value={profileData.bio}
+                          onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
+                          rows={4}
+                        />
+                      </div>
+                      <div className="flex gap-2 pt-4">
+                        <Button 
+                          onClick={handleUpdateProfile} 
+                          className="bg-emerald-600 hover:bg-emerald-700"
+                          disabled={uploadingAvatar || (user?.profile && (profileUpdateStatus.has_pending_request || profileUpdateStatus.remaining_updates <= 0))}
+                        >
+                          {uploadingAvatar ? 'Kaydediliyor...' : user?.profile ? 'Güncelleme Talep Et' : 'Profili Oluştur'}
+                        </Button>
+                        <Button variant="outline" onClick={() => { setEditingProfile(false); handleCancelAvatarSelect(); }}>İptal</Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <label className="block text-sm font-medium text-muted-foreground mb-2">Ad Soyad</label>
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
-                            {user?.profile?.display_name || 'Belirtilmemiş'}
-                          </div>
+                          <label className="text-xs font-medium text-muted-foreground uppercase">Konum</label>
+                          <p className="text-sm font-medium mt-1">
+                            {user?.profile?.current_province ? `${user.profile.current_province} / ${user.profile.current_district}` : 'Belirtilmemiş'}
+                          </p>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-muted-foreground mb-2">E-posta</label>
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">{user?.email}</div>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-muted-foreground mb-2">Telefon</label>
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-muted-foreground">
-                            {user?.phone || 'Kullanım Dışı'}
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-muted-foreground mb-2">Kurum</label>
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
-                            {user?.profile?.institution || 'Belirtilmemiş'}
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-muted-foreground mb-2">Pozisyon</label>
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
-                            {user?.profile?.role || 'Belirtilmemiş'}
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-muted-foreground mb-2">Konum</label>
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
-                            {user?.profile?.current_province && user?.profile?.current_district 
-                              ? `${user.profile.current_province} / ${user.profile.current_district}`
-                              : 'Belirtilmemiş'}
-                          </div>
+                          <label className="text-xs font-medium text-muted-foreground uppercase">Üyelik Tarihi</label>
+                          <p className="text-sm font-medium mt-1">{user?.created_at ? formatDate(user.created_at) : '-'}</p>
                         </div>
                       </div>
                       {user?.profile?.bio && (
-                        <div className="mt-4">
-                          <label className="block text-sm font-medium text-muted-foreground mb-2">Hakkında</label>
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">{user.profile.bio}</div>
+                        <div>
+                          <label className="text-xs font-medium text-muted-foreground uppercase">Hakkında</label>
+                          <p className="text-sm mt-1 bg-slate-50 dark:bg-slate-800 p-3 rounded-md">{user.profile.bio}</p>
                         </div>
                       )}
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4 text-foreground">Hesap Bilgileri</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-muted-foreground mb-2">Üyelik Tarihi</label>
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-foreground">
-                            {user?.created_at ? formatDate(user.created_at) : 'Bilinmiyor'}
-                          </div>
+                      
+                      <div className="pt-6 border-t flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            variant="destructive" 
+                            size="sm"
+                            onClick={handleDeleteAccount}
+                            disabled={accountDeletionPending}
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            {accountDeletionPending ? 'Silme Talebi Alındı' : 'Hesabı Sil'}
+                          </Button>
                         </div>
-                        <div>
-                          <label className="block text-sm font-medium text-muted-foreground mb-2">Hesap Durumu</label>
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md">
-                            <Badge className="bg-emerald-500">Aktif</Badge>
-                          </div>
-                        </div>
+                        <Badge className="bg-emerald-500">Hesap Aktif</Badge>
                       </div>
                     </div>
+                  )}
+                </Card>
 
-                    <div className="pt-4 border-t flex justify-between items-center">
-                      <Button onClick={() => setEditingProfile(true)} className="bg-blue-600 hover:bg-blue-700">
-                        Profili Düzenle
-                      </Button>                      
-                      {!editingProfile && profileUpdateRequests.length > 0 && (
-                        <div className="mt-8 pt-6 border-t">
-                          <h3 className="text-lg font-semibold mb-4 text-foreground">Güncelleme Talep Geçmişi</h3>
-                          <div className="space-y-3">
-                            {profileUpdateRequests.map((req) => (
-                              <Card key={req.id} className="p-4">
-                                <div className="flex items-start justify-between">
-                                  <div className="flex-1">
-                                    <div className="flex items-center gap-2 mb-2">
-                                      <Badge variant={
-                                        req.status === 'pending' ? 'default' : 
-                                        req.status === 'approved' ? 'outline' : 
-                                        'destructive'
-                                      } className={
-                                        req.status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' : ''
-                                      }>
-                                        {req.status === 'pending' ? 'Bekliyor' : 
-                                        req.status === 'approved' ? 'Onaylandı' : 
-                                        'Reddedildi'}
-                                      </Badge>
-                                      <span className="text-xs text-muted-foreground">{formatDate(req.created_at)}</span>
-                                    </div>
-                                    
-                                    <div className="text-sm text-slate-700 dark:text-slate-300 mb-2">
-                                      <strong>Sebep:</strong> {req.reason}
-                                    </div>                                    
-                                    {req.rejection_reason && (
-                                      <div className="text-sm text-red-600 dark:text-red-400 mt-2">
-                                        <strong>Red Sebebi:</strong> {req.rejection_reason}
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              </Card>
-                            ))}
+                {/* Geçmiş Talepler (Sağ Kolon Altı) */}
+                {!editingProfile && profileUpdateRequests.length > 0 && (
+                  <Card className="p-6">
+                    <h3 className="text-lg font-semibold mb-4 text-foreground">Güncelleme Talep Geçmişi</h3>
+                    <div className="space-y-3">
+                      {profileUpdateRequests.map((req) => (
+                        <div key={req.id} className="p-4 border rounded-lg flex flex-col gap-2">
+                          <div className="flex justify-between items-center">
+                            <Badge variant={req.status === 'pending' ? 'default' : req.status === 'approved' ? 'outline' : 'destructive'}>
+                              {req.status === 'pending' ? 'Bekliyor' : req.status === 'approved' ? 'Onaylandı' : 'Reddedildi'}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground">{formatDate(req.created_at)}</span>
                           </div>
+                          <p className="text-sm"><strong>Sebep:</strong> {req.reason}</p>
+                          {req.rejection_reason && <p className="text-sm text-red-600"><strong>Red:</strong> {req.rejection_reason}</p>}
                         </div>
-                      )}
-                      <div className="flex items-center gap-2">
-                        {accountDeletionPending && (
-                          <Badge variant="outline" className="border-amber-500 text-amber-600">
-                            Silme Talebi Beklemede
-                          </Badge>
-                        )}
-                        <Button 
-                          variant="destructive" 
-                          onClick={handleDeleteAccount}
-                          disabled={accountDeletionPending}
-                          data-testid="delete-account-button"
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          {accountDeletionPending ? 'Talep Bekliyor' : 'Hesabı Sil'}
-                        </Button>
-                      </div>
+                      ))}
                     </div>
-                  </>
+                  </Card>
                 )}
               </div>
-            </Card>
+            </div>
           </TabsContent>
 
-          {/* Support Tickets Tab */}
+          {/* Destek Talepleri Sekmesi */}
           <TabsContent value="support" className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
@@ -1536,7 +1447,7 @@ const handleRequestProfileUpdate = async () => {
             )}
           </TabsContent>
 
-          {/* Security Tab - Password Change */}
+          {/* Güvenlik Sekmesi */}
           <TabsContent value="security" className="space-y-6">
             <Card className="p-6">
               <div className="flex items-center gap-3 mb-6">
@@ -1649,7 +1560,7 @@ const handleRequestProfileUpdate = async () => {
         </Tabs>
       </div>
       
-      {/* Deletion Request Dialog */}
+      {/* Silme İstekleri Diyaloğu */}
       <Dialog open={deletionDialogOpen} onOpenChange={setDeletionDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -1682,7 +1593,7 @@ const handleRequestProfileUpdate = async () => {
         </DialogContent>
       </Dialog>
 
-      {/* Account Deletion Request Dialog */}
+      {/* Hesap Silme İsteği Diyaloğu */}
       <Dialog open={accountDeletionDialogOpen} onOpenChange={setAccountDeletionDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -1719,7 +1630,7 @@ const handleRequestProfileUpdate = async () => {
           </DialogFooter>
         </DialogContent>
         
-        {/* Güncelleme talep */}
+        {/* Profil Güncelleme Talep Diyaloğu */}
         <Dialog open={showProfileUpdateDialog} onOpenChange={setShowProfileUpdateDialog}>
           <DialogContent>
             <DialogHeader>
