@@ -1,4 +1,4 @@
-# Kurumlar ve Pozisyonlar - becayis.memurlar.net'ten alınmıştır
+# Kurumlar ve Pozisyonlar -
 
 INSTITUTIONS = [
     "Adalet Bakanlığı",
@@ -332,7 +332,7 @@ POSITIONS = [
     "Zabıta Memuru"
 ]
 
-# SSS - becayis.memurlar.net'ten alınmıştır
+# SSS -
 FAQ_DATA = [
     {
         "question": "Becayiş nedir?",
