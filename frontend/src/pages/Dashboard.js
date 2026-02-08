@@ -1719,17 +1719,19 @@ const handleRequestProfileUpdate = async () => {
           </DialogFooter>
         </DialogContent>
         
+        {/* Güncelleme talep */}
         <Dialog open={showProfileUpdateDialog} onOpenChange={setShowProfileUpdateDialog}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Profil Güncelleme Talebi</DialogTitle>
               <DialogDescription>
-                Profilinizi güncellemek için admin onayı gereklidir. Lütfen güncelleme sebebinizi açıklayın.
+                Profilinizi güncellemek için admin onayı gereklidir. Lütfen güncelleme sebebinizi açıklayın. 
+                <p>Aktif ilanınız varsa silmeniz gerekmektedir. Aksi takdirde güncelleme talebiniz onaylanmayacaktır.</p>
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                <p className="text-sm text-blue-800 dark:text-blue-200">
+              <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <p className="text-sm text-amber-800 dark:text-amber-200">
                   <strong>Kalan güncelleme hakkınız:</strong> {profileUpdateStatus.remaining_updates}/3
                 </p>
               </div>
