@@ -976,7 +976,7 @@ const getIncomingNotifications = () => {
                           {listing.current_province}/{listing.current_district} → {listing.desired_province}/{listing.desired_district}
                         </div>
                         <div className="flex gap-2 mt-2">
-                          <Badge variant={listing.status === 'active' ? 'default' : 'outline'}>
+                          <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" variant={listing.status === 'active' ? 'default' : 'outline'}>
                             {listing.status === 'active' ? 'Aktif' : 'Kapalı'}
                           </Badge>
                           <span className="text-xs text-slate-400">{formatDate(listing.created_at)}</span>
