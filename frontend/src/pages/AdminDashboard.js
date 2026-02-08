@@ -905,10 +905,11 @@ const getIncomingNotifications = () => {
             </TabsTrigger>
           </TabsList>
 
+          {/* Kullanıcılar Sekmesi */}
           <TabsContent value="users">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Kullanıcılar ({users.length})</h2>
-              {pendingListings.length === 0 ? (
+              {users.length === 0 ? (
                 <div className="text-center py-12 text-slate-500">
                   <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
                   <p>Henüz kullanıcı yok</p>
@@ -967,10 +968,11 @@ const getIncomingNotifications = () => {
             </Card>
           </TabsContent>
 
+          {/*İlanlar Sekmesi*/}
           <TabsContent value="listings">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>İlanlar ({listings.length})</h2>
-              {pendingListings.length === 0 ? (
+              {listings.length === 0 ? (
                 <div className="text-center py-12 text-slate-500">
                   <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
                   <p>Henüz ilan yok</p>
@@ -1011,7 +1013,7 @@ const getIncomingNotifications = () => {
             </Card>
           </TabsContent>
 
-          {/* Pending Listings Tab */}
+          {/* Onay Bekleyen İlanlar Sekmesi */}
           <TabsContent value="pending-listings">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
@@ -1171,7 +1173,7 @@ const getIncomingNotifications = () => {
             </Card>
           </TabsContent>
 
-          {/* Support Tickets Tab */}
+          {/* Destek Talepleri Sekmesi */}
           <TabsContent value="support-tickets">
             <Card className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -1277,6 +1279,7 @@ const getIncomingNotifications = () => {
             </Card>
           </TabsContent>
 
+          {/*Raporlar Sekmesi*/}
           <TabsContent value="reports">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Raporlar ({reports.length})</h2>
@@ -1311,7 +1314,7 @@ const getIncomingNotifications = () => {
             </Card>
           </TabsContent>
 
-          {/* Profil Güncelleme Sekmesi*/}
+          {/* Profil Güncelleme Talep Sekmesi*/}
           <TabsContent value="profile-updates">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
@@ -1444,7 +1447,7 @@ const getIncomingNotifications = () => {
             </Card>
           </TabsContent>
           
-          {/* Account Deletion Requests Tab */}
+          {/* Hesap Silme Talep Sekmesi */}
           <TabsContent value="account-deletions">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
@@ -1534,7 +1537,7 @@ const getIncomingNotifications = () => {
             </Card>
           </TabsContent>
 
-          {/* Notifications Tab */}
+          {/* Bildirimler Sekmesi */}
           <TabsContent value="notifications">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
@@ -1651,7 +1654,7 @@ const getIncomingNotifications = () => {
             </div>
           </TabsContent>
 
-          {/* Admin Management Tab */}
+          {/* Admin Yönetim Sekmesi */}
           <TabsContent value="admins">
             <Card className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -1760,7 +1763,7 @@ const getIncomingNotifications = () => {
             </Card>
           </TabsContent>
 
-          {/* Profile Tab */}
+          {/* Admin Profil Sekmesi */}
           <TabsContent value="profile">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-6" style={{ fontFamily: 'Manrope' }}>
@@ -1815,7 +1818,7 @@ const getIncomingNotifications = () => {
                   )}
                 </div>
 
-                {/* Profile Info */}
+                {/* Profil Bilgileri */}
                 <div className="space-y-4">
                   <div>
                     <Label className="text-sm text-slate-600">Kullanıcı Adı</Label>
@@ -1866,7 +1869,7 @@ const getIncomingNotifications = () => {
           </TabsContent>
         </Tabs>
 
-        {/* Add Admin Dialog */}
+        {/* Admin Ekleme Diyaloğu */}
         <Dialog open={showAddAdminDialog} onOpenChange={setShowAddAdminDialog}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
@@ -1916,7 +1919,7 @@ const getIncomingNotifications = () => {
                   </div>
                 )}
                 
-                {/* Password Requirements */}
+                {/* Şifre Gereklilikleri */}
                 <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
                   <p className="text-xs font-medium mb-2">Şifre Gereksinimleri:</p>
                   <ul className="space-y-1">
@@ -1958,7 +1961,7 @@ const getIncomingNotifications = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Change Password Dialog */}
+        {/* Şifre Değiştirme Diyaloğu */}
         <Dialog open={showChangePasswordDialog} onOpenChange={setShowChangePasswordDialog}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
@@ -1988,7 +1991,7 @@ const getIncomingNotifications = () => {
                   </div>
                 )}
                 
-                {/* Password Requirements */}
+                {/* Şifre Gereklilikleri */}
                 <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
                   <p className="text-xs font-medium mb-2">Şifre Gereksinimleri:</p>
                   <ul className="space-y-1">
@@ -2034,7 +2037,7 @@ const getIncomingNotifications = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Transfer Main Admin Dialog */}
+        {/* Ana Admin Değiştirme Diyaloğu */}
         <Dialog open={showTransferMainAdminDialog} onOpenChange={setShowTransferMainAdminDialog}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
@@ -2105,7 +2108,7 @@ const getIncomingNotifications = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Bulk Notification Dialog */}
+        {/* Toplu Bildirim Diyaloğu */}
         <Dialog open={showBulkNotificationDialog} onOpenChange={setShowBulkNotificationDialog}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
@@ -2169,7 +2172,7 @@ const getIncomingNotifications = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Reject Listing Dialog */}
+        {/* İlan Reddetme Diyaloğu */}
         <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
@@ -2216,7 +2219,7 @@ const getIncomingNotifications = () => {
           </DialogContent>
         </Dialog>
 
-        {/* User Message Dialog */}
+        {/* Kullanıcı Mesajı Diyaloğu */}
         <Dialog open={showUserMessageDialog} onOpenChange={setShowUserMessageDialog}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
@@ -2281,7 +2284,7 @@ const getIncomingNotifications = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Ticket Reply Dialog */}
+        {/* Destek Yanıt Diyaloğu */}
         <Dialog open={showTicketReplyDialog} onOpenChange={setShowTicketReplyDialog}>
           <DialogContent className="sm:max-w-lg">
             <DialogHeader>
@@ -2337,7 +2340,8 @@ const getIncomingNotifications = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        {/* Reject Profile Update Dialog */}
+
+        {/* Profil Güncelleme Reddetme Diyaloğu */}
         <Dialog open={showRejectProfileUpdateDialog} onOpenChange={setShowRejectProfileUpdateDialog}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
