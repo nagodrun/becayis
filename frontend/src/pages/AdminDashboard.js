@@ -908,6 +908,12 @@ const getIncomingNotifications = () => {
           <TabsContent value="users">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Kullanıcılar ({users.length})</h2>
+              {pendingListings.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                  <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
+                  <p>Henüz kullanıcı yok</p>
+                </div>
+              ) : (
               <div className="space-y-4">
                 {users.map((user) => (
                   <div key={user.id} className="border rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4" data-testid="admin-user-row">
@@ -957,12 +963,19 @@ const getIncomingNotifications = () => {
                   </div>
                 ))}
               </div>
+            )} 
             </Card>
           </TabsContent>
 
           <TabsContent value="listings">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>İlanlar ({listings.length})</h2>
+              {pendingListings.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                  <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
+                  <p>Henüz ilan yok</p>
+                </div>
+              ) : (
               <div className="space-y-4">
                 {listings.map((listing) => (
                   <div key={listing.id} className="border rounded-lg p-4" data-testid="admin-listing-row">
@@ -994,6 +1007,7 @@ const getIncomingNotifications = () => {
                   </div>
                 ))}
               </div>
+            )}  
             </Card>
           </TabsContent>
 
@@ -1007,7 +1021,7 @@ const getIncomingNotifications = () => {
               {pendingListings.length === 0 ? (
                 <div className="text-center py-12 text-slate-500">
                   <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
-                  <p>Onay bekleyen ilan yok</p>
+                  <p>Henüz onay bekleyen ilan yok</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -1079,8 +1093,8 @@ const getIncomingNotifications = () => {
               </h2>
               {deletionRequests.length === 0 ? (
                 <div className="text-center py-12 text-slate-500">
-                  <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-                  <p>Henüz silme isteği yok</p>
+                  <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
+                  <p>Henüz ilan silme talebi yok</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -1173,7 +1187,7 @@ const getIncomingNotifications = () => {
 
               {supportTickets.length === 0 ? (
                 <div className="text-center py-12 text-slate-500">
-                  <HelpCircle className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
                   <p>Henüz destek talebi yok</p>
                 </div>
               ) : (
@@ -1268,7 +1282,7 @@ const getIncomingNotifications = () => {
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>Raporlar ({reports.length})</h2>
               {reports.length === 0 ? (
                 <div className="text-center py-12 text-slate-500">
-                  <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
                   <p>Henüz rapor yok</p>
                 </div>
               ) : (
@@ -1305,7 +1319,7 @@ const getIncomingNotifications = () => {
               </h2>
               {profileUpdateRequests.length === 0 ? (
                 <div className="text-center py-12 text-slate-500">
-                  <User className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
                   <p>Henüz profil güncelleme talebi yok</p>
                 </div>
               ) : (
@@ -1438,7 +1452,7 @@ const getIncomingNotifications = () => {
               </h2>
               {accountDeletionRequests.length === 0 ? (
                 <div className="text-center py-12 text-slate-500">
-                  <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
                   <p>Henüz hesap silme talebi yok</p>
                 </div>
               ) : (
