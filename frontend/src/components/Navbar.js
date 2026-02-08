@@ -235,7 +235,15 @@ export const Navbar = () => {
                       {user?.profile?.avatar_url ? (
                          <img src={user.profile.avatar_url} alt="Profil" className="w-full h-full object-cover" />
                           ) : (
-                          <span className="text-white font-bold"> {user?.profile?.display_name?.charAt(0).toUpperCase() || "A"} </span>  )}
+                          <span className="text-white font-bold"> 
+                          {user?.profile?.display_name ? user.profile.display_name
+                          .split(' ')                  // İsmi boşluklardan parçalara ayır
+                          .map(n => n[0])              // Her parçanın ilk harfini al
+                          .join('')                    // Harfleri birleştir
+                          .toUpperCase()               // Hepsini büyük harf yap
+                          : '?' 
+                          } 
+                          </span>  )}
                             <NotificationBadge count={unreadCount} />
                       </div>
                     <span className="hidden md:inline">{user?.profile?.display_name || 'Profil'}</span>
