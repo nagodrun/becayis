@@ -33,7 +33,14 @@ const AdminDashboard = () => {
   const [admins, setAdmins] = useState([]);
   const [supportTickets, setSupportTickets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('users');
   
+  // ============= STATE DEĞİŞİKLİKLERİ (useState'lerin olduğu yere ekle) =============
+  const [profileUpdateRequests, setProfileUpdateRequests] = useState([]);
+  const [showRejectProfileUpdateDialog, setShowRejectProfileUpdateDialog] = useState(false);
+  const [selectedProfileUpdateRequest, setSelectedProfileUpdateRequest] = useState(null);
+  const [profileUpdateRejectReason, setProfileUpdateRejectReason] = useState('');
+
   // Current admin profile state
   const [currentAdmin, setCurrentAdmin] = useState(null);
   const [editingProfile, setEditingProfile] = useState(false);
@@ -109,7 +116,7 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [statsRes, usersRes, listingsRes, reportsRes, deletionReqRes, accountDeletionReqRes, adminsRes, currentAdminRes, adminNotificationsRes, pendingListingsRes, userMessagesRes, ticketsRes] = await Promise.all([
+      const [statsRes, usersRes, listingsRes, reportsRes, deletionReqRes, accountDeletionReqRes, adminsRes, currentAdminRes, adminNotificationsRes, pendingListingsRes, userMessagesRes, ticketsRes, profileUpdateReqRes] = await Promise.all([
         api.get('/admin/stats'),
         api.get('/admin/users'),
         api.get('/admin/listings'),
@@ -121,7 +128,8 @@ const AdminDashboard = () => {
         api.get('/admin/notifications'),
         api.get('/admin/pending-listings'),
         api.get('/admin/user-messages'),
-        api.get('/admin/support-tickets')
+        api.get('/admin/support-tickets'),
+        api.get('/admin/profile-update-requests')  // YENİ
       ]);
 
       setStats(statsRes.data);
@@ -140,6 +148,7 @@ const AdminDashboard = () => {
       setPendingListings(pendingListingsRes.data || []);
       setAdminUserMessages(userMessagesRes.data || []);
       setSupportTickets(ticketsRes.data || []);
+      setProfileUpdateRequests(profileUpdateReqRes.data || []);  // YENİ
     } catch (error) {
       toast.error('Veriler yüklenirken hata oluştu');
       if (error.response?.status === 403) {
@@ -378,7 +387,6 @@ const AdminDashboard = () => {
       toast.error(getErrorMessage(error, 'Mesaj silinemedi'));
     }
   };
-
   // Support ticket functions
   const handleReplyToTicket = async () => {
     if (!selectedTicket || !ticketReplyMessage.trim()) {
@@ -648,6 +656,49 @@ const AdminDashboard = () => {
       toast.error('İşlem başarısız.');
     }
   };
+    // Profil Güncelleme İstekleri Handlers
+  const handleApproveProfileUpdate = async (requestId) => {    
+    try {
+      await api.post(`/admin/profile-update-requests/${requestId}/approve`);
+      setProfileUpdateRequests(prev => prev.map(r => 
+        r.id === requestId ? { ...r, status: 'approved' } : r
+      ));
+      toast.success('Profil güncelleme talebi onaylandı');
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'İşlem başarısız'));
+    }
+  };
+
+  const handleRejectProfileUpdate = async () => {
+    if (!selectedProfileUpdateRequest) return;
+
+   try {
+     await api.post(`/admin/profile-update-requests/${selectedProfileUpdateRequest.id}/reject`, {
+       reason: profileUpdateRejectReason || null
+     });
+     setProfileUpdateRequests(prev => prev.map(r => 
+       r.id === selectedProfileUpdateRequest.id ? { ...r, status: 'rejected' } : r
+     ));
+     toast.success('Profil güncelleme talebi reddedildi');
+     setShowRejectProfileUpdateDialog(false);
+     setSelectedProfileUpdateRequest(null);
+     setProfileUpdateRejectReason('');
+    } catch (error) {
+     toast.error(getErrorMessage(error, 'İşlem başarısız'));
+    }
+  };
+
+  const handleClearProfileUpdateRequest = async (requestId) => {
+    if (!window.confirm('Bu güncelleme talebini temizlemek istediğinizden emin misiniz?')) return;
+    
+    try {
+      await api.delete(`/admin/profile-update-requests/${requestId}`);
+      setProfileUpdateRequests(prev => prev.filter(r => r.id !== requestId));
+      toast.success('Güncelleme talebi temizlendi');
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'İşlem başarısız'));
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
@@ -655,7 +706,100 @@ const AdminDashboard = () => {
     localStorage.removeItem('token');
     navigate('/admin/login');
   };
+const getIncomingNotifications = () => {
+    const allNotifs = [];
 
+    // 1. Bekleyen Profil Güncellemeleri
+    profileUpdateRequests.filter(r => r.status === 'pending').forEach(req => {
+      allNotifs.push({
+        id: `profile-${req.id}`,
+        type: 'profile_update',
+        title: 'Profil Güncelleme İsteği',
+        message: `${req.current_profile?.display_name || req.user?.email} profilini güncellemek istiyor.`,
+        date: req.created_at,
+        icon: <User className="w-5 h-5 text-purple-500" />,
+        targetTab: 'profile-updates',
+        priority: 'high'
+      });
+    });
+
+    // 2. Bekleyen İlan Silme İstekleri
+    deletionRequests.filter(r => r.status === 'pending').forEach(req => {
+      allNotifs.push({
+        id: `del-listing-${req.id}`,
+        type: 'listing_deletion',
+        title: 'İlan Silme Talebi',
+        message: `${req.user_profile?.display_name} bir ilanını silmek istiyor.`,
+        date: req.created_at,
+        icon: <Trash2 className="w-5 h-5 text-red-500" />,
+        targetTab: 'deletions',
+        priority: 'medium'
+      });
+    });
+
+    // 3. Bekleyen Hesap Silme İstekleri
+    accountDeletionRequests.filter(r => r.status === 'pending').forEach(req => {
+      allNotifs.push({
+        id: `del-account-${req.id}`,
+        type: 'account_deletion',
+        title: 'Hesap Silme Talebi',
+        message: `${req.profile?.display_name || req.user?.email} hesabını silmek istiyor.`,
+        date: req.created_at,
+        icon: <UserPlus className="w-5 h-5 text-red-600" />, // UserMinus ikonu olmadığı için
+        targetTab: 'account-deletions',
+        priority: 'critical'
+      });
+    });
+
+    // 4. Yeni Raporlar (Son 24 saat veya tümü)
+    reports.forEach(report => {
+      allNotifs.push({
+        id: `report-${report.id}`,
+        type: 'report',
+        title: 'Kullanıcı Raporu',
+        message: `${report.blocker_profile?.display_name}, ${report.blocked_profile?.display_name} kullanıcısını engelledi/raporladı.`,
+        date: report.created_at,
+        icon: <AlertTriangle className="w-5 h-5 text-amber-500" />,
+        targetTab: 'reports',
+        priority: 'medium'
+      });
+    });
+
+    // 5. Açık Destek Talepleri
+    supportTickets.filter(t => t.status === 'open').forEach(ticket => {
+      allNotifs.push({
+        id: `ticket-${ticket.id}`,
+        type: 'support',
+        title: 'Yeni Destek Talebi',
+        message: `${ticket.user_name} yeni bir destek talebi oluşturdu: "${ticket.subject}"`,
+        date: ticket.created_at,
+        icon: <HelpCircle className="w-5 h-5 text-blue-500" />,
+        targetTab: 'support-tickets',
+        priority: 'high'
+      });
+    });
+
+    // 6. Onay Bekleyen İlanlar
+    pendingListings.forEach(listing => {
+      allNotifs.push({
+        id: `listing-${listing.id}`,
+        type: 'pending_listing',
+        title: 'İlan Onayı Bekliyor',
+        message: `${listing.user_profile?.display_name} yeni bir ilan oluşturdu: "${listing.title}"`,
+        date: listing.created_at,
+        icon: <Clock className="w-5 h-5 text-amber-500" />,
+        targetTab: 'pending-listings',
+        priority: 'high'
+      });
+    });
+
+    // Tarihe göre yeniden eskiye sırala
+    return allNotifs.sort((a, b) => new Date(b.date) - new Date(a.date));
+  };
+
+  const incomingNotifications = getIncomingNotifications();
+  const notificationCount = incomingNotifications.length;
+  
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -687,11 +831,11 @@ const AdminDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Toplam Kullanıcı</p>
+                <p className="text-sm text-slate-500">Toplam Üye Sayısı</p>
                 <p className="text-3xl font-bold mt-1">{stats.total_users}</p>
               </div>
               <Users className="w-10 h-10 text-blue-600" />
@@ -701,51 +845,25 @@ const AdminDashboard = () => {
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Aktif İlanlar</p>
-                <p className="text-3xl font-bold mt-1">{stats.active_listings}/{stats.total_listings}</p>
+                <p className="text-sm text-slate-500">Toplam İlan Sayısı</p>
+                <p className="text-3xl font-bold mt-1">{stats.total_listings}</p>
               </div>
               <FileText className="w-10 h-10 text-amber-600" />
             </div>
           </Card>
 
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-500">Bekleyen Silme İstekleri</p>
-                <p className="text-3xl font-bold mt-1">{stats.pending_deletions}</p>
-              </div>
-              <AlertTriangle className="w-10 h-10 text-red-600" />
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-500">Kabul Edilen Talepler</p>
-                <div className="flex items-center gap-2">
-                  <p className="text-3xl font-bold">{stats.accepted_invitations}/{stats.total_invitations}</p>
-                  {stats.accepted_invitations > 0 && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-slate-400 hover:text-red-500 p-1 h-auto"
-                      onClick={handleResetAcceptedInvitations}
-                      title="Kabul edilen talepleri sıfırla"
-                      data-testid="reset-accepted-invitations"
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-              <Shield className="w-10 h-10 text-emerald-600" />
-            </div>
-          </Card>
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="users" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6"></Tabs>
+        <Tabs defaultValue="notifications" className="space-y-6">
           <TabsList className="flex w-full overflow-x-auto scrollbar-hide">
+            <TabsTrigger value="notifications" data-testid="admin-tab-notifications" className="flex-shrink-0 relative">
+              <Bell className="w-4 h-4 mr-1" />
+              Bildirimler {notificationCount> 0 && (
+                <Badge className="ml-2 bg-red-500">{notificationCount}</Badge>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="users" data-testid="admin-tab-users" className="flex-shrink-0">Kullanıcılar</TabsTrigger>
             <TabsTrigger value="listings" data-testid="admin-tab-listings" className="flex-shrink-0">İlanlar</TabsTrigger>
             <TabsTrigger value="pending-listings" data-testid="admin-tab-pending-listings" className="flex-shrink-0">
@@ -762,11 +880,14 @@ const AdminDashboard = () => {
               Hesap Silme {accountDeletionRequests.filter(r => r.status === 'pending').length > 0 && (
                 <Badge className="ml-2 bg-red-500">{accountDeletionRequests.filter(r => r.status === 'pending').length}</Badge>
               )}
+            </TabsTrigger>            
+            <TabsTrigger value="profile-updates" data-testid="admin-tab-profile-updates" className="flex-shrink-0">
+              <User className="w-4 h-4 mr-1" />
+              Profil Güncellemeleri {profileUpdateRequests.filter(r => r.status === 'pending').length > 0 && (
+                <Badge className="ml-2 bg-purple-500">{profileUpdateRequests.filter(r => r.status === 'pending').length}</Badge>
+              )}
             </TabsTrigger>
-            <TabsTrigger value="notifications" data-testid="admin-tab-notifications" className="flex-shrink-0">
-              <Bell className="w-4 h-4 mr-1" />
-              Bildirimler
-            </TabsTrigger>
+
             <TabsTrigger value="support-tickets" data-testid="admin-tab-support" className="flex-shrink-0">
               <HelpCircle className="w-4 h-4 mr-1" />
               Destek {supportTickets.filter(t => t.status === 'open').length > 0 && (
@@ -797,10 +918,10 @@ const AdminDashboard = () => {
                         {user.profile?.institution} - {user.profile?.role}
                       </div>
                       <div className="flex gap-2 mt-2">
-                        <Badge variant={user.verified ? 'default' : 'outline'}>
+                        <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" variant={user.verified ? 'default' : 'outline'}>
                           {user.verified ? 'Doğrulanmış' : 'Doğrulanmamış'}
                         </Badge>
-                        {user.blocked && <Badge variant="destructive">Engellenmiş</Badge>}
+                        {user.blocked && <Badge className="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400" variant="destructive">Engellenmiş</Badge>}
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2 justify-end">
@@ -950,6 +1071,7 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
 
+          {/* İlan Silme İstekleri Sekmesi */}
           <TabsContent value="deletions">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
@@ -967,7 +1089,7 @@ const AdminDashboard = () => {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <div className="font-semibold">{request.user_profile?.display_name}</div>
+                            <div className="font-semibold">Kullanıcı: {request.user_profile?.display_name}</div>
                             <Badge variant={
                               request.status === 'pending' ? 'default' : 
                               request.status === 'approved' ? 'outline' : 
@@ -976,19 +1098,19 @@ const AdminDashboard = () => {
                               {request.status === 'pending' ? 'Bekliyor' : 
                                request.status === 'approved' ? 'Onaylandı' : 
                                'Reddedildi'}
-                            </Badge>
+                            </Badge>                            
                           </div>
-                          
+
                           {request.listing && (
                             <div className="text-sm text-slate-600 mb-2">
-                              <strong>İlan:</strong> {request.listing.institution} - {request.listing.role}
+                              <strong>Silinecek İlan:</strong> {request.listing.institution} - {request.listing.role}
                               <br />
                               {request.listing.current_province}/{request.listing.current_district} → {request.listing.desired_province}/{request.listing.desired_district}
                             </div>
                           )}
                           
-                          <div className="text-sm text-slate-700 bg-slate-50 p-3 rounded mt-2">
-                            <strong>Silme Sebebi:</strong> {request.reason}
+                          <div className="text-sm text-slate-700 dark:text-slate-300 bg-amber-50 dark:bg-amber-900/20 p-3 rounded mt-2">
+                            <strong>İlan Silme Sebebi:</strong> {request.reason}
                           </div>
                           
                           <div className="text-xs text-slate-400 mt-2">{formatDate(request.created_at)}</div>
@@ -1175,6 +1297,139 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
 
+          {/* Profil Güncelleme Sekmesi*/}
+          <TabsContent value="profile-updates">
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Manrope' }}>
+                Profil Güncelleme Talepleri ({profileUpdateRequests.length})
+              </h2>
+              {profileUpdateRequests.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                  <User className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                  <p>Henüz profil güncelleme talebi yok</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {profileUpdateRequests.map((request) => (
+                    <div key={request.id} className="border rounded-lg p-4" data-testid={`profile-update-request-${request.id}`}>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="font-semibold">Kullanıcı: {request.current_profile?.display_name || request.user?.email}</div>
+                            <Badge variant={
+                              request.status === 'pending' ? 'default' : 
+                              request.status === 'approved' ? 'outline' : 
+                              'destructive'
+                            } className={
+                              request.status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' : ''
+                            }>
+                              {request.status === 'pending' ? 'Bekliyor' : 
+                              request.status === 'approved' ? 'Onaylandı' : 
+                              'Reddedildi'}
+                            </Badge>
+                          </div>
+                          
+                          <div className="text-sm text-slate-600 mb-2">
+                            <strong>E-posta:</strong> {request.user?.email}
+                          </div>
+                          
+                          {/* Current Profile */}
+                          {request.current_profile && (
+                            <div className="mb-3 p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
+                              <p className="text-xs font-medium text-green-700 dark:text-green-300 mb-2">Mevcut Profil:</p>
+                              <div className="text-sm space-y-1">
+                                <div><strong>İsim:</strong> {request.current_profile.display_name}</div>
+                                <div><strong>Kurum:</strong> {request.current_profile.institution}</div>
+                                <div><strong>Pozisyon:</strong> {request.current_profile.role}</div>
+                                <div><strong>Konum:</strong> {request.current_profile.current_province}/{request.current_profile.current_district}</div>
+                                {request.current_profile.bio && (
+                                  <div><strong>Bio:</strong> {request.current_profile.bio}</div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Requested Changes */}
+                          <div className="mb-3 p-3 bg-red-50 dark:bg-red-900/20 rounded border border-red-200 dark:border-red-800">
+                            <p className="text-xs font-medium text-red-700 dark:text-red-300 mb-2">İstenen Değişiklikler:</p>
+                            <div className="text-sm space-y-1">
+                              {request.update_data.display_name && (
+                                <div><strong>Yeni İsim:</strong> {request.update_data.display_name}</div>
+                              )}
+                              {request.update_data.institution && (
+                                <div><strong>Yeni Kurum:</strong> {request.update_data.institution}</div>
+                              )}
+                              {request.update_data.role && (
+                                <div><strong>Yeni Pozisyon:</strong> {request.update_data.role}</div>
+                              )}
+                              {request.update_data.current_province && (
+                                <div><strong>Yeni Konum:</strong> {request.update_data.current_province}/{request.update_data.current_district || '-'}</div>
+                              )}
+                              {request.update_data.bio && (
+                                <div><strong>Yeni Bio:</strong> {request.update_data.bio}</div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {/* Reason */}
+                          <div className="text-sm text-slate-700 dark:text-slate-300 bg-amber-50 dark:bg-amber-900/20 p-3 rounded mt-2">
+                            <strong>Güncelleme Sebebi:</strong> {request.reason}
+                          </div>
+                          
+                          {/* Update Count */}
+                          <div className="text-xs text-slate-500 mt-2">
+                            Kullanıcının kalan güncelleme hakkı: {3 - (request.current_profile?.update_request_count || 0)}/3
+                          </div>
+                          
+                          <div className="text-xs text-slate-400 mt-2">{formatDate(request.created_at)}</div>
+                        </div>
+                        
+                        {request.status === 'pending' && (
+                          <div className="flex gap-2 ml-4">
+                            <Button
+                              size="sm"
+                              className="bg-emerald-500 hover:bg-emerald-600"
+                              onClick={() => handleApproveProfileUpdate(request.id)}
+                              data-testid={`approve-profile-update-${request.id}`}
+                            >
+                              <Check className="w-4 h-4 mr-1" />
+                              Onayla
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => {
+                                setSelectedProfileUpdateRequest(request);
+                                setShowRejectProfileUpdateDialog(true);
+                              }}
+                              data-testid={`reject-profile-update-${request.id}`}
+                            >
+                              <X className="w-4 h-4 mr-1" />
+                              Reddet
+                            </Button>
+                          </div>
+                        )}
+                        
+                        {/* X button to clear processed requests */}
+                        {request.status !== 'pending' && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="ml-4 text-slate-400 hover:text-red-500 hover:bg-red-50"
+                            onClick={() => handleClearProfileUpdateRequest(request.id)}
+                            data-testid={`clear-profile-update-${request.id}`}
+                          >
+                            <X className="w-5 h-5" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </TabsContent>
+          
           {/* Account Deletion Requests Tab */}
           <TabsContent value="account-deletions">
             <Card className="p-6">
@@ -1193,7 +1448,7 @@ const AdminDashboard = () => {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <div className="font-semibold">{request.profile?.display_name || request.user?.email}</div>
+                            <div className="font-semibold">Kullanıcı: {request.profile?.display_name || request.user?.email}</div>
                             <Badge variant={
                               request.status === 'pending' ? 'default' : 
                               request.status === 'approved' ? 'outline' : 
@@ -1217,8 +1472,8 @@ const AdminDashboard = () => {
                             </div>
                           )}
                           
-                          <div className="text-sm text-slate-700 bg-slate-50 dark:bg-slate-800 p-3 rounded mt-2">
-                            <strong>Silme Sebebi:</strong> {request.reason}
+                          <div className="text-sm text-slate-700 dark:text-slate-300 bg-amber-50 dark:bg-amber-900/20 p-3 rounded mt-2">
+                            <strong>Hesap Silme Sebebi:</strong> {request.reason}
                           </div>
                           
                           <div className="text-xs text-slate-400 mt-2">{formatDate(request.created_at)}</div>
@@ -1267,103 +1522,119 @@ const AdminDashboard = () => {
 
           {/* Notifications Tab */}
           <TabsContent value="notifications">
-            <Card className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold" style={{ fontFamily: 'Manrope' }}>
-                  Toplu Bildirim Gönder
-                </h2>
-                <Button 
-                  onClick={() => setShowBulkNotificationDialog(true)}
-                  className="bg-emerald-600 hover:bg-emerald-700"
-                  data-testid="send-bulk-notification-btn"
-                >
-                  <Send className="w-4 h-4 mr-2" />
-                  Yeni Bildirim Gönder
-                </Button>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              
+              {/* SOL KOLON: Gelen Bildirimler Akışı */}
+              <div className="lg:col-span-2 space-y-6">
+                <Card className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold flex items-center gap-2" style={{ fontFamily: 'Manrope' }}>
+                      <Bell className="w-6 h-6 text-blue-600" />
+                      Gelen Bildirimler
+                    </h2>
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                      {incomingNotifications.length} Bekleyen
+                    </Badge>
+                  </div>
+
+                  {incomingNotifications.length === 0 ? (
+                    <div className="text-center py-12 text-slate-500 border-2 border-dashed rounded-lg">
+                      <Check className="w-12 h-12 mx-auto mb-4 text-emerald-300" />
+                      <p>Harika! İncelenecek yeni bildirim yok.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {incomingNotifications.map((notif) => (
+                        <div 
+                          key={notif.id} 
+                          className="flex items-start gap-4 p-4 rounded-lg border hover:shadow-md transition-all cursor-pointer bg-white dark:bg-slate-900"
+                          onClick={() => setActiveTab(notif.targetTab)}
+                        >
+                          <div className={`p-2 rounded-full flex-shrink-0 ${
+                            notif.priority === 'critical' ? 'bg-red-100 dark:bg-red-900/20' : 
+                            notif.priority === 'high' ? 'bg-amber-100 dark:bg-amber-900/20' : 
+                            'bg-blue-50 dark:bg-blue-900/10'
+                          }`}>
+                            {notif.icon}
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                              <h3 className="font-semibold text-sm text-foreground truncate">{notif.title}</h3>
+                              <span className="text-xs text-slate-400 whitespace-nowrap flex-shrink-0">
+                                {formatDate(notif.date)}
+                              </span>
+                            </div>
+                            <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 line-clamp-2">
+                              {notif.message}
+                            </p>
+                            <div className="mt-2 flex items-center gap-2">
+                              <span className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline flex items-center">
+                                İncele <ArrowRightLeft className="w-3 h-3 ml-1" />
+                              </span>
+                              {notif.priority === 'critical' && (
+                                <Badge variant="destructive" className="h-5 text-[10px] px-1.5">Acil</Badge>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </Card>
               </div>
 
-              <p className="text-sm text-slate-500 mb-6">
-                Bu sayfadan tüm kullanıcılara toplu bildirim gönderebilirsiniz. Gönderilen bildirimler kullanıcıların panellerindeki Bildirimler sekmesinde görünecektir.
-              </p>
+              {/* SAĞ KOLON: Duyuru Gönder ve Geçmiş */}
+              <div className="space-y-6">
+                <Card className="p-6 bg-slate-50 dark:bg-slate-800/50">
+                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                    <Send className="w-5 h-5 text-emerald-600" />
+                    Hızlı İşlemler
+                  </h3>
+                  <Button 
+                    onClick={() => setShowBulkNotificationDialog(true)}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 mb-4"
+                  >
+                    Tüm Kullanıcılara Duyuru Yap
+                  </Button>
+                  <p className="text-xs text-slate-500 text-center">
+                    Sistemdeki {stats.total_users || 0} kullanıcıya bildirim gider.
+                  </p>
+                </Card>
 
-              <h3 className="text-lg font-semibold mb-4">Gönderilen Toplu Bildirimler</h3>
-              
-              {adminNotifications.length === 0 ? (
-                <div className="text-center py-8 text-slate-500">
-                  <Bell className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-                  <p>Henüz toplu bildirim gönderilmemiş</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {/* Group by title and message to show unique notifications */}
-                  {[...new Map(adminNotifications.map(n => [`${n.title}-${n.message}`, n])).values()].map((notification) => (
-                    <div key={notification.id} className="border rounded-lg p-4 flex items-center justify-between" data-testid={`admin-notification-${notification.id}`}>
-                      <div className="flex-1">
-                        <div className="font-semibold text-foreground">{notification.title}</div>
-                        <div className="text-sm text-slate-500 mt-1">{notification.message}</div>
-                        <div className="text-xs text-slate-400 mt-2">
-                          Gönderilme: {formatDate(notification.created_at)}
+                <Card className="p-6">
+                  <h3 className="text-lg font-bold mb-4">Son Duyurular</h3>
+                  <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                    {adminNotifications.length === 0 ? (
+                      <p className="text-sm text-slate-500 text-center py-4">Henüz duyuru yapılmamış.</p>
+                    ) : (
+                      // Tekrar eden duyuruları filtrele (başlık ve mesaja göre)
+                      [...new Map(adminNotifications.map(n => [`${n.title}-${n.message}`, n])).values()].slice(0, 5).map((notification) => (
+                        <div key={notification.id} className="border-b pb-3 last:border-0 last:pb-0">
+                          <div className="font-medium text-sm">{notification.title}</div>
+                          <div className="text-xs text-slate-500 mt-1 line-clamp-2">{notification.message}</div>
+                          <div className="text-[10px] text-slate-400 mt-2 flex justify-between items-center">
+                            <span>{formatDate(notification.created_at)}</span>
+                            {isMainAdmin && (
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteAdminNotification(notification.id);
+                                }}
+                                className="text-red-400 hover:text-red-600"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      {isMainAdmin && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="text-slate-400 hover:text-red-500 hover:bg-red-50"
-                          onClick={() => handleDeleteAdminNotification(notification.id)}
-                          data-testid={`delete-notification-${notification.id}`}
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
+                      ))
+                    )}
+                  </div>
+                </Card>
+              </div>
 
-              {/* Individual User Messages Section */}
-              <h3 className="text-lg font-semibold mb-4 mt-8 pt-6 border-t">Gönderilen Özel Mesajlar</h3>
-              
-              {adminUserMessages.length === 0 ? (
-                <div className="text-center py-8 text-slate-500">
-                  <Mail className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-                  <p>Henüz özel mesaj gönderilmemiş</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {adminUserMessages.map((message) => (
-                    <div key={message.id} className="border rounded-lg p-4 flex items-center justify-between bg-blue-50/50 dark:bg-blue-900/10" data-testid={`user-message-${message.id}`}>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700 border-blue-200">
-                            Özel Mesaj
-                          </Badge>
-                          <span className="text-sm text-slate-600">
-                            Alıcı: {message.user_profile?.display_name || message.user_name || message.user_email || 'Bilinmeyen'}
-                          </span>
-                        </div>
-                        <div className="font-semibold text-foreground">{message.title}</div>
-                        <div className="text-sm text-slate-500 mt-1">{message.message}</div>
-                        <div className="text-xs text-slate-400 mt-2">
-                          Gönderilme: {formatDate(message.created_at)}
-                        </div>
-                      </div>
-                      {isMainAdmin && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="text-slate-400 hover:text-red-500 hover:bg-red-50"
-                          onClick={() => handleDeleteUserMessage(message.id)}
-                          data-testid={`delete-user-message-${message.id}`}
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </Card>
+            </div>
           </TabsContent>
 
           {/* Admin Management Tab */}
@@ -1419,7 +1690,7 @@ const AdminDashboard = () => {
                                 <Badge className="bg-amber-500 text-white text-xs">Ana Admin</Badge>
                               )}
                             </div>
-                            <div className="text-sm text-slate-500">@{admin.username}</div>
+                            <div className="text-sm text-slate-500">e-posta: {admin.username}</div>
                           </div>
                         </div>
                         <div className="text-xs text-slate-500 mt-2">
@@ -2048,6 +2319,52 @@ const AdminDashboard = () => {
                 data-testid="send-ticket-reply-btn"
               >
                 {sendingTicketReply ? 'Gönderiliyor...' : 'Yanıt Gönder'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        {/* Reject Profile Update Dialog */}
+        <Dialog open={showRejectProfileUpdateDialog} onOpenChange={setShowRejectProfileUpdateDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-red-600">
+                <X className="w-5 h-5" />
+                Profil Güncelleme Talebini Reddet
+              </DialogTitle>
+              <DialogDescription>
+                {selectedProfileUpdateRequest?.current_profile?.display_name || selectedProfileUpdateRequest?.user?.email} kullanıcısının profil güncelleme talebini reddetmek üzeresiniz.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="profile-update-reject-reason">Red Sebebi (İsteğe bağlı)</Label>
+                <Textarea
+                  id="profile-update-reject-reason"
+                  value={profileUpdateRejectReason}
+                  onChange={(e) => setProfileUpdateRejectReason(e.target.value)}
+                  placeholder="Kullanıcıya iletilecek red sebebini yazın..."
+                  rows={3}
+                  data-testid="profile-update-reject-reason-input"
+                />
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setShowRejectProfileUpdateDialog(false);
+                setSelectedProfileUpdateRequest(null);
+                setProfileUpdateRejectReason('');
+              }}>
+                İptal
+              </Button>
+              <Button 
+                variant="destructive"
+                onClick={handleRejectProfileUpdate}
+                data-testid="confirm-reject-profile-update-btn"
+              >
+                <X className="w-4 h-4 mr-2" />
+                Reddet
               </Button>
             </DialogFooter>
           </DialogContent>
