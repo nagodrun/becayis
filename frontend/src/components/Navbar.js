@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { User, LogOut, Moon, Sun, ArrowLeftRight, Shield } from 'lucide-react';
+import { User, RefreshCcw, Handshake, LogOut, Moon, Sun, ArrowLeftRight, Shield } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import api from '../lib/api';
@@ -13,27 +13,35 @@ import {
 } from './ui/dropdown-menu';
 
 // Animated Swap Icon Component
-const SwapIcon = () => {
+const BecayisLogo = () => {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   return (
-    <div
-      className="relative w-9 h-9 flex items-center justify-center"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className={`
-        absolute inset-0 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 
-        transition-all duration-300 ease-out
-        ${isHovered ? 'scale-110 rotate-6' : 'scale-100 rotate-0'}
-      `} />
-      <ArrowLeftRight 
-        className={`
-          relative z-10 w-5 h-5 text-white
-          transition-all duration-300 ease-out
-          ${isHovered ? 'scale-110 rotate-180' : 'scale-100 rotate-0'}
-        `}
-      />
+    <div 
+      className="flex flex-col items-center gap-3 font-sans group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} >
+      <div className="relative w-12 h-12 flex items-center justify-center cursor-pointer">         
+        {/* Ana Gradyan Kutusu (Amber & Orange) */}
+        <div className={`
+          absolute inset-0 rounded-2xl bg-gradient-to-tr from-amber-500 via-amber-500 to-amber-500           
+          transition-all duration-500 ease-in-out
+          ${isHovered ? 'rounded-2xl rotate-90 scale-105' : 'rounded-2xl rotate-0'}
+        `} />
+        {/* İkon Grubu */}
+        <div className="relative z-10 flex items-center justify-center">
+          {/* Yer Değiştirme / Takas İkonu */}
+          <ArrowLeftRight 
+            className={`w-9 h-9 text-white transition-all duration-500
+              ${isHovered ? 'rotate-180 opacity-0 scale-50' : 'rotate-0 opacity-100 scale-100'}
+            `}
+          />          
+          {/* El Sıkışma İkonu (Anlaşma) */}
+          <Handshake 
+            className={`absolute w-7 h-7 text-white transition-all duration-500
+              ${isHovered ? 'opacity-100 scale-110' : 'opacity-0 scale-50 -rotate-12'}
+            `}
+          />
+        </div>
+      </div>
     </div>
   );
 };
@@ -183,7 +191,7 @@ export const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-3 group">
-              <SwapIcon />
+              <BecayisLogo />
               <div className="text-2xl font-extrabold text-white transition-colors group-hover:text-amber-500" style={{ fontFamily: 'Manrope' }}>
                 Becayiş
               </div>
@@ -212,7 +220,7 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-3 group">
-            <SwapIcon />
+            <BecayisLogo />
             <div className="text-2xl font-extrabold text-foreground transition-colors group-hover:text-amber-500" style={{ fontFamily: 'Manrope' }}>
               Becayiş
             </div>
@@ -235,7 +243,7 @@ export const Navbar = () => {
                       {user?.profile?.avatar_url ? (
                          <img src={user.profile.avatar_url} alt="Profil" className="w-full h-full object-cover" />
                           ) : (
-                          <span className="text-white font-bold"> 
+                          <span className="text-xs font-normal"> 
                           {user?.profile?.display_name ? user.profile.display_name
                           .split(' ')                  // İsmi boşluklardan parçalara ayır
                           .map(n => n[0])              // Her parçanın ilk harfini al
