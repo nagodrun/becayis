@@ -366,5 +366,5 @@ const CreateEditListing = () => {
       </div>
     </div>
   );
-}
+};
 export default CreateEditListing;
