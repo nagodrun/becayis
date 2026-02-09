@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
     fetchData();
   }, [navigate]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       const [statsRes, usersRes, listingsRes, reportsRes, deletionReqRes, accountDeletionReqRes, adminsRes, currentAdminRes, adminNotificationsRes, pendingListingsRes, userMessagesRes, ticketsRes, profileUpdateReqRes] = await Promise.all([
@@ -157,7 +157,7 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Admin management functions
   const handleAddAdmin = async () => {
