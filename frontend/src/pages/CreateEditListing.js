@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -82,10 +82,11 @@ const CreateEditListing = () => {
       });
     }
     
-    if (isEdit) {
-      fetchListing();
-    }
-  }, [id, user]);
+    useEffect(() => {
+  if (isEdit) {
+    fetchListing();
+  }
+}, [fetchListing, isEdit]);
 
   // Fetch districts when province changes
   useEffect(() => {
@@ -115,7 +116,7 @@ const CreateEditListing = () => {
     }
   };
 
-  const fetchListing = async () => {
+  const fetchListing = useCallback(async () => {
     try {
       const response = await api.get(`/listings/${id}`);
       setFormData({
@@ -134,7 +135,7 @@ const CreateEditListing = () => {
       toast.error('İlan yüklenemedi');
       navigate('/dashboard');
     }
-  };
+  }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
