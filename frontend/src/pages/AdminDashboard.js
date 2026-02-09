@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -105,15 +105,14 @@ const AdminDashboard = () => {
     }
     
     // Set admin token for api calls
-    useEffect(() => {
-  const adminToken = localStorage.getItem('admin_token');
-  if (adminToken) {
-    localStorage.setItem('token', adminToken);
-  }
-
-  fetchData();
-}, [fetchData]);
+    const adminToken = localStorage.getItem('admin_token');
+    if (adminToken) {
+      localStorage.setItem('token', adminToken);
+    }
     
+    fetchData();
+  }, [navigate]);
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -2391,6 +2390,6 @@ const getIncomingNotifications = () => {
       </div>
     </div>
   );
-}
+};
 
 export default AdminDashboard;
