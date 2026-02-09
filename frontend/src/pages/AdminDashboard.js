@@ -105,14 +105,15 @@ const AdminDashboard = () => {
     }
     
     // Set admin token for api calls
-    const adminToken = localStorage.getItem('admin_token');
-    if (adminToken) {
-      localStorage.setItem('token', adminToken);
-    }
-    
-    fetchData();
-  }, [navigate]);
+    useEffect(() => {
+  const adminToken = localStorage.getItem('admin_token');
+  if (adminToken) {
+    localStorage.setItem('token', adminToken);
+  }
 
+  fetchData();
+}, [fetchData]);
+    
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
