@@ -117,25 +117,25 @@ const CreateEditListing = () => {
   };
 
   const fetchListing = useCallback(async () => {
-    try {
-      const response = await api.get(`/listings/${id}`);
-      setFormData({
-        title: response.data.title || '',
-        notes: response.data.notes || '',
-        desired_province: response.data.desired_province,
-        desired_district: response.data.desired_district
-      });
-      setProfileData({
-        institution: response.data.institution,
-        role: response.data.role,
-        current_province: response.data.current_province,
-        current_district: response.data.current_district
-      });
-    } catch (error) {
-      toast.error('İlan yüklenemedi');
-      navigate('/dashboard');
-    }
-  }, [id]);
+  try {
+    const response = await api.get(`/listings/${id}`);
+    setFormData({
+      title: response.data.title || '',
+      notes: response.data.notes || '',
+      desired_province: response.data.desired_province,
+      desired_district: response.data.desired_district
+    });
+    setProfileData({
+      institution: response.data.institution,
+      role: response.data.role,
+      current_province: response.data.current_province,
+      current_district: response.data.current_district
+    });
+  } catch (error) {
+    toast.error('İlan yüklenemedi');
+    navigate('/dashboard');
+  }
+}, [id, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -367,3 +367,4 @@ const CreateEditListing = () => {
     </div>
   );
 }
+export default CreateEditListing;
