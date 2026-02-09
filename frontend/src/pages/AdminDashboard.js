@@ -2391,6 +2391,6 @@ const getIncomingNotifications = () => {
       </div>
     </div>
   );
-};
+}
 
 export default AdminDashboard;
