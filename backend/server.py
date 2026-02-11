@@ -212,6 +212,16 @@ class UpdateProfile(BaseModel):
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
 
+# Mevcut UpdateProfile modelinden sonra ekle:
+class RequestProfileUpdate(BaseModel):
+    display_name: Optional[str] = None
+    institution: Optional[str] = None
+    role: Optional[str] = None
+    current_province: Optional[str] = None
+    current_district: Optional[str] = None
+    bio: Optional[str] = None
+    reason: str  # Güncelleme sebebi
+
 class RequestListingDeletion(BaseModel):
     reason: str
 
@@ -559,18 +569,72 @@ async def get_profile(current_user: dict = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="Profil bulunamadı")
     return profile
 
-@api_router.put("/profile")
-async def update_profile(data: UpdateProfile, current_user: dict = Depends(get_current_user)):
-    update_data = {k: v for k, v in data.model_dump().items() if v is not None}
-    if not update_data:
-        raise HTTPException(status_code=400, detail="Güncellenecek veri yok")
+@api_router.post("/profile/request-update")
+async def request_profile_update(data: RequestProfileUpdate, current_user: dict = Depends(get_current_user)):
+    """Request profile update - requires admin approval"""
+    user_id = current_user["id"]
     
-    await db.profiles.update_one(
+    # Check how many update requests user has made
+    profile = await db.profiles.find_one({"user_id": user_id}, {"_id": 0})
+    update_count = profile.get("update_request_count", 0) if profile else 0
+    
+    if update_count >= 3:
+        raise HTTPException(
+            status_code=400, 
+            detail="Profil güncelleme hakkınız dolmuştur. Maksimum 3 kez güncelleme yapabilirsiniz."
+        )
+    
+    # Check if already has pending request
+    existing = await db.profile_update_requests.find_one({
+        "user_id": user_id, 
+        "status": "pending"
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="Zaten bekleyen bir profil güncelleme talebiniz var")
+    
+    # Create update request
+    update_data = {k: v for k, v in data.model_dump().items() if v is not None and k != 'reason'}
+    
+    request = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "update_data": update_data,
+        "reason": data.reason,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.profile_update_requests.insert_one(request)
+    
+    return {"message": "Profil güncelleme talebiniz alındı. Admin onayından sonra profiliniz güncellenecektir."}
+
+@api_router.get("/profile/update-status")
+async def get_profile_update_status(current_user: dict = Depends(get_current_user)):
+    """Check profile update request status and remaining updates"""
+    profile = await db.profiles.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    update_count = profile.get("update_request_count", 0) if profile else 0
+    
+    # Get pending request if exists
+    pending_request = await db.profile_update_requests.find_one({
+        "user_id": current_user["id"],
+        "status": "pending"
+    }, {"_id": 0})
+    
+    return {
+        "update_count": update_count,
+        "remaining_updates": 3 - update_count,
+        "has_pending_request": pending_request is not None,
+        "pending_request": pending_request
+    }
+
+@api_router.get("/profile/update-requests/my")
+async def get_my_update_requests(current_user: dict = Depends(get_current_user)):
+    """Get user's profile update requests"""
+    requests = await db.profile_update_requests.find(
         {"user_id": current_user["id"]},
-        {"$set": update_data}
-    )
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
     
-    return {"message": "Profil güncellendi"}
+    return requests
 
 @api_router.post("/profile/avatar")
 async def upload_avatar(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
@@ -1190,8 +1254,8 @@ async def unblock_user(blocked_user_id: str, current_user: dict = Depends(get_cu
     return {"message": "Engel kaldırıldı"}
 
 # ============= ADMIN ENDPOINTS =============
-ADMIN_USERNAME = "becayis"
-ADMIN_PASSWORD = "1234"
+ADMIN_USERNAME = "ab244939@adalet.gov.tr"
+ADMIN_PASSWORD = "S4pphir3*"
 
 async def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
@@ -1335,6 +1399,7 @@ async def admin_get_stats(admin = Depends(verify_admin)):
     total_conversations = await db.conversations.count_documents({})
     total_messages = await db.messages.count_documents({})
     pending_deletions = await db.deletion_requests.count_documents({"status": "pending"})
+    pending_profile_updates = await db.profile_update_requests.count_documents({"status": "pending"})  # YENİ
     
     return {
         "total_users": total_users,
@@ -1344,7 +1409,8 @@ async def admin_get_stats(admin = Depends(verify_admin)):
         "accepted_invitations": accepted_invitations,
         "total_conversations": total_conversations,
         "total_messages": total_messages,
-        "pending_deletions": pending_deletions
+        "pending_deletions": pending_deletions,
+        "pending_profile_updates": pending_profile_updates  # YENİ
     }
 
 @api_router.delete("/admin/stats/accepted-invitations")
@@ -1418,6 +1484,107 @@ async def admin_get_deletion_requests(admin = Depends(verify_admin)):
         req["user_profile"] = profile
     
     return requests
+
+@api_router.get("/admin/profile-update-requests")
+async def get_profile_update_requests(admin = Depends(verify_admin)):
+    """Get all profile update requests"""
+    requests = await db.profile_update_requests.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    
+    # Enrich with user and profile data
+    for req in requests:
+        user = await db.users.find_one({"id": req["user_id"]}, {"_id": 0, "password_hash": 0})
+        profile = await db.profiles.find_one({"user_id": req["user_id"]}, {"_id": 0})
+        req["user"] = user
+        req["current_profile"] = profile
+    
+    return requests
+
+@api_router.post("/admin/profile-update-requests/{request_id}/approve")
+async def approve_profile_update(request_id: str, admin = Depends(verify_admin)):
+    """Approve profile update request"""
+    request = await db.profile_update_requests.find_one({"id": request_id}, {"_id": 0})
+    if not request:
+        raise HTTPException(status_code=404, detail="Güncelleme talebi bulunamadı.")
+    
+    if request["status"] != "pending":
+        raise HTTPException(status_code=400, detail="Bu talep zaten işlenmiş.")
+    
+    # Update profile
+    update_data = request["update_data"]
+    await db.profiles.update_one(
+        {"user_id": request["user_id"]},
+        {"$set": update_data, "$inc": {"update_request_count": 1}}
+    )
+    
+    # Update request status
+    await db.profile_update_requests.update_one(
+        {"id": request_id},
+        {"$set": {
+            "status": "approved",
+            "approved_at": datetime.now(timezone.utc).isoformat(),
+            "approved_by": admin.get("username", "admin")
+        }}
+    )
+    
+    # Notify user
+    await create_notification(
+        request["user_id"],
+        "Profil Güncelleme Onaylandı",
+        "Profil güncelleme talebiniz onaylandı ve profiliniz güncellendi.",
+        "profile_update_approved"
+    )
+    
+    return {"message": "Profil güncelleme talebi onaylandı"}
+
+class RejectProfileUpdateRequest(BaseModel):
+    reason: Optional[str] = None
+
+@api_router.post("/admin/profile-update-requests/{request_id}/reject")
+async def reject_profile_update(request_id: str, data: RejectProfileUpdateRequest = None, admin = Depends(verify_admin)):
+    """Reject profile update request"""
+    request = await db.profile_update_requests.find_one({"id": request_id}, {"_id": 0})
+    if not request:
+        raise HTTPException(status_code=404, detail="Güncelleme talebi bulunamadı.")
+    
+    if request["status"] != "pending":
+        raise HTTPException(status_code=400, detail="Bu talep zaten işlenmiş.")
+    
+    reason = data.reason if data else None
+    
+    # Update request status
+    await db.profile_update_requests.update_one(
+        {"id": request_id},
+        {"$set": {
+            "status": "rejected",
+            "rejected_at": datetime.now(timezone.utc).isoformat(),
+            "rejected_by": admin.get("username", "admin"),
+            "rejection_reason": reason
+        }}
+    )
+    
+    # Notify user
+    message = "Profil güncelleme talebiniz reddedildi."
+    if reason:
+        message += f" Sebep: {reason}"
+    
+    await create_notification(
+        request["user_id"],
+        "Profil Güncelleme Reddedildi",
+        message,
+        "profile_update_rejected"
+    )
+    
+    return {"message": "Profil güncelleme talebi reddedildi."}
+
+@api_router.delete("/admin/profile-update-requests/{request_id}")
+async def delete_profile_update_request(request_id: str, admin = Depends(verify_admin)):
+    """Delete a profile update request (for cleanup)"""
+    request = await db.profile_update_requests.find_one({"id": request_id}, {"_id": 0})
+    if not request:
+        raise HTTPException(status_code=404, detail="Güncelleme talebi bulunamadı.")
+    
+    await db.profile_update_requests.delete_one({"id": request_id})
+    return {"message": "Güncelleme talebi temizlendi."}
 
 # ============= ADMIN LISTING APPROVAL =============
 @api_router.get("/admin/pending-listings")
@@ -2382,87 +2549,6 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
     except Exception as e:
         logger.error(f"WebSocket error: {e}")
         ws_manager.disconnect(websocket, user_id)
-
-@api_router.get("/profile/update-status")
-async def get_profile_update_status(current_user: dict = Depends(get_current_user)):
-    pending = await db.profile_update_requests.find_one(
-        {"user_id": current_user["id"], "status": "pending"}, {"_id": 0}
-    )
-    return {"has_pending_request": pending is not None, "request": pending}
-
-@api_router.get("/profile/update-requests/my")
-async def get_my_profile_update_requests(current_user: dict = Depends(get_current_user)):
-    requests = await db.profile_update_requests.find(
-        {"user_id": current_user["id"]}, {"_id": 0}
-    ).sort("created_at", -1).to_list(50)
-    return requests
-
-@api_router.post("/profile/update-requests")
-async def create_profile_update_request(data: UpdateProfile, current_user: dict = Depends(get_current_user)):
-    pending = await db.profile_update_requests.find_one(
-        {"user_id": current_user["id"], "status": "pending"}
-    )
-    if pending:
-        raise HTTPException(status_code=400, detail="Zaten bekleyen bir güncelleme talebiniz var")
-    
-    update_data = {k: v for k, v in data.model_dump().items() if v is not None}
-    if not update_data:
-        raise HTTPException(status_code=400, detail="Güncellenecek veri yok")
-    
-    profile = await db.profiles.find_one({"user_id": current_user["id"]}, {"_id": 0})
-    
-    request_doc = {
-        "id": str(uuid.uuid4()),
-        "user_id": current_user["id"],
-        "user_email": current_user.get("email", ""),
-        "current_data": profile or {},
-        "requested_changes": update_data,
-        "status": "pending",
-        "created_at": datetime.now(timezone.utc).isoformat()
-    }
-    await db.profile_update_requests.insert_one(request_doc)
-    return {"message": "Profil güncelleme talebi oluşturuldu", "id": request_doc["id"]}
-
-@api_router.get("/admin/profile-update-requests")
-async def get_admin_profile_update_requests(admin: dict = Depends(get_current_admin)):
-    requests = await db.profile_update_requests.find({"status": "pending"}, {"_id": 0}).sort("created_at", -1).to_list(100)
-    for req in requests:
-        profile = await db.profiles.find_one({"user_id": req["user_id"]}, {"_id": 0})
-        req["profile"] = profile
-    return requests
-
-@api_router.put("/admin/profile-update-requests/{request_id}/approve")
-async def approve_profile_update_request(request_id: str, admin: dict = Depends(get_current_admin)):
-    req = await db.profile_update_requests.find_one({"id": request_id})
-    if not req:
-        raise HTTPException(status_code=404, detail="Talep bulunamadı")
-    
-    await db.profiles.update_one(
-        {"user_id": req["user_id"]},
-        {"$set": req["requested_changes"]}
-    )
-    await db.profile_update_requests.update_one(
-        {"id": request_id},
-        {"$set": {"status": "approved", "reviewed_at": datetime.now(timezone.utc).isoformat(), "reviewed_by": admin.get("username", "")}}
-    )
-    return {"message": "Profil güncelleme talebi onaylandı"}
-
-@api_router.put("/admin/profile-update-requests/{request_id}/reject")
-async def reject_profile_update_request(request_id: str, admin: dict = Depends(get_current_admin)):
-    req = await db.profile_update_requests.find_one({"id": request_id})
-    if not req:
-        raise HTTPException(status_code=404, detail="Talep bulunamadı")
-    
-    await db.profile_update_requests.update_one(
-        {"id": request_id},
-        {"$set": {"status": "rejected", "reviewed_at": datetime.now(timezone.utc).isoformat(), "reviewed_by": admin.get("username", "")}}
-    )
-    return {"message": "Profil güncelleme talebi reddedildi"}
-
-@api_router.get("/listings/my-listings")
-async def get_my_listings_alt(current_user: dict = Depends(get_current_user)):
-    listings = await db.listings.find({"user_id": current_user["id"]}, {"_id": 0}).sort("created_at", -1).to_list(100)
-    return listings
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
