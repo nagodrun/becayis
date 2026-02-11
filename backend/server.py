@@ -2383,6 +2383,87 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
         logger.error(f"WebSocket error: {e}")
         ws_manager.disconnect(websocket, user_id)
 
+@api_router.get("/profile/update-status")
+async def get_profile_update_status(current_user: dict = Depends(get_current_user)):
+    pending = await db.profile_update_requests.find_one(
+        {"user_id": current_user["id"], "status": "pending"}, {"_id": 0}
+    )
+    return {"has_pending_request": pending is not None, "request": pending}
+
+@api_router.get("/profile/update-requests/my")
+async def get_my_profile_update_requests(current_user: dict = Depends(get_current_user)):
+    requests = await db.profile_update_requests.find(
+        {"user_id": current_user["id"]}, {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
+    return requests
+
+@api_router.post("/profile/update-requests")
+async def create_profile_update_request(data: UpdateProfile, current_user: dict = Depends(get_current_user)):
+    pending = await db.profile_update_requests.find_one(
+        {"user_id": current_user["id"], "status": "pending"}
+    )
+    if pending:
+        raise HTTPException(status_code=400, detail="Zaten bekleyen bir güncelleme talebiniz var")
+    
+    update_data = {k: v for k, v in data.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Güncellenecek veri yok")
+    
+    profile = await db.profiles.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    
+    request_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "user_email": current_user.get("email", ""),
+        "current_data": profile or {},
+        "requested_changes": update_data,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.profile_update_requests.insert_one(request_doc)
+    return {"message": "Profil güncelleme talebi oluşturuldu", "id": request_doc["id"]}
+
+@api_router.get("/admin/profile-update-requests")
+async def get_admin_profile_update_requests(admin: dict = Depends(get_current_admin)):
+    requests = await db.profile_update_requests.find({"status": "pending"}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    for req in requests:
+        profile = await db.profiles.find_one({"user_id": req["user_id"]}, {"_id": 0})
+        req["profile"] = profile
+    return requests
+
+@api_router.put("/admin/profile-update-requests/{request_id}/approve")
+async def approve_profile_update_request(request_id: str, admin: dict = Depends(get_current_admin)):
+    req = await db.profile_update_requests.find_one({"id": request_id})
+    if not req:
+        raise HTTPException(status_code=404, detail="Talep bulunamadı")
+    
+    await db.profiles.update_one(
+        {"user_id": req["user_id"]},
+        {"$set": req["requested_changes"]}
+    )
+    await db.profile_update_requests.update_one(
+        {"id": request_id},
+        {"$set": {"status": "approved", "reviewed_at": datetime.now(timezone.utc).isoformat(), "reviewed_by": admin.get("username", "")}}
+    )
+    return {"message": "Profil güncelleme talebi onaylandı"}
+
+@api_router.put("/admin/profile-update-requests/{request_id}/reject")
+async def reject_profile_update_request(request_id: str, admin: dict = Depends(get_current_admin)):
+    req = await db.profile_update_requests.find_one({"id": request_id})
+    if not req:
+        raise HTTPException(status_code=404, detail="Talep bulunamadı")
+    
+    await db.profile_update_requests.update_one(
+        {"id": request_id},
+        {"$set": {"status": "rejected", "reviewed_at": datetime.now(timezone.utc).isoformat(), "reviewed_by": admin.get("username", "")}}
+    )
+    return {"message": "Profil güncelleme talebi reddedildi"}
+
+@api_router.get("/listings/my-listings")
+async def get_my_listings_alt(current_user: dict = Depends(get_current_user)):
+    listings = await db.listings.find({"user_id": current_user["id"]}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return listings
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
